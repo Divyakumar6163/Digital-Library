@@ -1,6 +1,8 @@
 import NavBar from "./components/navBar";
+import Carousel from "./components/Carousel";
 import DataCard from "./components/DataCard";
 import About from "./components/About";
+import Footer from "./components/Footer";
 // import Login from "./components/Login";
 // import SignUpPage from "./components/SignUp";
 import ContactForm from "./components/ContactUs";
@@ -10,6 +12,7 @@ function App() {
       <NavBar />
       {/* <Login /> */}
       {/* <SignUpPage /> */}
+      <Carousel />
       <About />
       <div
         style={{
@@ -32,6 +35,7 @@ function App() {
         />
       </div>
       <ContactForm />
+      <Footer />
     </div>
   );
 }
