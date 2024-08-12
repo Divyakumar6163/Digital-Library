@@ -1,34 +1,35 @@
 import React from "react";
-import img1 from "../image/heroImg1.png";
+import img1 from "../image/HeroImg.png";
+
 const Carousel = () => {
   return (
-    <section className="relative w-full">
+    <section className="relative h-full">
       <div
         id="default-carousel"
         className="relative w-full"
         data-carousel="slide"
       >
         {/* Carousel wrapper */}
-        <div className="relative h-100 overflow-hidden rounded-lg md:h-96 ">
+        <div className="relative overflow-hidden h-64 sm:h-96 lg:h-[650px]">
           {/* Item 1 */}
           <div className="hidden duration-700 ease-in-out" data-carousel-item>
             <div className="relative w-full h-full">
               <img
                 src={img1}
-                className="absolute block h-full object-cover"
-                style={{ width: "100vw", height: "100vh" }}
+                className="absolute block w-full h-full object-cover"
                 alt="Slide 1"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white bg-black bg-opacity-50">
-                <h2 className="text-2xl font-bold">Welcome to Slide 1</h2>
-                <p className="mt-2">Discover the features of our service.</p>
-                <a
+              {/* <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white bg-black bg-opacity-50 pb-12"> */}
+              {/* <h2 className="text-2xl font-bold">Welcome to Slide 1</h2>
+                <p className="mt-2">Discover the features of our service.</p> */}
+              {/* <a
                   href="/learn-more"
                   className="mt-4 inline-block px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700"
+                  style={{ marginLeft: "-20vw", marginBottom: "18rem" }}
                 >
-                  Learn More
-                </a>
-              </div>
+                  Read Now
+                </a> */}
+              {/* </div> */}
             </div>
           </div>
           {/* Item 2 */}
@@ -39,7 +40,7 @@ const Carousel = () => {
                 className="absolute block w-full h-full object-cover"
                 alt="Slide 2"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white bg-black bg-opacity-50">
+              {/* <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white bg-black bg-opacity-50 pb-12">
                 <h2 className="text-2xl font-bold">Welcome to Slide 2</h2>
                 <p className="mt-2">Explore our latest updates.</p>
                 <a
@@ -48,7 +49,7 @@ const Carousel = () => {
                 >
                   Explore
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
           {/* Item 3 */}
@@ -59,7 +60,7 @@ const Carousel = () => {
                 className="absolute block w-full h-full object-cover"
                 alt="Slide 3"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white bg-black bg-opacity-50">
+              {/* <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white bg-black bg-opacity-50 pb-12">
                 <h2 className="text-2xl font-bold">Welcome to Slide 3</h2>
                 <p className="mt-2">Check out our new features.</p>
                 <a
@@ -68,27 +69,7 @@ const Carousel = () => {
                 >
                   Check Features
                 </a>
-              </div>
-            </div>
-          </div>
-          {/* Item 4 */}
-          <div className="hidden duration-700 ease-in-out" data-carousel-item>
-            <div className="relative w-full h-full">
-              <img
-                src={img1}
-                className="absolute block w-full h-full object-cover"
-                alt="Slide 4"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white bg-black bg-opacity-50">
-                <h2 className="text-2xl font-bold">Welcome to Slide 4</h2>
-                <p className="mt-2">Learn more about our offerings.</p>
-                <a
-                  href="/offerings"
-                  className="mt-4 inline-block px-4 py-2 bg-yellow-600 rounded-lg hover:bg-yellow-700"
-                >
-                  Our Offerings
-                </a>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -114,20 +95,6 @@ const Carousel = () => {
             aria-current="false"
             aria-label="Slide 3"
             data-carousel-slide-to="2"
-          ></button>
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="false"
-            aria-label="Slide 4"
-            data-carousel-slide-to="3"
-          ></button>
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="false"
-            aria-label="Slide 5"
-            data-carousel-slide-to="4"
           ></button>
         </div>
         {/* Slider controls */}

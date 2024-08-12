@@ -1,18 +1,8 @@
-import {
-  Avatar,
-  Dropdown,
-  DropdownDivider,
-  DropdownHeader,
-  DropdownItem,
-  Navbar,
-  NavbarBrand,
-  NavbarCollapse,
-  NavbarLink,
-  NavbarToggle,
-} from "flowbite-react";
+import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
+import Logo from "../image/Logo.png";
 export default function NavBar() {
   const [isSearch, setIsSearch] = useState(false);
   const handleIsSearch = () => {
@@ -22,23 +12,19 @@ export default function NavBar() {
     // Implement your search logic here
   }
   return (
-    <Navbar fluid rounded style={{ backgroundColor: "black" }}>
-      <NavbarBrand href="#">
-        {/* <img
-          src="/favicon.svg"
-          className="mr-3 h-6 sm:h-9"
-          alt="Flowbite React Logo"
-        /> */}
+    <Navbar fluid style={{ backgroundColor: "black" }}>
+      <Navbar.Brand href="/">
+        <img src={Logo} className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold text-white">
           Digi Library
         </span>
-      </NavbarBrand>
-      <div className="flex md:order-2">
+      </Navbar.Brand>
+      <div className="flex md:order-2 z-50">
         {isSearch && (
           <div className="relative w-56" style={{ marginRight: "3vw" }}>
             <input
               type="text"
-              className="w-full px-3 py-2 pl-10 text-sm text-white placeholder-gray-500 bg-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-white focus:border-white active:border-white"
+              className="w-full px-3 py-2 pl-10 text-sm text-white placeholder-gray-500 bg-gray-800 border border-gray-100 rounded-lg focus:outline-none focus:ring focus:ring-white "
               //   style={{ borderColor: "white" }}
               placeholder="Search..."
             />
@@ -74,37 +60,37 @@ export default function NavBar() {
             />
           }
         >
-          <DropdownHeader>
+          <Dropdown.Header>
             <span className="block text-sm">Bonnie Green</span>
             <span className="block truncate text-sm font-medium">
               name@flowbite.com
             </span>
-          </DropdownHeader>
-          <DropdownItem>Dashboard</DropdownItem>
-          <DropdownItem>Settings</DropdownItem>
-          <DropdownItem>Earnings</DropdownItem>
-          <DropdownDivider />
-          <DropdownItem>Sign out</DropdownItem>
+          </Dropdown.Header>
+          <Dropdown.Item>Dashboard</Dropdown.Item>
+          <Dropdown.Item>Settings</Dropdown.Item>
+          <Dropdown.Item>Earnings</Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>Sign out</Dropdown.Item>
         </Dropdown>
-        <NavbarToggle />
+        <Navbar.Toggle />
       </div>
-      <NavbarCollapse>
-        <NavbarLink href="#" active>
+      <Navbar.Collapse>
+        <Navbar.Link href="#" style={{ color: "white" }}>
           Home
-        </NavbarLink>
-        <NavbarLink href="#" active>
+        </Navbar.Link>
+        <Navbar.Link href="#" style={{ color: "white" }}>
           About
-        </NavbarLink>
-        <NavbarLink href="#" active>
+        </Navbar.Link>
+        <Navbar.Link href="#" style={{ color: "white" }}>
           Read Books
-        </NavbarLink>
-        <NavbarLink href="#" active>
+        </Navbar.Link>
+        <Navbar.Link href="#" style={{ color: "white" }}>
           Create Book
-        </NavbarLink>
-        <NavbarLink href="#" active>
+        </Navbar.Link>
+        <Navbar.Link href="#" style={{ color: "white" }}>
           Contact
-        </NavbarLink>
-      </NavbarCollapse>
+        </Navbar.Link>
+      </Navbar.Collapse>
     </Navbar>
   );
 }

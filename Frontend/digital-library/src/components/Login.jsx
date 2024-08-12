@@ -8,7 +8,7 @@ function Login() {
     >
       <div
         className="bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
-        style={{ width: "35vw", alignItems: "center", justifySelf: "center" }}
+        style={{ alignItems: "center", justifySelf: "center" }}
       >
         <div
           className="p-6 space-y-4 md:space-y-6 sm:p-8"

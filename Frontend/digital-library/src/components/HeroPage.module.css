@@ -1,0 +1,14 @@
+.card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    /* Add this to handle wrapping */
+}
+
+@media screen and (max-width: 700px) {
+    .card {
+        flex-direction: column;
+        align-items: center;
+    }
+}
