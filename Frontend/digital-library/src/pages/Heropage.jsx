@@ -1,9 +1,9 @@
-import Carousel from "./Carousel";
-import NavBar from "./NavBar";
-import DataCard from "./DataCard";
-import About from "./About";
-import Footer from "./Footer";
-import ContactForm from "./ContactUs";
+import Carousel from "../components/Carousel";
+import NavBar from "../components/NavBar";
+import DataCard from "../components/DataCard";
+import About from "../components/About";
+import Footer from "../components/Footer";
+import ContactForm from "../components/ContactUs";
 import styles from "./HeroPage.module.css";
 export default function HeroPage() {
   return (
