@@ -1,0 +1,29 @@
+@media screen and (max-width:650px) {
+    #cardReadDiv {
+        min-width: 150px;
+    }
+
+    #cardReadTitle {
+        font-size: 16px;
+
+    }
+
+    #cardReadImg {
+        height: 150px;
+        object-fit: cover;
+    }
+
+    #cardReadp {
+        font-size: 10px;
+        margin-top: 5px;
+    }
+
+    #cardReadHeading {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    /* #cardAuthor {
+        font-size: 14px;
+    } */
+}

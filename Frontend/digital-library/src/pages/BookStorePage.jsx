@@ -5,8 +5,9 @@ const BookStore = () => {
   return (
     <>
       <NavBar />
-      <ReadBookStore />
-
+      <ReadBookStore heading="Newly Released" />
+      <ReadBookStore heading="Science Fiction" />
+      <ReadBookStore heading="Premium" />
       <Footer />
     </>
   );

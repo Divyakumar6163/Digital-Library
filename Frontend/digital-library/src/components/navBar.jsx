@@ -107,18 +107,18 @@ export default function NavBar() {
         <Navbar.Link style={{ color: "white" }}>
           <NavLink to="/">Home</NavLink>
         </Navbar.Link>
-        <Navbar.Link style={{ color: "white" }}>
+        {/* <Navbar.Link style={{ color: "white" }}>
           <NavLink to="#about">About</NavLink>
-        </Navbar.Link>
+        </Navbar.Link> */}
         <Navbar.Link style={{ color: "white" }}>
           <NavLink to="/bookStore">Read Books</NavLink>
         </Navbar.Link>
         <Navbar.Link href="/createBook" style={{ color: "white" }}>
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
-        <Navbar.Link style={{ color: "white" }}>
+        {/* <Navbar.Link style={{ color: "white" }}>
           <NavLink to="#contact">Contact</NavLink>
-        </Navbar.Link>
+        </Navbar.Link> */}
       </Navbar.Collapse>
     </Navbar>
   );
