@@ -5,7 +5,7 @@ import styles from "./ReadBookStore.module.css";
 const DUMMY_DATA = {
   card1: {
     img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
+    title: "Noteworthy India",
     description:
       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
     path: "/",
@@ -79,7 +79,7 @@ const ReadBookStore = ({ heading }) => {
         )}
         {Object.keys(DUMMY_DATA).length > 0 &&
           Object.values(DUMMY_DATA)
-            .slice(0, 10)
+            .slice(0, 7)
             .map((data, idx) => (
               <div
                 key={idx}

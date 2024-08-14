@@ -1,5 +1,6 @@
 import HeroPage from "./pages/Heropage.jsx";
 import BookStore from "./pages/BookStorePage.jsx";
+import BooksLibrary from "./pages/BooksLibrary.jsx";
 import CreateBook from "./pages/CreateBook.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HeroPage />} />
           <Route path="/bookStore" element={<BookStore />} />
+          <Route path="/booksLibrary" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
