@@ -1,6 +1,7 @@
 const { response } = require('../app');
 const userSchema = require('./../models/usermodel')
 const bcrypt = require('bcrypt')
+const welcomeemail = require('./../utils/mails/welcomemail')
 exports.getallusers = async (req,res)=>{
     try {
         const alluser = await userSchema.find(); 
@@ -23,6 +24,11 @@ exports.getallusers = async (req,res)=>{
 exports.createUsers = async (req, res) => {
     try{
         const neruser = await userSchema.create(req.body);
+        await welcomeemail({
+            email: req.body.emailid,
+            subject: "Welcome to Digi Library",
+            name: req.body.name,
+        })
         return res.status(201).json({
             status: 'success',
             data: {

@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const dotenv = require('dotenv');
 const crypto = require("crypto");
 dotenv.config({ path: './../config.env'});
+const email = require('./../utils/mails/resetpasswordmail')
 const bcryptsalt = process.env.BCRYPT_SALT
 exports.requestresetuserpassword = async (req,res) =>{
     try{
@@ -26,6 +27,13 @@ exports.requestresetuserpassword = async (req,res) =>{
             token: hash,
             createdAt: Date.now()
         }).save();
+        const link = `http://localhost:3000/${resettoken}/${ user._id}`
+        await email({
+            email: user.emailid,
+            subject: "Reset Password",
+            name: user.name,
+            resetLink:link
+        });
         res.status(200).json({
             message: "link is send to your email",
             data:{
