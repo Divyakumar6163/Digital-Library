@@ -1,9 +1,10 @@
+const { response } = require('../app');
 const userSchema = require('./../models/usermodel')
-
+const bcrypt = require('bcrypt')
 exports.getallusers = async (req,res)=>{
     try {
         const alluser = await userSchema.find(); 
-        res.status(200).json({
+         return res.status(200).json({
             status: 'success',
             data :{
                 alluser: alluser
@@ -11,7 +12,7 @@ exports.getallusers = async (req,res)=>{
         })
     }
     catch(err){
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             message: "Error While fetching data",
             error: err
@@ -21,9 +22,8 @@ exports.getallusers = async (req,res)=>{
 
 exports.createUsers = async (req, res) => {
     try{
-        console.log("hii......" + req.body);
         const neruser = await userSchema.create(req.body);
-        res.status(201).json({
+        return res.status(201).json({
             status: 'success',
             data: {
                 user: neruser
@@ -31,7 +31,7 @@ exports.createUsers = async (req, res) => {
         })
     }
     catch(err){
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             message: "Error while creating users",
             error: err
@@ -51,7 +51,7 @@ exports.getuserinfo = async (req,res)=>{
                 message: 'User not found'
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             status: 'success',
             data :{
                 userinfo: userinfo
@@ -61,10 +61,48 @@ exports.getuserinfo = async (req,res)=>{
         })
     }
     catch(err){
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             message: "Error while fetching user details",
             error: err
         })
     }
+}
+exports.userlogin = async (req,res)=>{
+   try{
+        if(!req.body.emailid){
+            return res.status(404).json({
+                message: 'please enter your email address'
+            })
+        }
+        if(!req.body.password){
+            return res.status(404).json({
+                message: 'please enter your password'
+            })
+        }
+        const user  = await userSchema.findOne({ emailid: req.body.emailid}).select("+password");
+        console.log(user.password);
+        if(!user){
+            return res.status(404).json({
+                message: 'User not found with this email',
+            })
+        }
+        const validuser = await bcrypt.compare(req.body.password, user.password)
+        console.log(validuser)
+        if(!validuser){
+            return res.status(404).json({
+                message: 'Invalid password',
+            })
+        }
+        return res.status(200).json({
+            message: "Login successful",
+            data: user
+        })
+   }
+   catch (err){
+        return res.status(500).json({
+            message: "Login failed",
+            error: err.message
+        })
+   }
 }
