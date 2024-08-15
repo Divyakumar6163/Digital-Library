@@ -14,13 +14,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HeroPage />} />
           <Route path="/bookStore" element={<BookStore />} />
-          <Route path="/booksLibrary" element={<BooksLibrary />} />
+          <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
         </Routes>
-        {/* <Login />
-      <SignUpPage /> */}
       </BrowserRouter>
     </div>
   );

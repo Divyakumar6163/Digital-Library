@@ -1,0 +1,115 @@
+@media screen and (max-width:1100px) {
+    #cardCatDiv {
+        width: 200px;
+        /* height: 200px; */
+    }
+
+    #cardCatTitle {
+        font-size: 18px;
+        margin-top: 0;
+    }
+}
+
+@media screen and (max-width:800px) {
+    #idcardCatMainDiv {
+        margin-left: -2px;
+        margin-right: -2px;
+    }
+
+    #cardCatDiv {
+        width: 150px;
+    }
+
+    #cardCatDes {
+        height: 90px;
+        margin: 0;
+        padding: 5px 0 0 10px;
+    }
+
+    #cardCatImg {
+        height: 150px;
+        object-fit: cover;
+    }
+
+    #cardCatTitle {
+        font-size: 15px;
+        margin-top: 0;
+    }
+
+    #cardCatp {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width:650px) {
+    #cardCatDiv {
+        width: 110px;
+    }
+
+    #cardCatDes {
+        height: 80px;
+        margin: 0;
+        padding: 5px 0 0 10px;
+    }
+
+    #cardCatImg {
+        height: 100px;
+        object-fit: cover;
+    }
+
+    #cardCatTitle {
+        font-size: 10px;
+        margin-top: 0;
+        line-clamp: -5px;
+    }
+
+    #cardCatp {
+        font-size: 8px;
+        padding: 5px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+
+    #cardCatArrow {
+        display: none;
+    }
+}
+
+@media screen and (max-width:400px) {
+    #cardCatMainDiv {
+        justify-content: center;
+
+    }
+
+    #cardCatDiv {
+        width: 250px;
+    }
+
+    #cardCatDes {
+        height: 80px;
+        margin: 0;
+        padding: 5px 0 0 10px;
+    }
+
+    #cardCatImg {
+        height: 100px;
+        object-fit: cover;
+    }
+
+    #cardCatTitle {
+        font-size: 10px;
+        margin-top: 0;
+        line-clamp: -5px;
+    }
+
+    #cardCatp {
+        font-size: 8px;
+        padding: 5px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+
+    #cardCatArrow {
+        display: none;
+    }
+}

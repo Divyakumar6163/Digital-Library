@@ -1,5 +1,6 @@
 import React from "react";
 import BookCover1 from "../image/BookCover1.png";
+import { useNavigate } from "react-router";
 import styles from "./ReadBookStore.module.css";
 // Sample data object
 const DUMMY_DATA = {
@@ -63,8 +64,12 @@ const DUMMY_DATA = {
 
 // Functional component to display the cards
 const ReadBookStore = ({ heading }) => {
+  const navigate = useNavigate();
+  function handleReadMore() {
+    navigate("/book/1");
+  }
   return (
-    <div className="my-20">
+    <div className="mb-20">
       <h4
         className="mb-4 mx-6 my-20 text-3xl tracking-tight font-extrabold text-gray-900 dark:text-white"
         id={styles.cardReadHeading}
@@ -108,6 +113,8 @@ const ReadBookStore = ({ heading }) => {
                     </h5>
                   </a>
                   <p
+                    onClick={handleReadMore}
+                    style={{ cursor: "pointer" }}
                     id={styles.cardReadp}
                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
