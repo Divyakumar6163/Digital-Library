@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useDispatch } from "react-redux";
 // import { loginUser } from "../store2/userSlice";
 import { Link } from "react-router-dom";
-import  {store}  from './../store/store'
+import { store } from './../store/store'
 import * as useractions from './../store/actions/userinfoactions'
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,27 +13,53 @@ function Login() {
   const [email, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  useEffect(() => {
+    async function loginuserbycookie() {
+      // e.preventDefault();
+      try {
+        const data = {}
+        // console.log(response.data);
+        const response = await axios.post('http://localhost:5000/user/login', data, {
+          withCredentials: true
+        });
+        console.log(response.cookie);
+        window.alert("Login successful")
+        navigate('/');
+        store.dispatch(useractions.setuserinfo(response.data.data))
+        store.dispatch(useractions.setlogin(true));
+        console.log(response.data)
+      }
+      catch (e) {
+        console.log("sadfghjk")
+        console.log(e);
+      }
+    }
+    loginuserbycookie();
+  },[]);
   async function loginuser(e) {
-        e.preventDefault();
-        try{
-          const data =  {
-            emailid:email,
-            password:password
-          }
-          // console.log(response.data);
-          const response = await axios.post('http://localhost:5000/user/login' ,data);
-          window.alert("Login successful")
-          navigate('/');
-          store.dispatch(useractions.setuserinfo(response.data.data))
-          store.dispatch(useractions.setlogin(true));
-          console.log(response.data)
-        }
-        catch(e){
-          console.log("sadfghjk")
-          console.log(e);
-        }
+    e.preventDefault();
+    try {
+      const data = {
+        emailid: email,
+        password: password
+      }
+      // console.log(response.data);
+      const response = await axios.post('http://localhost:5000/user/login', data, {
+        withCredentials: true
+      });
+      console.log(response.cookie);
+      window.alert("Login successful")
+      navigate('/');
+      store.dispatch(useractions.setuserinfo(response.data.data))
+      store.dispatch(useractions.setlogin(true));
+      console.log(response.data)
+    }
+    catch (e) {
+      console.log("sadfghjk")
+      console.log(e);
+    }
   }
-  
+
   return (
     <>
       <NavBar />
