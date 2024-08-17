@@ -2,6 +2,7 @@ import React from "react";
 import NavBar from "./NavBar";
 import { useSelector, useDispatch } from "react-redux";
 import Footer from "./Footer";
+import { Link } from "react-router-dom";
 function SignUpPage() {
   return (
     <>
@@ -98,12 +99,12 @@ function SignUpPage() {
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
-                  <a
-                    href="/"
+                  <Link
+                    to="/login"
                     className="font-medium text-blue-600 hover:underline dark:text-primary-500"
                   >
                     Login here
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>

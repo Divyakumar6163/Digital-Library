@@ -3,6 +3,7 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/userSlice";
+import { Link } from "react-router-dom";
 function Login() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -100,12 +101,12 @@ function Login() {
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
-                <a
-                  href="/signup"
+                <Link
+                  to="/signup"
                   className="font-medium text-blue-600 hover:underline dark:text-primary-500"
                 >
                   Sign up
-                </a>
+                </Link>
               </p>
             </form>
           </div>
