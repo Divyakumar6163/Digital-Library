@@ -1,12 +1,14 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { NavLink, Link } from "react-router-dom";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import Logo from "../image/Logo.png";
 import styles from "./NavBar.module.css";
 export default function NavBar1() {
   const [isSearch, setIsSearch] = useState(false);
+  const userState = useSelector((state) => state.user);
   const handleIsSearch = () => {
     setIsSearch(!isSearch);
   };
@@ -78,29 +80,31 @@ export default function NavBar1() {
             onClick={handleIsSearch}
           />
         )}
-        <Dropdown
-          arrowIcon={false}
-          inline
-          label={
-            <Avatar
-              alt="User settings"
-              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-              rounded
-            />
-          }
-        >
-          <Dropdown.Header>
-            <span className="block text-sm">Bonnie Green</span>
-            <span className="block truncate text-sm font-medium">
-              name@flowbite.com
-            </span>
-          </Dropdown.Header>
-          <Dropdown.Item>Dashboard</Dropdown.Item>
-          <Dropdown.Item>Settings</Dropdown.Item>
-          <Dropdown.Item>Earnings</Dropdown.Item>
-          <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
-        </Dropdown>
+        {userState.user ? (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+                alt="User settings"
+                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                rounded
+              />
+            }
+          >
+            <Dropdown.Header>
+              <span className="block text-sm">Bonnie Green</span>
+              <span className="block truncate text-sm font-medium">
+                name@flowbite.com
+              </span>
+            </Dropdown.Header>
+            <Dropdown.Item>Dashboard</Dropdown.Item>
+            <Dropdown.Item>Settings</Dropdown.Item>
+            <Dropdown.Item>Earnings</Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item>Sign out</Dropdown.Item>
+          </Dropdown>
+        ) : null}
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
@@ -116,9 +120,11 @@ export default function NavBar1() {
         <Navbar.Link href="/createBook" style={{ color: "white" }}>
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
-        <Navbar.Link style={{ color: "white" }}>
-          <Link to="/login">SignUp/Login</Link>
-        </Navbar.Link>
+        {!userState.user ? (
+          <Navbar.Link style={{ color: "white" }}>
+            <Link to="/login">SignUp/Login</Link>
+          </Navbar.Link>
+        ) : null}
       </Navbar.Collapse>
     </Navbar>
   );

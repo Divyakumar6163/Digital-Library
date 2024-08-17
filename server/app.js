@@ -10,14 +10,13 @@ app.use(
       "http://127.0.0.1:5000",
       //   "https://divyakumar.github.io",
     ],
-    origin: true,
+    // origin: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
 
 app.use(express.json());
-
 app.use("/", userroutes);
 
 module.exports = app;

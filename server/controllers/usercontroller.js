@@ -70,40 +70,48 @@ exports.getuserinfo = async (req, res) => {
     });
   }
 };
+
 exports.userlogin = async (req, res) => {
-  console.log(req, res);
+  console.log(req.body);
   try {
-    if (!req.body.emailid) {
-      return res.status(404).json({
-        message: "please enter your email address",
+    const { emailid, password } = req.body;
+
+    if (!emailid) {
+      return res.status(400).json({
+        message: "Please enter your email address",
       });
     }
-    if (!req.body.password) {
-      return res.status(404).json({
-        message: "please enter your password",
+    if (!password) {
+      return res.status(400).json({
+        message: "Please enter your password",
       });
     }
-    const user = await userSchema
-      .findOne({ emailid: req.body.emailid })
-      .select("+password");
-    console.log(user.password);
+
+    const user = await userSchema.findOne({ emailid }).select("+password");
+
+    console.log(user);
+
     if (!user) {
       return res.status(404).json({
         message: "User not found with this email",
       });
     }
-    const validuser = await bcrypt.compare(req.body.password, user.password);
-    console.log(validuser);
-    if (!validuser) {
-      return res.status(404).json({
+
+    const validUser = await bcrypt.compare(password, user.password);
+    console.log(validUser);
+
+    if (!validUser) {
+      return res.status(401).json({
         message: "Invalid password",
       });
     }
+
     return res.status(200).json({
       message: "Login successful",
       data: user,
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       message: "Login failed",
       error: err.message,

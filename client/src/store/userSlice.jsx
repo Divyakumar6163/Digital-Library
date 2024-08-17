@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-  user: null,
   token: null,
   email: null,
   password: null,
@@ -19,7 +18,7 @@ export const fetchUserData = createAsyncThunk(
       const response = await axios.get(`/api/user/${userId}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data + "bedhfbwejfedb");
     }
   }
 );
@@ -27,15 +26,16 @@ export const fetchUserData = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "user/login",
   async (userData, { rejectWithValue }) => {
-    console.log(userData);
+    // console.log(userData);
     try {
       const response = await axios.post(
         "http://localhost:5000/user/login",
         userData
       );
-      return response.data; // Make sure this returns the correct data structure
+      console.log(response.data);
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data); // Use rejectWithValue for proper error handling
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -45,7 +45,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
       state.token = action.payload.token;
       state.email = action.payload.email;
       state.password = action.payload.password;
@@ -53,6 +52,7 @@ const userSlice = createSlice({
       state.isPremium = action.payload.isPremium;
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserData.pending, (state) => {
@@ -90,5 +90,4 @@ const userSlice = createSlice({
 });
 
 export const { setUser } = userSlice.actions;
-
 export default userSlice.reducer;

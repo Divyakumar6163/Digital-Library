@@ -2,16 +2,40 @@ import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../store/userSlice";
+import { loginUser, setUser } from "../store/userSlice";
 import { Link } from "react-router-dom";
 function Login() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
+  const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = (e) => {
+  // const [data, setData] = useState(null);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
+    try {
+      const resultAction = await dispatch(
+        loginUser({ emailid: emailId.trim(), password: password.trim() })
+      );
+
+      if (loginUser.fulfilled.match(resultAction)) {
+        const userData = resultAction.payload;
+
+        dispatch(
+          setUser({
+            token: userData.token, // Ensure this matches your backend response
+            email: userData.emailid,
+            name: userData.name,
+            isPremium: userData.isPremium,
+            password: userData.password,
+          })
+        );
+      } else {
+        console.error("Login failed:", resultAction.payload);
+      }
+    } catch (error) {
+      console.error("Unexpected error during login:", error);
+    }
   };
+
   return (
     <>
       <NavBar />
@@ -39,7 +63,7 @@ function Login() {
                   Your email
                 </label>
                 <input
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmailId(e.target.value)}
                   type="email"
                   name="email"
                   id="email"
