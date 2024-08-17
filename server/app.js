@@ -14,7 +14,6 @@ app.use(cors(corsOptions));
 
 
 app.use(express.json());
-
 app.use("/", userroutes);
 
 module.exports = app;

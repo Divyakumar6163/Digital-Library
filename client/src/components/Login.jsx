@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 function Login() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
+  const [email, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   async function loginuser(e) {
@@ -61,7 +61,7 @@ function Login() {
                   Your email
                 </label>
                 <input
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmailId(e.target.value)}
                   type="email"
                   name="email"
                   id="email"
