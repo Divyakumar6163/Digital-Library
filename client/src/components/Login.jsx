@@ -2,16 +2,38 @@ import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../store/userSlice";
+// import { loginUser } from "../store2/userSlice";
 import { Link } from "react-router-dom";
+import  {store}  from './../store/store'
+import * as useractions from './../store/actions/userinfoactions'
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 function Login() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(loginUser({ email, password }));
-  };
+  const navigate = useNavigate();
+  async function loginuser(e) {
+        e.preventDefault();
+        try{
+          const data =  {
+            emailid:email,
+            password:password
+          }
+          // console.log(response.data);
+          const response = await axios.post('http://localhost:5000/user/login' ,data);
+          window.alert("Login successful")
+          navigate('/');
+          store.dispatch(useractions.setuserinfo(response.data.data))
+          store.dispatch(useractions.setlogin(true));
+          console.log(response.data)
+        }
+        catch(e){
+          console.log("sadfghjk")
+          console.log(e);
+        }
+  }
+  
   return (
     <>
       <NavBar />
@@ -66,25 +88,6 @@ function Login() {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="remember"
-                      aria-describedby="remember"
-                      type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required=""
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label
-                      htmlFor="remember"
-                      className="text-gray-500 dark:text-gray-300"
-                    >
-                      Remember me
-                    </label>
-                  </div>
-                </div>
                 <a
                   href="/forgot-password" // Adjust the path as needed
                   className="text-sm font-medium text-blue-600 hover:underline dark:text-primary-500"
@@ -93,14 +96,14 @@ function Login() {
                 </a>
               </div>
               <button
-                onClick={handleSubmit}
+                onClick={loginuser}
                 type="submit"
                 className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Sign in
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet?{" "}
+                Don’t have an account?{" "}
                 <Link
                   to="/signup"
                   className="font-medium text-blue-600 hover:underline dark:text-primary-500"

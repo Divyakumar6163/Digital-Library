@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import Logo from "../image/Logo.png";
 import styles from "./NavBar.module.css";
+import { useSelector} from 'react-redux';
 export default function NavBar1() {
   const [isSearch, setIsSearch] = useState(false);
   const handleIsSearch = () => {
@@ -13,6 +14,8 @@ export default function NavBar1() {
   function handleSearch() {
     // Implement your search logic here
   }
+  const islogin = useSelector((state) => state.user.islogin);
+  const username = useSelector((state) => state.user.userinfo.name);
   return (
     <Navbar fluid style={{ backgroundColor: "black" }}>
       <Navbar.Brand href="/">
@@ -117,7 +120,7 @@ export default function NavBar1() {
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
         <Navbar.Link style={{ color: "white" }}>
-          <Link to="/login">SignUp/Login</Link>
+          {islogin ? <Link>{username}</Link> :<Link to="/login">SignUp/Login</Link>}
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>

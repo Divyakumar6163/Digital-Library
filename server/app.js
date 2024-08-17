@@ -1,20 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 const userroutes = require("./routes/userroutes");
-
+const cookieParser = require("cookie-parser");
 const app = express();
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "http://127.0.0.1:5000",
-      //   "https://divyakumar.github.io",
-    ],
-    origin: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    credentials: true,
-  })
-);
+
+app.use(cookieParser());
+
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+
+app.use(cors(corsOptions));
+
 
 app.use(express.json());
 
