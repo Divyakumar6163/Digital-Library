@@ -1,7 +1,11 @@
 const { response } = require('../app');
 const userSchema = require('./../models/usermodel')
 const bcrypt = require('bcrypt')
+const JWT = require('jsonwebtoken');
+const crypto = require('crypto')
 const welcomeemail = require('./../utils/mails/welcomemail')
+const dotenv = require('dotenv');
+dotenv.config({ path: './../config.env' });
 exports.getallusers = async (req,res)=>{
     try {
         const alluser = await userSchema.find(); 
@@ -23,7 +27,13 @@ exports.getallusers = async (req,res)=>{
 
 exports.createUsers = async (req, res) => {
     try{
-        const neruser = await userSchema.create(req.body);
+        const user = await userSchema.findOne({emailid : req.body.emailid});
+        if(user){
+            return res.status(500).json({
+                message:"This email already exists please try with another email"
+            })
+        }
+        const newuser = await userSchema.create(req.body);
         await welcomeemail({
             email: req.body.emailid,
             subject: "Welcome to Digi Library",
@@ -32,7 +42,7 @@ exports.createUsers = async (req, res) => {
         return res.status(201).json({
             status: 'success',
             data: {
-                user: neruser
+                user: newuser
             }
         })
     }
@@ -76,6 +86,7 @@ exports.getuserinfo = async (req,res)=>{
 }
 exports.userlogin = async (req,res)=>{
    try{
+        console.log(req.body)
         if(!req.body.emailid){
             return res.status(404).json({
                 message: 'please enter your email address'
@@ -100,6 +111,8 @@ exports.userlogin = async (req,res)=>{
                 message: 'Invalid password',
             })
         }
+        const token = JWT.sign({ emailid: user.emailid, password: req.body.password }, process.env.JWT_SECRET_KEY);
+        res.cookie("access_token", token)
         return res.status(200).json({
             message: "Login successful",
             data: user
