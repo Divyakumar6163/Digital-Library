@@ -1,16 +1,24 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { NavLink, Link } from "react-router-dom";
+import { store } from "./../store/store";
+import * as useractions from "./../store/actions/userinfoactions";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import Logo from "../image/Logo.png";
 import styles from "./NavBar.module.css";
-import { useSelector} from 'react-redux';
+import { useSelector } from "react-redux";
 export default function NavBar1() {
   const [isSearch, setIsSearch] = useState(false);
   const userState = useSelector((state) => state.user);
+  // const dispatch = useDispatch();
+  console.log(userState);
   const handleIsSearch = () => {
     setIsSearch(!isSearch);
+  };
+  const handleSignOut = () => {
+    store.dispatch(useractions.setlogin(false));
+    store.dispatch(useractions.setuserinfo({}));
   };
   function handleSearch() {
     // Implement your search logic here
@@ -82,7 +90,7 @@ export default function NavBar1() {
             onClick={handleIsSearch}
           />
         )}
-        {userState.user ? (
+        {islogin ? (
           <Dropdown
             arrowIcon={false}
             inline
@@ -95,16 +103,16 @@ export default function NavBar1() {
             }
           >
             <Dropdown.Header>
-              <span className="block text-sm">Bonnie Green</span>
+              <span className="block text-sm">{username}</span>
               <span className="block truncate text-sm font-medium">
-                name@flowbite.com
+                {userState.userinfo.emailid}
               </span>
             </Dropdown.Header>
             <Dropdown.Item>Dashboard</Dropdown.Item>
             <Dropdown.Item>Settings</Dropdown.Item>
             <Dropdown.Item>Earnings</Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item>Sign out</Dropdown.Item>
+            <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
           </Dropdown>
         ) : null}
         <Navbar.Toggle />
@@ -123,7 +131,7 @@ export default function NavBar1() {
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
         <Navbar.Link style={{ color: "white" }}>
-          {islogin ? <Link>{username}</Link> :<Link to="/login">SignUp/Login</Link>}
+          {!islogin ? <Link to="/login">SignUp/Login</Link> : null}
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>

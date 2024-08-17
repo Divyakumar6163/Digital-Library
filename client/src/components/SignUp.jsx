@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
@@ -14,19 +14,21 @@ function SignUpPage() {
     e.preventDefault();
     try {
       const data = {
-        name:name,
+        name: name,
         emailid: email,
         phoneno: phoneno,
-        password: password
-      }
+        password: password,
+      };
       console.log(data);
-      const response = await axios.post('http://localhost:5000/user/signup', data);
-      window.alert("Account created... Please login")
-      navigate('/login');
-      console.log(response.data)
-    }
-    catch (e) {
-      console.log("sadfghjk")
+      const response = await axios.post(
+        "http://localhost:5000/user/signup",
+        data
+      );
+      window.alert("Account created... Please login");
+      navigate("/login");
+      console.log(response.data);
+    } catch (e) {
+      console.log("sadfghjk");
       console.log(e);
     }
   }
@@ -37,7 +39,7 @@ function SignUpPage() {
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div
             className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
-          // style={{ width: "35vw" }}
+            // style={{ width: "35vw" }}
           >
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -79,9 +81,7 @@ function SignUpPage() {
                   />
                 </div>
                 <div>
-                  <label
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
+                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     Phone No.
                   </label>
                   <input
