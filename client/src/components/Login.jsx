@@ -89,7 +89,7 @@ function Login() {
               </div>
               <div className="flex items-center justify-between">
                 <a
-                  href="/forgot-password" // Adjust the path as needed
+                  href="/forgotpassword" // Adjust the path as needed
                   className="text-sm font-medium text-blue-600 hover:underline dark:text-primary-500"
                 >
                   Forgot password?

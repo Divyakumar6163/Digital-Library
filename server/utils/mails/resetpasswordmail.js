@@ -13,7 +13,9 @@ const sendmail = async (options) => {
     <body>
         <h2>Dear ${options.name},</h2>
         <p>Greetings from Digi Library!</p>
-        <a href="${options.resetLink}"Please use the link below to reset your credentials. </a>
+
+        <a href="${options.resetLink}">Please use the link below to reset your credentials. </a>
+
         <p>This link will expire in 15 minutes.</p>
         <p>If you did not request a password reset, you can safely ignore this message, and no changes will be made to your account.</p>
     </body>

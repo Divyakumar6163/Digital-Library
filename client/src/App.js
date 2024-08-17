@@ -6,6 +6,8 @@ import { Route, BrowserRouter, Routes } from "react-router-dom";
 import ReadFIB from "./components/ReadFIB.jsx";
 import Login from "./components/Login";
 import SignUpPage from "./components/SignUp";
+import SetNewPassword from "./components/newpassword.jsx";
+import ForgotPassword from './components/forgotpassword.jsx'
 function App() {
   return (
     <div>
@@ -19,6 +21,8 @@ function App() {
           <Route path="/createBook" element={<CreateBook />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
+          <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+          <Route path="/:token/:userId" element={<SetNewPassword/>}/>
         </Routes>
       </BrowserRouter>
     </div>
