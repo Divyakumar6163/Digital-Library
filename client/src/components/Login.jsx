@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../store/userSlice";
 function Login() {
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, password }));
+  };
   return (
     <>
       <NavBar />
@@ -29,6 +38,7 @@ function Login() {
                   Your email
                 </label>
                 <input
+                  onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   name="email"
                   id="email"
@@ -45,6 +55,7 @@ function Login() {
                   Password
                 </label>
                 <input
+                  onChange={(e) => setPassword(e.target.value)}
                   type="password"
                   name="password"
                   id="password"
@@ -81,6 +92,7 @@ function Login() {
                 </a>
               </div>
               <button
+                onClick={handleSubmit}
                 type="submit"
                 className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >

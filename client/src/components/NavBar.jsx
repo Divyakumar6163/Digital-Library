@@ -1,5 +1,5 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
@@ -105,13 +105,13 @@ export default function NavBar1() {
       </div>
       <Navbar.Collapse>
         <Navbar.Link style={{ color: "white" }}>
-          <NavLink to="/">Home</NavLink>
+          <Link to="/">Home</Link>
         </Navbar.Link>
         {/* <Navbar.Link style={{ color: "white" }}>
           <NavLink to="#about">About</NavLink>
         </Navbar.Link> */}
         <Navbar.Link style={{ color: "white" }}>
-          <NavLink to="/bookStore">Read Books</NavLink>
+          <Link to="/bookStore">Read Books</Link>
         </Navbar.Link>
         <Navbar.Link href="/createBook" style={{ color: "white" }}>
           <NavLink to="/createBook">Create Books</NavLink>

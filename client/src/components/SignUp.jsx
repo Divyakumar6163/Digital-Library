@@ -1,5 +1,6 @@
 import React from "react";
 import NavBar from "./NavBar";
+import { useSelector, useDispatch } from "react-redux";
 import Footer from "./Footer";
 function SignUpPage() {
   return (
