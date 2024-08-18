@@ -27,7 +27,7 @@ exports.requestresetuserpassword = async (req, res) => {
             token: hash,
             createdAt: Date.now()
         }).save();
-        const link = `http://localhost:3000/${resettoken}/${user._id}`
+        const link = `${process.env.FRONT_END_LINK}/${resettoken}/${user._id}`
         await email({
             email: user.emailid,
             subject: "Reset Password",

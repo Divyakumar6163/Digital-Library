@@ -3,6 +3,7 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { ToLink } from "../App";
 import { useNavigate } from "react-router-dom";
 function SignUpPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function SignUpPage() {
       };
       console.log(data);
       const response = await axios.post(
-        "http://localhost:5000/user/signup",
+        `${ToLink}/user/signup`,
         data
       );
       window.alert("Account created... Please login");

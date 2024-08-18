@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useParams } from "react-router-dom";
-// import { loginUser } from "../store2/userSlice";
+import { ToLink } from "../App";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -25,7 +25,7 @@ function SetNewPassword() {
       };
       console.log(data);
       const response = await axios.post(
-        "http://localhost:5000/resetpassword",
+        `${ToLink}/resetpassword`,
         data
       );
       window.alert("Your password changed successfully please login again");

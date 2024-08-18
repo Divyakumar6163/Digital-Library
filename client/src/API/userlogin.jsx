@@ -1,7 +1,7 @@
 import axios from "axios";
 import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
-
+import { ToLink } from "../App";
 // const navigate = useNavigate();
 
 export const getuserlogin = async () => {
@@ -9,7 +9,7 @@ export const getuserlogin = async () => {
     const data = {};
     // console.log(response.data);
     const response = await axios.post(
-      "http://localhost:5000/user/login",
+      `${ToLink}/user/login`,
       data,
       {
         withCredentials: true,

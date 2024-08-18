@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToLink } from "../App";
 function ForgotPassword() {
   const [email, setEmailId] = useState("");
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function ForgotPassword() {
       };
       console.log(data);
       const response = await axios.post(
-        "http://localhost:5000/reqresetpassword",
+        `${ToLink}/reqresetpassword`,
         data
       );
       window.alert(

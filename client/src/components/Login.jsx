@@ -6,34 +6,35 @@ import { Link } from "react-router-dom";
 import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import { useNavigate } from "react-router-dom";
+import { ToLink } from "../App";
 import axios from "axios";
 function Login() {
   const [email, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  useEffect(() => {
-    async function loginuserbycookie() {
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/user/login",
-          {},
-          {
-            withCredentials: true,
-          }
-        );
-        console.log(response.cookie);
-        navigate("/");
-        store.dispatch(useractions.setuserinfo(response.data.data));
-        store.dispatch(useractions.setlogin(true));
-        console.log(response.data);
-      } catch (e) {
-        console.log(e);
-      }
-    }
+  // useEffect(() => {
+  //   async function loginuserbycookie() {
+  //     try {
+  //       const response = await axios.post(
+  //         "http://localhost:5000/user/login",
+  //         {},
+  //         {
+  //           withCredentials: true,
+  //         }
+  //       );
+  //       console.log(response.cookie);
+  //       navigate("/");
+  //       store.dispatch(useractions.setuserinfo(response.data.data));
+  //       store.dispatch(useractions.setlogin(true));
+  //       console.log(response.data);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
 
-    // Conditionally run loginuserbycookie if you want to auto-login under specific conditions
-    // loginuserbycookie();
-  }, [navigate]);
+  //   // Conditionally run loginuserbycookie if you want to auto-login under specific conditions
+  //   // loginuserbycookie();
+  // }, [navigate]);
 
   async function loginuser(e) {
     e.preventDefault();
@@ -44,7 +45,7 @@ function Login() {
       };
       // console.log(response.data);
       const response = await axios.post(
-        "http://localhost:5000/user/login",
+        `${ToLink}/user/login`,
         data,
         {
           withCredentials: true,

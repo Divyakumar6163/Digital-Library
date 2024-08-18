@@ -7,7 +7,8 @@ const app = express();
 app.use(cookieParser());
 
 var corsOptions = {
-  origin: "http://localhost:3000",
+  // origin: "http://localhost:3000",
+  origin:"https://digital-library-alpha.vercel.app/",
   credentials: true,
 };
 
