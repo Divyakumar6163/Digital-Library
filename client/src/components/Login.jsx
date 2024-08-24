@@ -32,8 +32,8 @@ function Login() {
   //     }
   //   }
 
-  //   // Conditionally run loginuserbycookie if you want to auto-login under specific conditions
-  //   // loginuserbycookie();
+  // Conditionally run loginuserbycookie if you want to auto-login under specific conditions
+  // loginuserbycookie();
   // }, [navigate]);
 
   async function loginuser(e) {
@@ -45,7 +45,7 @@ function Login() {
       };
       // console.log(response.data);
       const response = await axios.post(
-        `${ToLink}/user/login`,
+        "http://localhost:5000/user/login",
         data,
         {
           withCredentials: true,
