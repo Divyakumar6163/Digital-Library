@@ -4,7 +4,6 @@ import BooksLibrary from "./pages/BooksLibrary.jsx";
 import { useEffect } from "react";
 import CreateBook from "./pages/CreateBook.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
-import ReadFIB from "./components/CreateMCQ.jsx";
 import Login from "./components/Login";
 import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
@@ -24,8 +23,7 @@ function App() {
       {/* <BrowserRouter basename={"Digital-Library"}> */}
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<HeroPage />} /> */}
-          <Route path="/" element={<ReadFIB />} />
+          <Route path="/" element={<HeroPage />} />
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

@@ -1,13 +1,22 @@
 import React, { useState } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa"; // Importing the icons
+import { FaEdit, FaTrashAlt, FaBars } from "react-icons/fa"; // Importing the icons
 import CreateMCQ from "./CreateMCQ";
 import CreateFIB from "./CreateFIB";
+import Heading from "./CreateHeading";
+import Text from "./CreateText";
+import Graph from "./CreateGraph";
+import Equation from "./CreateEquation";
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css"; // Import SunEditor CSS
 
 const CreateBookStore = () => {
   const [chapters, setChapters] = useState([]);
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [selectedComponents, setSelectedComponents] = useState([]);
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control hamburger menu
+  const [title, setTitle] = useState("");
+  const [summary, setSummary] = useState("");
+  const [heading, setHeading] = useState("");
   const addNewChapter = () => {
     const newChapter = `Chapter ${chapters.length + 1}`;
     setChapters([...chapters, newChapter]);
@@ -20,7 +29,7 @@ const CreateBookStore = () => {
   const handleFormOptionClick = (option) => {
     setSelectedComponents([
       ...selectedComponents,
-      { type: option, id: Date.now() },
+      { type: option, id: Date.now(), file: null },
     ]);
   };
 
@@ -38,18 +47,19 @@ const CreateBookStore = () => {
     setSelectedComponents(filteredComponents);
   };
 
+  const handleFileUpload = (id, file) => {
+    const updatedComponents = selectedComponents.map((component) =>
+      component.id === id
+        ? { ...component, file: URL.createObjectURL(file) }
+        : component
+    );
+    setSelectedComponents(updatedComponents);
+  };
+
   const renderComponent = (component) => {
     switch (component.type) {
       case "Text":
-        return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <textarea
-              className="w-full p-2 border rounded-lg"
-              rows="4"
-              placeholder="Enter text..."
-            ></textarea>
-          </div>
-        );
+        return <Text />;
       case "Image":
         return (
           <div className="mb-4 p-2 border rounded-lg">
@@ -57,31 +67,31 @@ const CreateBookStore = () => {
               type="file"
               className="w-full p-2 border rounded-lg"
               accept="image/*"
+              onChange={(e) =>
+                handleFileUpload(component.id, e.target.files[0])
+              }
             />
+            {component.file && (
+              <img
+                src={component.file}
+                alt="Uploaded"
+                className="mt-4 max-h-64"
+              />
+            )}
           </div>
         );
       case "Heading":
-        return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <input
-              type="text"
-              className="w-full p-2 border rounded-lg"
-              placeholder="Enter heading..."
-            />
-          </div>
-        );
+        return <Heading />;
       case "Graph":
         return (
           <div className="mb-4 p-2 border rounded-lg">
-            <p>Graph component placeholder</p>
-            {/* You can integrate a graph library here */}
+            <Graph />
           </div>
         );
       case "Equation":
         return (
           <div className="mb-4 p-2 border rounded-lg">
-            <p>Equation component placeholder</p>
-            {/* You can integrate an equation editor here */}
+            <Equation />
           </div>
         );
       case "Markdown":
@@ -113,7 +123,17 @@ const CreateBookStore = () => {
               type="file"
               className="w-full p-2 border rounded-lg"
               accept="video/*"
+              onChange={(e) =>
+                handleFileUpload(component.id, e.target.files[0])
+              }
             />
+            {component.file && (
+              <video
+                controls
+                src={component.file}
+                className="mt-4 max-h-64 w-full"
+              />
+            )}
           </div>
         );
       default:
@@ -122,10 +142,28 @@ const CreateBookStore = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 min-h-screen flex bg-gray-100">
-      <div className="w-1/4 bg-white p-4 shadow-md">
-        <div className="mb-6">
-          <button className="text-blue-500">{"<-- Back to Home"}</button>
+    <div className="container mx-auto p-4 min-h-screen flex bg-gray-100 relative">
+      {/* Hamburger menu for small screens */}
+      <div className="lg:hidden absolute top-4 left-4 z-20">
+        <button
+          className="text-blue-500"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <FaBars size={30} />
+        </button>
+      </div>
+      <div
+        className={`lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300 ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 z-10`}
+      >
+        <div className="mb-6 lg:hidden">
+          <button
+            className="text-blue-500"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Close
+          </button>
         </div>
         <div className="mb-6">
           <h2 className="text-xl font-bold mb-2">
@@ -151,7 +189,16 @@ const CreateBookStore = () => {
         </button>
       </div>
 
-      <div className="w-3/4 p-6">
+      {/* Overlay effect for the background */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 lg:hidden z-0"
+          onClick={() => setIsMenuOpen(false)}
+        ></div>
+      )}
+
+      {/* Main Content */}
+      <div className="lg:w-3/4 p-6 w-full">
         <div className="flex justify-between mb-6">
           <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
             DISCARD
@@ -171,16 +218,40 @@ const CreateBookStore = () => {
         </div>
 
         <div className="bg-white p-4 shadow-md mb-6">
-          <input
-            type="text"
-            className="w-full mb-4 p-2 border rounded-lg"
+          {/* SunEditor for Title */}
+          <SunEditor
+            lang="en"
             placeholder="Add Title"
+            setOptions={{
+              height: 50,
+              buttonList: [
+                ["font", "fontSize", "formatBlock"],
+                ["bold", "italic", "underline", "strike"],
+                ["align", "list", "table"],
+                ["undo", "redo"],
+                ["codeView"],
+              ],
+            }}
+            setContents={title}
+            onChange={setTitle}
           />
-          <textarea
-            className="w-full mb-4 p-2 border rounded-lg"
-            rows="4"
+          {/* SunEditor for Summary */}
+          <SunEditor
+            lang="en"
             placeholder="Add Summary"
-          ></textarea>
+            setOptions={{
+              height: 150,
+              buttonList: [
+                ["font", "fontSize", "formatBlock"],
+                ["bold", "italic", "underline", "strike"],
+                ["align", "list", "table"],
+                ["undo", "redo"],
+                ["codeView"],
+              ],
+            }}
+            setContents={summary}
+            onChange={setSummary}
+          />
           <input
             type="text"
             className="w-full mb-4 p-2 border rounded-lg"
