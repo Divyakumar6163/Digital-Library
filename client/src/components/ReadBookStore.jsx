@@ -112,7 +112,7 @@ const ReadBookStore = ({ heading }) => {
                       className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2"
                       id={styles.cardReadTitle}
                     >
-                      {data.booktitle}
+                      {data.description}
                     </h5>
                   </a>
                   <p

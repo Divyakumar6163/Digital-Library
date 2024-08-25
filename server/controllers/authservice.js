@@ -117,13 +117,11 @@ exports.getallresettoken = async (req, res) => {
 
 exports.checkauth = async (req, res, next) => {
     const token = req.cookies.access_token;
-    console.log(token)
     if (!token) {
         return next();
     }
     try {
         const data = JWT.verify(token, process.env.JWT_SECRET_KEY);
-        console.log(data)
         req.body.emailid = data.emailid;
         req.body.password = data.password;
         return next();

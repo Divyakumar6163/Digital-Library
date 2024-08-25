@@ -1,31 +1,35 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useSelector } from "react-redux";
+import { getalltags,filteredbooks } from './../API/filteringbook'
 function Filter() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const resultObject = useSelector((state) => state.books.alltags);
-
-  // const resultObject = alltags.reduce((obj, [key, value]) => {
-  //   obj[key] = {
-  //     value: value, 
-  //     isSelected: false,
-  //   };
-  //   return obj;
-  // }, {});
-console.log(resultObject);
-const [categories, setCategories] = useState(resultObject);
-console.log(categories)
+  const AllBooks = useSelector((state) => state.books.allbooks);
+  console.log("hii");
+  const [categories, setCategories] = useState(resultObject);
   const toggleDropdown = () => {
+      setCategories(resultObject);
     setIsDropdownOpen(!isDropdownOpen);
   };
-
+  console.log(categories)
   const handleCheckboxChange = (event) => {
-    setCategories({
-      ...categories,
-      [event.target.id]: event.target.checked,
-    });
+    const { id, checked } = event.target;
+
+  setCategories((prevCategories) => ({
+    ...prevCategories,
+    [id]: {
+      ...prevCategories[id], 
+      isSelected: checked,  
+    },
+  }));
   };
+  useEffect(()=>{
+    getalltags();
+    setCategories(resultObject)
+    // filteredbooks(AllBooks,categories)
+  },[])
   function handleApply() {
-    // Apply filter here
+    filteredbooks(AllBooks,categories)
     toggleDropdown();
   }
   return (
