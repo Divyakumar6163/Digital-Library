@@ -10,7 +10,7 @@ import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
 import ForgotPassword from "./components/forgotpassword.jsx";
 import { getuserlogin } from "./API/userlogin.jsx";
-import {getallbooks , getalltags} from './API/filteringbook.jsx'
+import { getallbooks, getalltags } from "./API/filteringbook.jsx";
 // export const ToLink = "https://digital-library-cryf.onrender.com";
 export const ToLink = "http://localhost:5000";
 function App() {
@@ -18,14 +18,14 @@ function App() {
     getuserlogin();
     getallbooks();
     getalltags();
-  },[]);
+  }, []);
   return (
     <div>
       {/* <BrowserRouter basename={"Digital-Library"}> */}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HeroPage />} />
-          {/* <Route path="/" element={<ReadFIB />} /> */}
+          {/* <Route path="/" element={<HeroPage />} /> */}
+          <Route path="/" element={<ReadFIB />} />
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

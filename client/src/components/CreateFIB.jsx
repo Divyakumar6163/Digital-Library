@@ -6,40 +6,28 @@ const FIBPage = () => {
   const [preview, setPreview] = useState(false);
   const [content, setContent] = useState("");
   const blanksRegex = /___/g;
-
-  // State to store user inputs in the blanks and corresponding answers
   const [inputs, setInputs] = useState([]);
   const [answers, setAnswers] = useState([]);
-
-  // Toggle preview mode
   const handlePreview = () => {
     setPreview(!preview);
   };
-
-  // Handle changes in SunEditor
   const handleEditorChange = (content) => {
     setContent(content);
     const blanksArray = [...content.matchAll(blanksRegex)];
-    // console.log(blanksArray);
     setInputs(Array(blanksArray.length).fill(""));
     setAnswers(Array(blanksArray.length).fill(""));
   };
-
-  // Handle changes in input fields
   const handleChange = (e, index) => {
     const newInputs = [...inputs];
     newInputs[index] = e.target.value;
     setInputs(newInputs);
   };
 
-  // Handle changes in answer fields
   const handleAnswerChange = (e, index) => {
     const newAnswers = [...answers];
     newAnswers[index] = e.target.value;
     setAnswers(newAnswers);
   };
-
-  // Function to render the sentence with input fields
   const renderSentenceWithInputs = () => {
     const parts = content.split(blanksRegex);
 
@@ -61,8 +49,6 @@ const FIBPage = () => {
       </div>
     );
   };
-
-  // Function to render answer input fields
   const renderAnswerInputs = () => {
     return (
       <div className="mt-4">
@@ -84,9 +70,9 @@ const FIBPage = () => {
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
+      {/* <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
         Create Fill in the Blanks
-      </h2>
+      </h2> */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <SunEditor
           setContents={content}
@@ -100,7 +86,7 @@ const FIBPage = () => {
               ["bold", "underline", "italic", "strike"],
               ["fontColor", "hiliteColor", "textStyle"],
               ["removeFormat"],
-              "/", // Line break
+              "/",
               ["outdent", "indent"],
               ["align", "horizontalRule", "list", "table"],
               ["link", "image", "video", "audio"],

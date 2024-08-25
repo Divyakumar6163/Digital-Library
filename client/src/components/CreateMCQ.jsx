@@ -8,45 +8,37 @@ const MCQPage = () => {
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [preview, setPreview] = useState(false);
 
-  // Handle changes in the SunEditor for the question
   const handleQuestionChange = (content) => {
     setQuestion(content);
   };
 
-  // Handle changes in option inputs
   const handleOptionChange = (e, index) => {
     const newOptions = [...options];
     newOptions[index].value = e.target.value;
     setOptions(newOptions);
   };
 
-  // Add a new option
   const addOption = () => {
     setOptions([...options, { id: options.length + 1, value: "" }]);
   };
 
-  // Remove an option
   const removeOption = (index) => {
     const newOptions = options.filter((_, i) => i !== index);
     setOptions(newOptions);
 
-    // If the removed option was the correct answer, reset the correct answer
     if (index === correctAnswer) {
       setCorrectAnswer(null);
     }
   };
 
-  // Handle selecting the correct answer
   const handleAnswerSelection = (index) => {
     setCorrectAnswer(index);
   };
 
-  // Toggle preview mode
   const handlePreview = () => {
     setPreview(!preview);
   };
 
-  // Function to render option inputs
   const renderOptions = () => {
     return options.map((option, index) => (
       <div key={option.id} className="mb-2 flex items-center">
@@ -81,31 +73,40 @@ const MCQPage = () => {
     ));
   };
 
-  // Function to render the question and options in preview mode
   const renderPreview = () => {
     return (
       <div className="mt-6 p-6 bg-white shadow-lg rounded-lg">
-        <h3 className="text-xl font-semibold mb-4">Preview:</h3>
-        <div
-          className="mb-4"
-          dangerouslySetInnerHTML={{ __html: question }}
-        ></div>
-        <ul className="list-disc pl-5">
+        <h3 className="text-xl font-semibold mb-4 text-center">Preview:</h3>
+        <div className="mb-6 text-center">
+          <div
+            className="text-2xl font-bold"
+            dangerouslySetInnerHTML={{ __html: question }}
+          ></div>
+        </div>
+        <div className="pl-10">
           {options.map((option, index) => (
-            <li key={option.id} className="mb-2">
-              {option.value}
-            </li>
+            <div key={option.id} className="mb-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="mcq"
+                  value={option.value}
+                  className="form-radio text-blue-600"
+                />
+                <span className="ml-2 text-lg">{option.value}</span>
+              </label>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     );
   };
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
+      {/* <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
         Create Multiple Choice Question
-      </h2>
+      </h2> */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h3 className="text-xl font-semibold mb-4">Question:</h3>
         <SunEditor
@@ -120,7 +121,7 @@ const MCQPage = () => {
               ["bold", "underline", "italic", "strike"],
               ["fontColor", "hiliteColor", "textStyle"],
               ["removeFormat"],
-              "/", // Line break
+              "/",
               ["outdent", "indent"],
               ["align", "horizontalRule", "list", "table"],
               ["link", "image", "video", "audio"],
@@ -146,7 +147,7 @@ const MCQPage = () => {
           onClick={handlePreview}
           className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300"
         >
-          {!preview ? "Preview" : "Close Preview"}
+          {!preview ? "Preview" : "Close"}
         </button>
       </div>
       {preview && renderPreview()}
