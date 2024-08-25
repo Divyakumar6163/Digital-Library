@@ -7,7 +7,8 @@ router.get("/alluser", usercontroller.getallusers);
 
 router.post("/user/signup", usercontroller.createUsers);
 
-router.post("/user/login", authcontroller.checkauth, usercontroller.userlogin);
+router.post("/user/login", usercontroller.userlogin);
+// router.post("/user/login", authcontroller.checkauth, usercontroller.userlogin);
 
 router.get("/getuser/:id", usercontroller.getuserinfo);
 

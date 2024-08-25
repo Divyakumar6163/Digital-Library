@@ -1,70 +1,73 @@
 import React from "react";
 import BookCover1 from "../image/BookCover1.png";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styles from "./ReadBookStore.module.css";
 // Sample data object
-const DUMMY_DATA = {
-  card1: {
-    img: BookCover1,
-    title: "Noteworthy India",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card2: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card3: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card4: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card5: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card6: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card7: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-  card8: {
-    img: BookCover1,
-    title: "Noteworthy technology acquisitions 2021",
-    description:
-      "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-    path: "/",
-  },
-};
+// const DUMMY_DATA = {
+//   card1: {
+//     img: BookCover1,
+//     title: "Noteworthy India",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card2: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card3: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card4: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card5: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card6: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card7: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+//   card8: {
+//     img: BookCover1,
+//     title: "Noteworthy technology acquisitions 2021",
+//     description:
+//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+//     path: "/",
+//   },
+// };
 
 // Functional component to display the cards
 const ReadBookStore = ({ heading }) => {
   const navigate = useNavigate();
+  const AllBooks = useSelector((state) => state.books.allbooks);
+  const Filteredbooks = useSelector((state) => state.books.filteredbooks);
   function handleReadMore() {
     navigate("/book/1");
   }
@@ -77,13 +80,13 @@ const ReadBookStore = ({ heading }) => {
         {heading}
       </h4>
       <div className="flex overflow-x-auto space-x-4 p-4">
-        {Object.keys(DUMMY_DATA).length <= 0 && (
+        {Object.keys(Filteredbooks).length <= 0 && (
           <p className="text-center text-gray-500 font-semibold my-4">
             No Book Available
           </p>
         )}
-        {Object.keys(DUMMY_DATA).length > 0 &&
-          Object.values(DUMMY_DATA)
+        {Object.keys(Filteredbooks).length > 0 &&
+          Object.values(Filteredbooks)
             .slice(0, 7)
             .map((data, idx) => (
               <div
@@ -98,8 +101,8 @@ const ReadBookStore = ({ heading }) => {
                   <a href="/" className="block h-full w-full">
                     <img
                       className="object-cover w-full h-full rounded-t-lg"
-                      src={data.img}
-                      alt={data.title}
+                      src={BookCover1}
+                      alt={data.booktitle}
                     />
                   </a>
                 </div>
@@ -109,7 +112,7 @@ const ReadBookStore = ({ heading }) => {
                       className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2"
                       id={styles.cardReadTitle}
                     >
-                      {data.title}
+                      {data.booktitle}
                     </h5>
                   </a>
                   <p

@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
 function Filter() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [categories, setCategories] = useState({
-    Fantacy: false,
-    SciFi: false,
-    History: false,
-    Technology: false,
-    Mythology: false,
-    BioPic: false,
-    Literature: false,
-    Others: false,
-  });
+  const resultObject = useSelector((state) => state.books.alltags);
 
+  // const resultObject = alltags.reduce((obj, [key, value]) => {
+  //   obj[key] = {
+  //     value: value, 
+  //     isSelected: false,
+  //   };
+  //   return obj;
+  // }, {});
+console.log(resultObject);
+const [categories, setCategories] = useState(resultObject);
+console.log(categories)
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -25,6 +26,7 @@ function Filter() {
   };
   function handleApply() {
     // Apply filter here
+    toggleDropdown();
   }
   return (
     <div className="relative flex justify-end my-5 mx-4">
@@ -68,7 +70,7 @@ function Filter() {
                 <input
                   id={key}
                   type="checkbox"
-                  checked={value}
+                  checked={value.isSelected}
                   onChange={handleCheckboxChange}
                   className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                 />
@@ -76,8 +78,7 @@ function Filter() {
                   htmlFor={key}
                   className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
                 >
-                  {key.charAt(0).toUpperCase() + key.slice(1)} (
-                  {/* {Math.floor(Math.random() * 100)} */})
+                  {key.charAt(0).toUpperCase() + key.slice(1)} 
                 </label>
               </li>
             ))}

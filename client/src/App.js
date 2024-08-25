@@ -10,11 +10,14 @@ import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
 import ForgotPassword from './components/forgotpassword.jsx'
 import { getuserlogin } from "./API/userlogin.jsx";
-export const ToLink = "https://digital-library-cryf.onrender.com";
-// export const ToLink = "http://localhost:5000";
+import {getallbooks , getalltags} from './API/filteringbook.jsx'
+// export const ToLink = "https://digital-library-cryf.onrender.com";
+export const ToLink = "http://localhost:5000";
 function App() {
   useEffect(() => {
     getuserlogin();
+    getallbooks();
+    getalltags();
   },[]);
   return (
     <div>
@@ -22,7 +25,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HeroPage />} />
-          <Route path="/" element={<ReadFIB />} />
+          {/* <Route path="/" element={<ReadFIB />} /> */}
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

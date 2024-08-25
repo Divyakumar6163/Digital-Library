@@ -26,7 +26,9 @@ function SetNewPassword() {
       console.log(data);
       const response = await axios.post(
         `${ToLink}/resetpassword`,
-        data
+        data, {
+          withCredentials: true,
+        }
       );
       window.alert("Your password changed successfully please login again");
       navigate("/login");

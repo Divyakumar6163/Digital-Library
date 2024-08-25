@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-
 const dotenv = require("dotenv");
 dotenv.config({ path: "./../config.env" });
 var Schema = mongoose.Schema;

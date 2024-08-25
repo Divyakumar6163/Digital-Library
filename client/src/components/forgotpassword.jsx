@@ -18,7 +18,10 @@ function ForgotPassword() {
       console.log(data);
       const response = await axios.post(
         `${ToLink}/reqresetpassword`,
-        data
+        data ,
+        {
+          withCredentials: true,
+        }
       );
       window.alert(
         "Email sent successfully please check your inbox to reset your password"

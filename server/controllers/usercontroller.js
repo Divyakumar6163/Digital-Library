@@ -1,4 +1,3 @@
-const { response } = require('../app');
 const userSchema = require('./../models/usermodel')
 const bcrypt = require('bcrypt')
 const JWT = require('jsonwebtoken');
@@ -114,7 +113,7 @@ exports.userlogin = async (req, res) => {
         const token = JWT.sign({ emailid: user.emailid, password: req.body.password }, process.env.JWT_SECRET_KEY);
         res.cookie("access_token", token, {
             httpOnly: true,
-            secure: true, 
+            secure: true,
             sameSite: 'None'
         })
         return res.status(200).json({
