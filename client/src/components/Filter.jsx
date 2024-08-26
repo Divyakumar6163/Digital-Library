@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getalltags,filteredbooks } from './../API/filteringbook'
+import { getalltags, filteredbooks } from "./../API/filteringbook";
 function Filter() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const resultObject = useSelector((state) => state.books.alltags);
@@ -8,28 +8,28 @@ function Filter() {
   console.log("hii");
   const [categories, setCategories] = useState(resultObject);
   const toggleDropdown = () => {
-      setCategories(resultObject);
+    setCategories(resultObject);
     setIsDropdownOpen(!isDropdownOpen);
   };
-  console.log(categories)
+  console.log(categories);
   const handleCheckboxChange = (event) => {
     const { id, checked } = event.target;
 
-  setCategories((prevCategories) => ({
-    ...prevCategories,
-    [id]: {
-      ...prevCategories[id], 
-      isSelected: checked,  
-    },
-  }));
+    setCategories((prevCategories) => ({
+      ...prevCategories,
+      [id]: {
+        ...prevCategories[id],
+        isSelected: checked,
+      },
+    }));
   };
-  useEffect(()=>{
+  useEffect(() => {
     getalltags();
-    setCategories(resultObject)
+    setCategories(resultObject);
     // filteredbooks(AllBooks,categories)
-  },[])
+  }, []);
   function handleApply() {
-    filteredbooks(AllBooks,categories)
+    filteredbooks(AllBooks, categories);
     toggleDropdown();
   }
   return (
@@ -82,7 +82,7 @@ function Filter() {
                   htmlFor={key}
                   className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
                 >
-                  {key.charAt(0).toUpperCase() + key.slice(1)} 
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
                 </label>
               </li>
             ))}

@@ -4,10 +4,25 @@ import "suneditor/dist/css/suneditor.min.css";
 
 const HeadingEditorWithPreview = () => {
   const [heading, setHeading] = useState("");
+  const [backupHeading, setBackupHeading] = useState("");
   const [isPreview, setIsPreview] = useState(false);
 
   const togglePreview = () => {
     setIsPreview(!isPreview);
+  };
+
+  const handleSave = () => {
+    setBackupHeading(heading);
+    setIsPreview(true);
+  };
+
+  const handleEdit = () => {
+    setIsPreview(false);
+  };
+
+  const handleCancel = () => {
+    setHeading(backupHeading);
+    setIsPreview(true);
   };
 
   return (
@@ -44,12 +59,20 @@ const HeadingEditorWithPreview = () => {
             setContents={heading}
             onChange={setHeading}
           />
-          <button
-            onClick={togglePreview}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Preview
-          </button>
+          <div className="mt-2 flex justify-end space-x-2">
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
+            >
+              Cancel
+            </button>
+          </div>
         </>
       ) : (
         <>
@@ -57,12 +80,14 @@ const HeadingEditorWithPreview = () => {
             className="p-2 border-b rounded-lg"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
-          <button
-            onClick={togglePreview}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Edit
-          </button>
+          <div className="mt-2 flex justify-end">
+            <button
+              onClick={handleEdit}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Edit
+            </button>
+          </div>
         </>
       )}
     </div>

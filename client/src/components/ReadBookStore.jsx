@@ -3,70 +3,9 @@ import BookCover1 from "../image/BookCover1.png";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styles from "./ReadBookStore.module.css";
-// Sample data object
-// const DUMMY_DATA = {
-//   card1: {
-//     img: BookCover1,
-//     title: "Noteworthy India",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card2: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card3: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card4: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card5: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card6: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card7: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-//   card8: {
-//     img: BookCover1,
-//     title: "Noteworthy technology acquisitions 2021",
-//     description:
-//       "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
-//     path: "/",
-//   },
-// };
-
-// Functional component to display the cards
 const ReadBookStore = ({ heading }) => {
   const navigate = useNavigate();
-  const AllBooks = useSelector((state) => state.books.allbooks);
+  // const AllBooks = useSelector((state) => state.books.allbooks);
   const Filteredbooks = useSelector((state) => state.books.filteredbooks);
   function handleReadMore() {
     navigate("/book/1");

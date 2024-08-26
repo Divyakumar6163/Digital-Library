@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 // import { loginUser } from "../store2/userSlice";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import { useNavigate } from "react-router-dom";
-import { ToLink } from "../App";
+// import { ToLink } from "../App";
 import axios from "axios";
 function Login() {
   const [email, setEmailId] = useState("");

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEdit, FaTrashAlt, FaBars } from "react-icons/fa"; // Importing the icons
+import { FaTrashAlt, FaBars } from "react-icons/fa"; // Removed FaEdit
 import CreateMCQ from "./CreateMCQ";
 import CreateFIB from "./CreateFIB";
 import Heading from "./CreateHeading";
@@ -16,7 +16,7 @@ const CreateBookStore = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control hamburger menu
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
-  const [heading, setHeading] = useState("");
+
   const addNewChapter = () => {
     const newChapter = `Chapter ${chapters.length + 1}`;
     setChapters([...chapters, newChapter]);
@@ -31,13 +31,6 @@ const CreateBookStore = () => {
       ...selectedComponents,
       { type: option, id: Date.now(), file: null },
     ]);
-  };
-
-  const editComponent = (id) => {
-    const editedComponents = selectedComponents.map((component) =>
-      component.id === id ? { ...component, type: component.type } : component
-    );
-    setSelectedComponents(editedComponents);
   };
 
   const deleteComponent = (id) => {
@@ -94,16 +87,6 @@ const CreateBookStore = () => {
             <Equation />
           </div>
         );
-      case "Markdown":
-        return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <textarea
-              className="w-full p-2 border rounded-lg"
-              rows="4"
-              placeholder="Enter markdown..."
-            ></textarea>
-          </div>
-        );
       case "Quiz":
         return (
           <div className="mb-4 p-2 border rounded-lg">
@@ -143,7 +126,6 @@ const CreateBookStore = () => {
 
   return (
     <div className="container mx-auto p-4 min-h-screen flex bg-gray-100 relative">
-      {/* Hamburger menu for small screens */}
       <div className="lg:hidden absolute top-4 left-4 z-20">
         <button
           className="text-blue-500"
@@ -207,9 +189,6 @@ const CreateBookStore = () => {
             PREVIEW
           </button>
           <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-            EDIT
-          </button>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
             SAVE
           </button>
           <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
@@ -263,12 +242,6 @@ const CreateBookStore = () => {
               {renderComponent(component)}
               <div className="absolute right-2 top-2 flex space-x-2">
                 <button
-                  onClick={() => editComponent(component.id)}
-                  className="text-yellow-600"
-                >
-                  <FaEdit size={20} />
-                </button>
-                <button
                   onClick={() => deleteComponent(component.id)}
                   className="text-red-600"
                 >
@@ -294,7 +267,6 @@ const CreateBookStore = () => {
                   "Image",
                   "Graph",
                   "Equation",
-                  "Markdown",
                   "Quiz",
                   "Video",
                   "Fill in the Blanks",
