@@ -8,7 +8,7 @@ const BookStore = () => {
       <NavBar />
       <Filter />
       <ReadBookStore heading="Newly Released" />
-      <ReadBookStore heading="Science Fiction" />
+      <ReadBookStore heading=" Past Books" />
       <ReadBookStore heading="Premium" />
       <Footer />
     </>
