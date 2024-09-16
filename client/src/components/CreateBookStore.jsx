@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { FaTrashAlt, FaBars } from "react-icons/fa"; // Removed FaEdit
+import {
+  FaTrashAlt,
+  FaBars,
+  FaEdit,
+  FaChevronDown,
+  FaChevronRight,
+} from "react-icons/fa";
 import CreateMCQ from "./CreateMCQ";
 import CreateFIB from "./CreateFIB";
 import Heading from "./CreateHeading";
@@ -7,19 +13,67 @@ import Text from "./CreateText";
 import Graph from "./CreateGraph";
 import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
-import "suneditor/dist/css/suneditor.min.css"; // Import SunEditor CSS
+import { useSelector } from "react-redux";
+import "suneditor/dist/css/suneditor.min.css";
 
 const CreateBookStore = () => {
   const [chapters, setChapters] = useState([]);
+  const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [selectedComponents, setSelectedComponents] = useState([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to control hamburger menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [expandedChapters, setExpandedChapters] = useState([]);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
+  const heading = useSelector((state) => state.heading.content);
+  const text = useSelector((state) => state.text.content);
+
+  console.log(heading);
+  console.log(text);
+
+  const toggleChapterExpansion = (index) => {
+    if (expandedChapters.includes(index)) {
+      setExpandedChapters(expandedChapters.filter((i) => i !== index));
+    } else {
+      setExpandedChapters([...expandedChapters, index]);
+    }
+  };
 
   const addNewChapter = () => {
-    const newChapter = `Chapter ${chapters.length + 1}`;
-    setChapters([...chapters, newChapter]);
+    setSelectedChapterIndex(null);
+    setTitle("");
+    setSummary("");
+    setSelectedComponents([]);
+  };
+
+  const saveChapter = () => {
+    const newChapter = {
+      title,
+      summary,
+      components: selectedComponents,
+    };
+
+    if (selectedChapterIndex !== null) {
+      const updatedChapters = [...chapters];
+      updatedChapters[selectedChapterIndex] = newChapter;
+      setChapters(updatedChapters);
+    } else {
+      setChapters([...chapters, newChapter]);
+    }
+    addNewChapter();
+  };
+
+  const editChapter = (index) => {
+    const chapter = chapters[index];
+    setSelectedChapterIndex(index);
+    setTitle(chapter.title);
+    setSummary(chapter.summary);
+    setSelectedComponents(chapter.components);
+  };
+
+  const deleteChapter = (index) => {
+    const updatedChapters = chapters.filter((_, i) => i !== index);
+    setChapters(updatedChapters);
   };
 
   const toggleFormOptions = () => {
@@ -74,7 +128,7 @@ const CreateBookStore = () => {
           </div>
         );
       case "Heading":
-        return <Heading />;
+        return <Heading heading={component.heading || "Untitled Heading"} />;
       case "Graph":
         return (
           <div className="mb-4 p-2 border rounded-lg">
@@ -159,7 +213,45 @@ const CreateBookStore = () => {
         <ul className="mb-6">
           {chapters.map((chapter, index) => (
             <li key={index} className="mb-2 cursor-pointer">
-              {chapter}
+              <div className="flex justify-between items-center">
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={() => toggleChapterExpansion(index)}
+                >
+                  {expandedChapters.includes(index) ? (
+                    <FaChevronDown className="mr-2" />
+                  ) : (
+                    <FaChevronRight className="mr-2" />
+                  )}
+                  <span>{chapter.title || `Chapter ${index + 1}`}</span>
+                </div>
+                <div>
+                  <button
+                    className="text-blue-500 mr-2"
+                    onClick={() => editChapter(index)}
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    className="text-red-600"
+                    onClick={() => deleteChapter(index)}
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </div>
+              </div>
+              {/* Show only headings if expanded */}
+              {expandedChapters.includes(index) && (
+                <div className="ml-6 mt-2">
+                  {chapter.components
+                    .filter((component) => component.type === "Heading")
+                    .map((component) => (
+                      <div key={component.id} className="ml-4 mt-2">
+                        {renderComponent(component)}
+                      </div>
+                    ))}
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -171,7 +263,6 @@ const CreateBookStore = () => {
         </button>
       </div>
 
-      {/* Overlay effect for the background */}
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 lg:hidden z-0"
@@ -179,42 +270,23 @@ const CreateBookStore = () => {
         ></div>
       )}
 
-      {/* Main Content */}
       <div className="lg:w-3/4 p-6 w-full">
         <div className="flex justify-between mb-6">
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-            DISCARD
-          </button>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-            PREVIEW
-          </button>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-            SAVE
-          </button>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-            PUBLISH
+          <button
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+            onClick={saveChapter}
+          >
+            Save
           </button>
         </div>
-
-        <div className="bg-white p-4 shadow-md mb-6">
-          {/* SunEditor for Title */}
-          <SunEditor
-            lang="en"
-            placeholder="Add Title"
-            setOptions={{
-              height: 50,
-              buttonList: [
-                ["font", "fontSize", "formatBlock"],
-                ["bold", "italic", "underline", "strike"],
-                ["align", "list", "table"],
-                ["undo", "redo"],
-                ["codeView"],
-              ],
-            }}
-            setContents={title}
-            onChange={setTitle}
+        <div className="mb-6">
+          <input
+            type="text"
+            className="w-full mb-4 p-2 border rounded-lg"
+            placeholder="Add Chapter Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-          {/* SunEditor for Summary */}
           <SunEditor
             lang="en"
             placeholder="Add Summary"
@@ -231,67 +303,59 @@ const CreateBookStore = () => {
             setContents={summary}
             onChange={setSummary}
           />
-          <input
-            type="text"
-            className="w-full mb-4 p-2 border rounded-lg"
-            placeholder="Add Tag"
-          />
+        </div>
 
-          {selectedComponents.map((component) => (
-            <div key={component.id} className="relative">
-              {renderComponent(component)}
-              <div className="absolute right-2 top-2 flex space-x-2">
+        <input
+          type="text"
+          className="w-full mb-4 p-2 border rounded-lg"
+          placeholder="Add Tag"
+        />
+
+        {selectedComponents.map((component) => (
+          <div key={component.id} className="relative">
+            {renderComponent(component)}
+            <div className="absolute right-2 top-2 flex space-x-2">
+              <button
+                onClick={() => deleteComponent(component.id)}
+                className="text-red-600"
+              >
+                <FaTrashAlt size={20} />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <button
+          onClick={toggleFormOptions}
+          className="w-full mb-4 bg-gray-200 p-2 rounded-lg"
+        >
+          + Add Form
+        </button>
+
+        {showFormOptions && (
+          <div className="p-4 bg-gray-100 rounded-lg mb-4">
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "Heading",
+                "Text",
+                "Image",
+                "Graph",
+                "Equation",
+                "Quiz",
+                "Video",
+                "Fill in the Blanks",
+              ].map((option, index) => (
                 <button
-                  onClick={() => deleteComponent(component.id)}
-                  className="text-red-600"
+                  key={index}
+                  onClick={() => handleFormOptionClick(option)}
+                  className="bg-white p-2 border rounded-lg shadow-sm hover:bg-gray-200 transition duration-200"
                 >
-                  <FaTrashAlt size={20} />
+                  {option}
                 </button>
-              </div>
+              ))}
             </div>
-          ))}
-
-          <button
-            onClick={toggleFormOptions}
-            className="w-full mb-4 bg-gray-200 p-2 rounded-lg"
-          >
-            + Add Form
-          </button>
-
-          {showFormOptions && (
-            <div className="p-4 bg-gray-100 rounded-lg mb-4">
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  "Heading",
-                  "Text",
-                  "Image",
-                  "Graph",
-                  "Equation",
-                  "Quiz",
-                  "Video",
-                  "Fill in the Blanks",
-                ].map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleFormOptionClick(option)}
-                    className="bg-white p-2 border rounded-lg shadow-sm hover:bg-gray-200 transition duration-200"
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white p-4 shadow-md">
-          <p>
-            <strong>Note:</strong> The collection chapters is to form a book.
-            Adding a new chapter means adding a predefined form to capture
-            input. The chapter further dripped into sections and sub-sections;
-            alternatively can be grouped into categories.
-          </p>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

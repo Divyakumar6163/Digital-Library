@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setHeading } from "../store/reducers/headingSlice"; // Assuming you have this file created
 
 const HeadingEditorWithPreview = () => {
-  const [heading, setHeading] = useState("");
+  const dispatch = useDispatch();
+  const headingFromStore = useSelector((state) => state.heading.content);
+
+  const [heading, setLocalHeading] = useState("");
   const [backupHeading, setBackupHeading] = useState("");
   const [isPreview, setIsPreview] = useState(false);
+
+  useEffect(() => {
+    setLocalHeading(headingFromStore);
+    setBackupHeading(headingFromStore);
+  }, [headingFromStore]);
 
   const togglePreview = () => {
     setIsPreview(!isPreview);
@@ -13,6 +23,7 @@ const HeadingEditorWithPreview = () => {
 
   const handleSave = () => {
     setBackupHeading(heading);
+    dispatch(setHeading(heading)); // Save heading to Redux store
     setIsPreview(true);
   };
 
@@ -21,7 +32,7 @@ const HeadingEditorWithPreview = () => {
   };
 
   const handleCancel = () => {
-    setHeading(backupHeading);
+    setLocalHeading(backupHeading); // Revert changes locally
     setIsPreview(true);
   };
 
@@ -57,7 +68,7 @@ const HeadingEditorWithPreview = () => {
               formatBlock: ["H1", "H2", "H3", "H4", "H5", "H6"],
             }}
             setContents={heading}
-            onChange={setHeading}
+            onChange={setLocalHeading} // Update local state
           />
           <div className="mt-2 flex justify-end space-x-2">
             <button
