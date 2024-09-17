@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
-import { useDispatch, useSelector } from "react-redux";
-import { setHeading } from "../store/reducers/headingSlice"; // Assuming you have this file created
 
-const HeadingEditorWithPreview = () => {
-  const dispatch = useDispatch();
-  const headingFromStore = useSelector((state) => state.heading.content);
-
-  const [heading, setLocalHeading] = useState("");
-  const [backupHeading, setBackupHeading] = useState("");
+const HeadingEditorWithPreview = ({ value, onChange }) => {
+  const [heading, setHeading] = useState(value || ""); // Initialize heading from the prop
+  const [backupHeading, setBackupHeading] = useState(value || "");
   const [isPreview, setIsPreview] = useState(false);
 
+  // Sync with the incoming value prop
   useEffect(() => {
-    setLocalHeading(headingFromStore);
-    setBackupHeading(headingFromStore);
-  }, [headingFromStore]);
+    setHeading(value || "");
+    setBackupHeading(value || "");
+  }, [value]);
 
   const togglePreview = () => {
     setIsPreview(!isPreview);
@@ -23,16 +19,14 @@ const HeadingEditorWithPreview = () => {
 
   const handleSave = () => {
     setBackupHeading(heading);
-    dispatch(setHeading(heading)); // Save heading to Redux store
     setIsPreview(true);
-  };
-
-  const handleEdit = () => {
-    setIsPreview(false);
+    if (onChange) {
+      onChange(heading); // Notify parent of the updated heading
+    }
   };
 
   const handleCancel = () => {
-    setLocalHeading(backupHeading); // Revert changes locally
+    setHeading(backupHeading);
     setIsPreview(true);
   };
 
@@ -68,8 +62,14 @@ const HeadingEditorWithPreview = () => {
               formatBlock: ["H1", "H2", "H3", "H4", "H5", "H6"],
             }}
             setContents={heading}
-            onChange={setLocalHeading} // Update local state
+            onChange={setHeading}
           />
+          <button
+            onClick={togglePreview}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Preview
+          </button>
           <div className="mt-2 flex justify-end space-x-2">
             <button
               onClick={handleSave}
@@ -91,14 +91,12 @@ const HeadingEditorWithPreview = () => {
             className="p-2 border-b rounded-lg"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
-          <div className="mt-2 flex justify-end">
-            <button
-              onClick={handleEdit}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-            >
-              Edit
-            </button>
-          </div>
+          <button
+            onClick={togglePreview}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Edit
+          </button>
         </>
       )}
     </div>

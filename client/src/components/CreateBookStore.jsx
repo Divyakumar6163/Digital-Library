@@ -25,11 +25,9 @@ const CreateBookStore = () => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
+
   const heading = useSelector((state) => state.heading.content);
   const text = useSelector((state) => state.text.content);
-
-  console.log(heading);
-  console.log(text);
 
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
@@ -83,7 +81,7 @@ const CreateBookStore = () => {
   const handleFormOptionClick = (option) => {
     setSelectedComponents([
       ...selectedComponents,
-      { type: option, id: Date.now(), file: null },
+      { type: option, id: Date.now(), content: "" },
     ]);
   };
 
@@ -94,64 +92,57 @@ const CreateBookStore = () => {
     setSelectedComponents(filteredComponents);
   };
 
-  const handleFileUpload = (id, file) => {
+  const handleComponentChange = (id, content) => {
     const updatedComponents = selectedComponents.map((component) =>
-      component.id === id
-        ? { ...component, file: URL.createObjectURL(file) }
-        : component
+      component.id === id ? { ...component, content } : component
     );
     setSelectedComponents(updatedComponents);
   };
 
   const renderComponent = (component) => {
+    console.log(component);
     switch (component.type) {
       case "Text":
-        return <Text />;
-      case "Image":
         return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <input
-              type="file"
-              className="w-full p-2 border rounded-lg"
-              accept="image/*"
-              onChange={(e) =>
-                handleFileUpload(component.id, e.target.files[0])
-              }
-            />
-            {component.file && (
-              <img
-                src={component.file}
-                alt="Uploaded"
-                className="mt-4 max-h-64"
-              />
-            )}
-          </div>
+          <Text
+            value={component.content}
+            onChange={(content) => handleComponentChange(component.id, content)}
+          />
         );
       case "Heading":
-        return <Heading heading={component.heading || "Untitled Heading"} />;
+        return (
+          <Heading
+            heading={component.content}
+            onChange={(content) => handleComponentChange(component.id, content)}
+          />
+        );
       case "Graph":
         return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <Graph />
-          </div>
+          <Graph
+            value={component.content}
+            onChange={(content) => handleComponentChange(component.id, content)}
+          />
         );
       case "Equation":
         return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <Equation />
-          </div>
+          <Equation
+            value={component.content}
+            onChange={(content) => handleComponentChange(component.id, content)}
+          />
         );
       case "Quiz":
         return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <CreateMCQ />
-          </div>
+          <CreateMCQ
+            value={component.content}
+            onChange={(content) => handleComponentChange(component.id, content)}
+          />
         );
       case "Fill in the Blanks":
         return (
-          <div className="mb-4 p-2 border rounded-lg">
-            <CreateFIB />
-          </div>
+          <CreateFIB
+            value={component.content}
+            onChange={(content) => handleComponentChange(component.id, content)}
+          />
         );
       case "Video":
         return (
@@ -161,13 +152,16 @@ const CreateBookStore = () => {
               className="w-full p-2 border rounded-lg"
               accept="video/*"
               onChange={(e) =>
-                handleFileUpload(component.id, e.target.files[0])
+                handleComponentChange(
+                  component.id,
+                  URL.createObjectURL(e.target.files[0])
+                )
               }
             />
-            {component.file && (
+            {component.content && (
               <video
                 controls
-                src={component.file}
+                src={component.content}
                 className="mt-4 max-h-64 w-full"
               />
             )}
@@ -177,30 +171,10 @@ const CreateBookStore = () => {
         return null;
     }
   };
-
+  console.log(chapters);
   return (
     <div className="container mx-auto p-4 min-h-screen flex bg-gray-100 relative">
-      <div className="lg:hidden absolute top-4 left-4 z-20">
-        <button
-          className="text-blue-500"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <FaBars size={30} />
-        </button>
-      </div>
-      <div
-        className={`lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300 ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 z-10`}
-      >
-        <div className="mb-6 lg:hidden">
-          <button
-            className="text-blue-500"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Close
-          </button>
-        </div>
+      <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
         <div className="mb-6">
           <h2 className="text-xl font-bold mb-2">
             Nothing purifies than knowledge
@@ -240,18 +214,6 @@ const CreateBookStore = () => {
                   </button>
                 </div>
               </div>
-              {/* Show only headings if expanded */}
-              {expandedChapters.includes(index) && (
-                <div className="ml-6 mt-2">
-                  {chapter.components
-                    .filter((component) => component.type === "Heading")
-                    .map((component) => (
-                      <div key={component.id} className="ml-4 mt-2">
-                        {renderComponent(component)}
-                      </div>
-                    ))}
-                </div>
-              )}
             </li>
           ))}
         </ul>
@@ -262,13 +224,6 @@ const CreateBookStore = () => {
           Add New Chapter
         </button>
       </div>
-
-      {isMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-50 lg:hidden z-0"
-          onClick={() => setIsMenuOpen(false)}
-        ></div>
-      )}
 
       <div className="lg:w-3/4 p-6 w-full">
         <div className="flex justify-between mb-6">
@@ -304,12 +259,6 @@ const CreateBookStore = () => {
             onChange={setSummary}
           />
         </div>
-
-        <input
-          type="text"
-          className="w-full mb-4 p-2 border rounded-lg"
-          placeholder="Add Tag"
-        />
 
         {selectedComponents.map((component) => (
           <div key={component.id} className="relative">
