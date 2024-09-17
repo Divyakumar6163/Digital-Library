@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
-import { useDispatch, useSelector } from "react-redux";
-import { setText } from "../store/reducers/textSlice"; // Assuming you have created textSlice.js
 
-const TextEditorWithPreview = () => {
-  const dispatch = useDispatch();
-  const textFromStore = useSelector((state) => state.text.content);
-
-  const [text, setLocalText] = useState("");
+const TextEditorWithPreview = ({ value, onChange }) => {
+  const [text, setLocalText] = useState(value || ""); // Initialize text from prop
   const [isPreview, setIsPreview] = useState(false);
-  const [backupText, setBackupText] = useState("");
+  const [backupText, setBackupText] = useState(value || ""); // Backup initial text
 
-  // Sync local text with the Redux store when the component mounts
+  // Sync with the incoming value prop
   useEffect(() => {
-    setLocalText(textFromStore);
-    setBackupText(textFromStore);
-  }, [textFromStore]);
+    setLocalText(value || "");
+    setBackupText(value || "");
+  }, [value]);
 
   const togglePreview = () => {
     setIsPreview(!isPreview);
@@ -26,12 +21,11 @@ const TextEditorWithPreview = () => {
   };
 
   const handleSave = () => {
-    dispatch(setText(text)); // Save text to Redux store
+    setBackupText(text);
     setIsPreview(true);
-  };
-
-  const handleEdit = () => {
-    setIsPreview(false);
+    if (onChange) {
+      onChange(text); // Notify parent of the updated text
+    }
   };
 
   const handleCancel = () => {
@@ -87,7 +81,7 @@ const TextEditorWithPreview = () => {
           </div>
           <div className="flex justify-end mt-2 space-x-2">
             <button
-              onClick={handleEdit}
+              onClick={togglePreview}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg"
             >
               Edit

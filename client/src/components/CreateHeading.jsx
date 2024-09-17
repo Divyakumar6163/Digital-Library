@@ -3,11 +3,9 @@ import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 
 const HeadingEditorWithPreview = ({ value, onChange }) => {
-  const [heading, setHeading] = useState(value || ""); // Initialize heading from the prop
+  const [heading, setHeading] = useState(value || "");
   const [backupHeading, setBackupHeading] = useState(value || "");
   const [isPreview, setIsPreview] = useState(false);
-
-  // Sync with the incoming value prop
   useEffect(() => {
     setHeading(value || "");
     setBackupHeading(value || "");
@@ -21,7 +19,7 @@ const HeadingEditorWithPreview = ({ value, onChange }) => {
     setBackupHeading(heading);
     setIsPreview(true);
     if (onChange) {
-      onChange(heading); // Notify parent of the updated heading
+      onChange(heading);
     }
   };
 

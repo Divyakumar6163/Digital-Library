@@ -1,33 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 
-const FIBPage = () => {
+const FIBPage = ({
+  initialContent = "",
+  initialAnswers = [],
+  onContentChange,
+  onAnswersChange,
+  onSave, // Add a callback for saving
+}) => {
   const [preview, setPreview] = useState(false);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(initialContent);
   const blanksRegex = /___/g;
-  const [inputs, setInputs] = useState([]);
-  const [answers, setAnswers] = useState([]);
-  const handlePreview = () => {
-    setPreview(!preview);
-  };
-  const handleEditorChange = (content) => {
-    setContent(content);
-    const blanksArray = [...content.matchAll(blanksRegex)];
-    setInputs(Array(blanksArray.length).fill(""));
+  const [answers, setAnswers] = useState(initialAnswers);
+
+  useEffect(() => {
+    const contentToMatch = typeof content === "string" ? content : ""; // Ensure content is a string
+    const blanksArray = [...contentToMatch.matchAll(blanksRegex)];
     setAnswers(Array(blanksArray.length).fill(""));
-  };
-  const handleChange = (e, index) => {
-    const newInputs = [...inputs];
-    newInputs[index] = e.target.value;
-    setInputs(newInputs);
+  }, [content]);
+
+  const handleEditorChange = (newContent) => {
+    const contentToMatch = typeof newContent === "string" ? newContent : ""; // Ensure newContent is a string
+    setContent(contentToMatch);
+    const blanksArray = [...contentToMatch.matchAll(blanksRegex)];
+    setAnswers(Array(blanksArray.length).fill(""));
+
+    // Notify parent component of content change
+    if (onContentChange) {
+      onContentChange(contentToMatch);
+    }
   };
 
-  const handleAnswerChange = (e, index) => {
+  const handleInputChange = (e, index) => {
     const newAnswers = [...answers];
     newAnswers[index] = e.target.value;
     setAnswers(newAnswers);
+
+    if (onAnswersChange) {
+      onAnswersChange(newAnswers);
+    }
   };
+
+  const handleSave = () => {
+    // Notify parent component with both content and answers
+    if (onSave) {
+      onSave({ content, answers });
+    }
+  };
+
   const renderSentenceWithInputs = () => {
     const parts = content.split(blanksRegex);
 
@@ -36,12 +57,12 @@ const FIBPage = () => {
         {parts.map((part, index) => (
           <span key={index}>
             <span dangerouslySetInnerHTML={{ __html: part }} />
-            {index < inputs.length && (
+            {index < answers.length && (
               <input
                 type="text"
                 className="border-b-2 border-gray-300 mx-2 px-1 focus:outline-none focus:border-blue-500"
-                value={inputs[index]}
-                onChange={(e) => handleChange(e, index)}
+                value={answers[index]} // Display answers in preview
+                onChange={(e) => handleInputChange(e, index)} // Allow changes
               />
             )}
           </span>
@@ -49,6 +70,7 @@ const FIBPage = () => {
       </div>
     );
   };
+
   const renderAnswerInputs = () => {
     return (
       <div className="mt-4">
@@ -60,7 +82,7 @@ const FIBPage = () => {
               type="text"
               className="border-b-2 border-gray-300 px-2 py-1 focus:outline-none focus:border-blue-500 rounded-lg w-full"
               value={answer}
-              onChange={(e) => handleAnswerChange(e, index)}
+              onChange={(e) => handleInputChange(e, index)}
             />
           </div>
         ))}
@@ -70,12 +92,9 @@ const FIBPage = () => {
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
-      {/* <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
-        Create Fill in the Blanks
-      </h2> */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <SunEditor
-          setContents={content}
+          setContents={content || ""}
           onChange={handleEditorChange}
           height="300px"
           placeholder="Type your sentence here. Use '___' for blanks."
@@ -97,12 +116,18 @@ const FIBPage = () => {
         />
       </div>
       {renderAnswerInputs()}
-      <div className="flex justify-center">
+      <div className="flex justify-center space-x-4">
         <button
-          onClick={handlePreview}
+          // onClick={handlePreview}
           className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300"
         >
           {!preview ? "Preview" : "Close"}
+        </button>
+        <button
+          onClick={handleSave}
+          className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300"
+        >
+          Save
         </button>
       </div>
       {preview && (

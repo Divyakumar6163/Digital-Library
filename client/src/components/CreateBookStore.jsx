@@ -26,8 +26,8 @@ const CreateBookStore = () => {
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
 
-  const heading = useSelector((state) => state.heading.content);
-  const text = useSelector((state) => state.text.content);
+  // const heading = useSelector((state) => state.heading.content);
+  // const text = useSelector((state) => state.text.content);
 
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
@@ -119,14 +119,15 @@ const CreateBookStore = () => {
       case "Graph":
         return (
           <Graph
-            value={component.content}
+            labels={component.content.labels || []}
+            dataPoints={component.content.dataPoints || []}
             onChange={(content) => handleComponentChange(component.id, content)}
           />
         );
       case "Equation":
         return (
           <Equation
-            value={component.content}
+            initialEquation={component.content || ""}
             onChange={(content) => handleComponentChange(component.id, content)}
           />
         );
@@ -140,8 +141,18 @@ const CreateBookStore = () => {
       case "Fill in the Blanks":
         return (
           <CreateFIB
-            value={component.content}
-            onChange={(content) => handleComponentChange(component.id, content)}
+            initialContent={component.content || ""}
+            initialQuestions={component.questions || []}
+            initialAnswers={component.answers || []}
+            onContentChange={(newContent) =>
+              handleComponentChange(component.id, { content: newContent })
+            }
+            onQuestionsChange={(newQuestions) =>
+              handleComponentChange(component.id, { questions: newQuestions })
+            }
+            onAnswersChange={(newAnswers) =>
+              handleComponentChange(component.id, { answers: newAnswers })
+            }
           />
         );
       case "Video":

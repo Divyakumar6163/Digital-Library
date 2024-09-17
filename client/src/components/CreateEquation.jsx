@@ -2,19 +2,23 @@ import React, { useState } from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath, InlineMath } from "react-katex";
 
-const EquationEditor = () => {
-  const [equation, setEquation] = useState("");
-  const [backupEquation, setBackupEquation] = useState("");
+const EquationEditor = ({ initialEquation = "", onChange }) => {
+  const [equation, setEquation] = useState(initialEquation);
+  const [backupEquation, setBackupEquation] = useState(initialEquation);
   const [isPreview, setIsPreview] = useState(false);
   const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
     setEquation(e.target.value);
+    if (onChange) {
+      onChange(e.target.value); // Notify parent component of the change
+    }
   };
 
   const togglePreview = () => {
     if (equation.trim() === "") return; // Prevent saving if the input is empty
     setIsPreview(!isPreview);
+    setError(""); // Clear error when toggling preview
     if (!isPreview) {
       setBackupEquation(equation); // Save the current equation as a backup before previewing
     }
@@ -22,11 +26,16 @@ const EquationEditor = () => {
 
   const handleEdit = () => {
     setIsPreview(false);
+    setError(""); // Clear any error messages when switching to edit mode
   };
 
   const handleCancel = () => {
     setEquation(backupEquation); // Restore the equation to its previous state
+    if (onChange) {
+      onChange(backupEquation); // Notify parent of restoration
+    }
     setIsPreview(true);
+    setError(""); // Clear any error messages when cancelling
   };
 
   return (

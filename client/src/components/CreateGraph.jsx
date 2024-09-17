@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -21,17 +21,34 @@ ChartJS.register(
   Legend
 );
 
-const GraphPlotter = () => {
-  const [labels, setLabels] = useState([]);
-  const [dataPoints, setDataPoints] = useState([]);
+const CreateGraph = ({
+  labels: initialLabels = [],
+  dataPoints: initialDataPoints = [],
+  onChange,
+}) => {
+  const [labels, setLabels] = useState(initialLabels);
+  const [dataPoints, setDataPoints] = useState(initialDataPoints);
   const [inputLabel, setInputLabel] = useState("");
   const [inputDataPoint, setInputDataPoint] = useState("");
 
+  // Sync the local state with the props if they change
+  useEffect(() => {
+    setLabels(initialLabels);
+    setDataPoints(initialDataPoints);
+  }, [initialLabels, initialDataPoints]);
+
   const addDataPoint = () => {
-    setLabels([...labels, inputLabel]);
-    setDataPoints([...dataPoints, parseFloat(inputDataPoint)]);
+    const updatedLabels = [...labels, inputLabel];
+    const updatedDataPoints = [...dataPoints, parseFloat(inputDataPoint)];
+
+    setLabels(updatedLabels);
+    setDataPoints(updatedDataPoints);
     setInputLabel("");
     setInputDataPoint("");
+
+    if (onChange) {
+      onChange({ labels: updatedLabels, dataPoints: updatedDataPoints });
+    }
   };
 
   const data = {
@@ -77,4 +94,4 @@ const GraphPlotter = () => {
   );
 };
 
-export default GraphPlotter;
+export default CreateGraph;
