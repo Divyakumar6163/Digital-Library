@@ -1,8 +1,8 @@
-const userSchema = require('./../models/usermodel')
+const userSchema = require('../../models/usermodel')
 const bcrypt = require('bcrypt')
 const JWT = require('jsonwebtoken');
 const crypto = require('crypto')
-const welcomeemail = require('./../utils/mails/welcomemail')
+const welcomeemail = require('../../utils/mails/welcomemail')
 const dotenv = require('dotenv');
 dotenv.config({ path: './../config.env' });
 exports.getallusers = async (req, res) => {

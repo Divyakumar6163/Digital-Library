@@ -1,16 +1,16 @@
 const JWT = require('jsonwebtoken');
-const resettokenSchema = require('./../models/resettokenmodel')
-const userSchema = require('./../models/usermodel')
+const resettokenSchema = require('../../models/resettokenmodel')
+const adminSchema = require('../../models/adminmodel')
 const bcrypt = require('bcrypt')
 const dotenv = require('dotenv');
 const crypto = require("crypto");
 dotenv.config({ path: './../config.env' });
-const email = require('./../utils/mails/resetpasswordmail')
+const email = require('../../utils/mails/resetpasswordmail')
 const bcryptsalt = process.env.BCRYPT_SALT
 exports.requestresetuserpassword = async (req, res) => {
     try {
         console.log(req.body.emailid);
-        const user = await userSchema.findOne({ emailid: req.body.emailid });
+        const user = await adminSchema.findOne({ emailid: req.body.emailid });
         if (!user) {
             res.status(404).json({
                 message: "User not exist",
@@ -75,7 +75,7 @@ exports.resetpassword = async (req, res) => {
         const saltRounds = 10;
         const hash = await bcrypt.hash(password, saltRounds);
 
-        await userSchema.updateOne(
+        await adminSchema.updateOne(
             { _id: userId },
             { $set: { password: hash } },
             { new: true }
