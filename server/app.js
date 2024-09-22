@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const userroutes = require("./routes/userroutes");
 const bookroutes  = require("./routes/booksroutes");
+const adminroutes = require("./routes/adminroute")
 const cookieParser = require("cookie-parser");
 const { storage } = require('./storage/storage');
 const multer = require('multer');
@@ -30,4 +31,5 @@ app.post('/upload', upload.single('image'), (req, res) => {
 app.use(express.json());
 app.use("/", userroutes);
 app.use("/", bookroutes);
+app.use("/", adminroutes);
 module.exports = app;

@@ -69,6 +69,10 @@ const Bookschema  = new Schema({
     createdat: {
         type: Date,
         default: Date.now 
+    },
+    ispublised:{
+        type: Boolean,
+        default: false
     }
 })
 

@@ -23,10 +23,10 @@ const adminschema = new Schema({
     type: "string",
     required: true,
     select: false,
-  }
+  },
 });
 
-userSchema.pre("save", async function (next) {
+adminschema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
