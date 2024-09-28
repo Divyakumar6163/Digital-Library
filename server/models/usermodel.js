@@ -27,6 +27,14 @@ const userSchema = new Schema({
     type: "boolean",
     default: false,
   },
+  purchedbooks:{
+    type: Schema.ObjectId,
+    ref : "Book"
+  },
+  wishlistbooks: [{
+    type: Schema.ObjectId,
+    ref: "Book"
+  }]  
 });
 
 userSchema.pre("save", async function (next) {

@@ -23,7 +23,6 @@ exports.getallusers = async (req, res) => {
         })
     }
 }
-
 exports.createUsers = async (req, res) => {
     try {
         const user = await userSchema.findOne({ emailid: req.body.emailid });
@@ -53,7 +52,6 @@ exports.createUsers = async (req, res) => {
         })
     }
 }
-
 exports.getuserinfo = async (req, res) => {
     try {
         const id = req.params.id;
