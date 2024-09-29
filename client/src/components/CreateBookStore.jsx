@@ -13,6 +13,7 @@ import Graph from "./CreateGraph";
 import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
+import PreviewBook from "./PreviewBookStore";
 
 const CreateBookStore = () => {
   const [chapters, setChapters] = useState([]);
@@ -23,7 +24,7 @@ const CreateBookStore = () => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
-
+  const [showPreview, setShowPreview] = useState(false);
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
       setExpandedChapters(expandedChapters.filter((i) => i !== index));
@@ -38,7 +39,11 @@ const CreateBookStore = () => {
     setSummary("");
     setSelectedComponents([]);
   };
-
+  const handlePreviewBookStore = () => {
+    setShowPreview((prev) => {
+      return !prev;
+    });
+  };
   const saveChapter = () => {
     const newChapter = {
       title,
@@ -176,141 +181,171 @@ const CreateBookStore = () => {
         return null;
     }
   };
-  console.log(chapters);
+
   return (
     <div className="container mx-auto p-4 min-h-screen flex bg-gray-100 relative">
-      <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold mb-2">
-            Nothing purifies than knowledge
-          </h2>
-          <p>
-            The whole idea is to develop an authoring platform to create
-            interactive content with just a few clicks.
-          </p>
-        </div>
-        <ul className="mb-6">
-          {chapters.map((chapter, index) => (
-            <li key={index} className="mb-2 cursor-pointer">
-              <div className="flex justify-between items-center">
-                <div
-                  className="flex items-center cursor-pointer"
-                  onClick={() => toggleChapterExpansion(index)}
-                >
-                  {expandedChapters.includes(index) ? (
-                    <FaChevronDown className="mr-2" />
-                  ) : (
-                    <FaChevronRight className="mr-2" />
+      {!showPreview && (
+        <>
+          <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold mb-2">
+                Nothing purifies than knowledge
+              </h2>
+              <p>
+                The whole idea is to develop an authoring platform to create
+                interactive content with just a few clicks.
+              </p>
+            </div>
+            <ul className="mb-6">
+              {chapters.map((chapter, index) => (
+                <li key={index} className="mb-2 cursor-pointer">
+                  <div className="flex justify-between items-center">
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() => toggleChapterExpansion(index)}
+                    >
+                      {expandedChapters.includes(index) ? (
+                        <FaChevronDown className="mr-2" />
+                      ) : (
+                        <FaChevronRight className="mr-2" />
+                      )}
+                      <span>{chapter.title || `Chapter ${index + 1}`}</span>
+                    </div>
+                    <div>
+                      <button
+                        className="text-blue-500 mr-2"
+                        onClick={() => editChapter(index)}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="text-red-600"
+                        onClick={() => deleteChapter(index)}
+                      >
+                        <FaTrashAlt />
+                      </button>
+                    </div>
+                  </div>
+                  {expandedChapters.includes(index) && (
+                    <ul className="pl-6 mt-2">
+                      {chapter.components
+                        .filter((comp) => comp.type === "Heading")
+                        .map((comp) => (
+                          <li key={comp.id}>
+                            <strong>Heading:</strong> {comp.content}
+                          </li>
+                        ))}
+                    </ul>
                   )}
-                  <span>{chapter.title || `Chapter ${index + 1}`}</span>
-                </div>
-                <div>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={addNewChapter}
+              className="w-full bg-blue-500 text-white py-2 rounded-lg"
+            >
+              Add New Chapter
+            </button>
+          </div>
+
+          <div className="lg:w-3/4 p-6 w-full">
+            <div className="flex justify-between mb-6">
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={saveChapter}
+              >
+                Save
+              </button>
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={handlePreviewBookStore}
+              >
+                {!showPreview ? "Preview" : "Close"}
+              </button>
+            </div>
+            <div className="mb-6">
+              <input
+                type="text"
+                className="w-full mb-4 p-2 border rounded-lg"
+                placeholder="Add Chapter Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <SunEditor
+                lang="en"
+                placeholder="Add Summary"
+                setOptions={{
+                  height: 150,
+                  buttonList: [
+                    ["font", "fontSize", "formatBlock"],
+                    ["bold", "italic", "underline", "strike"],
+                    ["align", "list", "table"],
+                    ["undo", "redo"],
+                    ["codeView"],
+                  ],
+                }}
+                setContents={summary}
+                onChange={setSummary}
+              />
+            </div>
+
+            {selectedComponents.map((component) => (
+              <div key={component.id} className="relative">
+                {renderComponent(component)}
+                <div className="absolute right-2 top-2 flex space-x-2">
                   <button
-                    className="text-blue-500 mr-2"
-                    onClick={() => editChapter(index)}
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
+                    onClick={() => deleteComponent(component.id)}
                     className="text-red-600"
-                    onClick={() => deleteChapter(index)}
                   >
-                    <FaTrashAlt />
+                    <FaTrashAlt size={20} />
                   </button>
                 </div>
               </div>
-            </li>
-          ))}
-        </ul>
-        <button
-          onClick={addNewChapter}
-          className="w-full bg-blue-500 text-white py-2 rounded-lg"
-        >
-          Add New Chapter
-        </button>
-      </div>
+            ))}
 
-      <div className="lg:w-3/4 p-6 w-full">
-        <div className="flex justify-between mb-6">
-          <button
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-            onClick={saveChapter}
-          >
-            Save
-          </button>
-        </div>
-        <div className="mb-6">
-          <input
-            type="text"
-            className="w-full mb-4 p-2 border rounded-lg"
-            placeholder="Add Chapter Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <SunEditor
-            lang="en"
-            placeholder="Add Summary"
-            setOptions={{
-              height: 150,
-              buttonList: [
-                ["font", "fontSize", "formatBlock"],
-                ["bold", "italic", "underline", "strike"],
-                ["align", "list", "table"],
-                ["undo", "redo"],
-                ["codeView"],
-              ],
-            }}
-            setContents={summary}
-            onChange={setSummary}
-          />
-        </div>
+            <button
+              onClick={toggleFormOptions}
+              className="w-full mb-4 bg-gray-200 p-2 rounded-lg"
+            >
+              + Add Form
+            </button>
 
-        {selectedComponents.map((component) => (
-          <div key={component.id} className="relative">
-            {renderComponent(component)}
-            <div className="absolute right-2 top-2 flex space-x-2">
-              <button
-                onClick={() => deleteComponent(component.id)}
-                className="text-red-600"
-              >
-                <FaTrashAlt size={20} />
-              </button>
-            </div>
+            {showFormOptions && (
+              <div className="p-4 bg-gray-100 rounded-lg mb-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    "Heading",
+                    "Text",
+                    "Image",
+                    "Graph",
+                    "Equation",
+                    "Quiz",
+                    "Video",
+                    "Fill in the Blanks",
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleFormOptionClick(option)}
+                      className="bg-white p-2 border rounded-lg shadow-sm hover:bg-gray-200 transition duration-200"
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        ))}
-
-        <button
-          onClick={toggleFormOptions}
-          className="w-full mb-4 bg-gray-200 p-2 rounded-lg"
-        >
-          + Add Form
-        </button>
-
-        {showFormOptions && (
-          <div className="p-4 bg-gray-100 rounded-lg mb-4">
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "Heading",
-                "Text",
-                "Image",
-                "Graph",
-                "Equation",
-                "Quiz",
-                "Video",
-                "Fill in the Blanks",
-              ].map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleFormOptionClick(option)}
-                  className="bg-white p-2 border rounded-lg shadow-sm hover:bg-gray-200 transition duration-200"
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+        </>
+      )}
+      {/* <div className="flex justify-between mb-6"> */}
+      <button
+        // className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+        onClick={handlePreviewBookStore}
+      >
+        {showPreview && "Close"}
+      </button>
+      {/* </div> */}
+      {showPreview && <PreviewBook chapters={chapters} />}
     </div>
   );
 };

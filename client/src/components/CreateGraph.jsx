@@ -25,13 +25,13 @@ const CreateGraph = ({
   labels: initialLabels = [],
   dataPoints: initialDataPoints = [],
   onChange,
+  isEditable = true, // New prop to control if the graph is editable or not
 }) => {
   const [labels, setLabels] = useState(initialLabels);
   const [dataPoints, setDataPoints] = useState(initialDataPoints);
   const [inputLabel, setInputLabel] = useState("");
   const [inputDataPoint, setInputDataPoint] = useState("");
 
-  // Sync the local state with the props if they change
   useEffect(() => {
     setLabels(initialLabels);
     setDataPoints(initialDataPoints);
@@ -66,29 +66,31 @@ const CreateGraph = ({
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Plot a Graph</h2>
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Label"
-          value={inputLabel}
-          onChange={(e) => setInputLabel(e.target.value)}
-          className="border p-2 rounded mr-2"
-        />
-        <input
-          type="number"
-          placeholder="Data Point"
-          value={inputDataPoint}
-          onChange={(e) => setInputDataPoint(e.target.value)}
-          className="border p-2 rounded mr-2"
-        />
-        <button
-          onClick={addDataPoint}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Add Data Point
-        </button>
-      </div>
+      <h2 className="text-xl font-bold mb-4">Graph</h2>
+      {isEditable && (
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Label"
+            value={inputLabel}
+            onChange={(e) => setInputLabel(e.target.value)}
+            className="border p-2 rounded mr-2"
+          />
+          <input
+            type="number"
+            placeholder="Data Point"
+            value={inputDataPoint}
+            onChange={(e) => setInputDataPoint(e.target.value)}
+            className="border p-2 rounded mr-2"
+          />
+          <button
+            onClick={addDataPoint}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Add Data Point
+          </button>
+        </div>
+      )}
       <Line data={data} />
     </div>
   );
