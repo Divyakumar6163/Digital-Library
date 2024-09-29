@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   FaTrashAlt,
-  FaBars,
   FaEdit,
   FaChevronDown,
   FaChevronRight,
@@ -13,7 +12,6 @@ import Text from "./CreateText";
 import Graph from "./CreateGraph";
 import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
-import { useSelector } from "react-redux";
 import "suneditor/dist/css/suneditor.min.css";
 
 const CreateBookStore = () => {
@@ -25,9 +23,6 @@ const CreateBookStore = () => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
-
-  // const heading = useSelector((state) => state.heading.content);
-  // const text = useSelector((state) => state.text.content);
 
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
@@ -100,7 +95,6 @@ const CreateBookStore = () => {
   };
 
   const renderComponent = (component) => {
-    console.log(component);
     switch (component.type) {
       case "Text":
         return (
