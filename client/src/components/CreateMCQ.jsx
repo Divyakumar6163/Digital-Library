@@ -116,10 +116,10 @@ const MCQPage = ({ value, onChange }) => {
             <div key={option.id} className="mb-2">
               <label className="inline-flex items-center">
                 <input
-                  type="radio"
-                  name="mcq"
+                  type="checkbox" // Change from radio to checkbox
+                  name={`option-${option.id}`} // Use a unique name for each option
                   value={option.value}
-                  className="form-radio text-blue-600"
+                  className="form-checkbox text-blue-600"
                 />
                 <span className="ml-2 text-lg">{option.value}</span>
               </label>
