@@ -15,13 +15,13 @@ import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";
 import { createbook } from "../API/createbook";
-import store from "./../store/store"
-import * as useractions from './../store/actions/bookactions'
+import store from "./../store/store";
+import * as useractions from "./../store/actions/bookactions";
 import { useDispatch, useSelector } from "react-redux";
 const CreateBookStore = () => {
-  const curbookdispatch  = useDispatch();
-  const curbook  = useSelector((state)=>state.createbook)
-  console.log(curbook)
+  const curbookdispatch = useDispatch();
+  const curbook = useSelector((state) => state.createbook);
+  console.log(curbook);
   const [chapters, setChapters] = useState([]);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
@@ -47,7 +47,7 @@ const CreateBookStore = () => {
   };
   const handlePreviewBookStore = () => {
     setShowPreview((prev) => {
-      console.log(chapters)
+      console.log(chapters);
       return !prev;
     });
   };
@@ -62,7 +62,9 @@ const CreateBookStore = () => {
       const updatedChapters = [...chapters];
       updatedChapters[selectedChapterIndex] = newChapter;
       setChapters(updatedChapters);
-      curbookdispatch(useractions.updateChapter(selectedChapterIndex,newChapter));
+      curbookdispatch(
+        useractions.updateChapter(selectedChapterIndex, newChapter)
+      );
     } else {
       setChapters([...chapters, newChapter]);
       curbookdispatch(useractions.addChapter(newChapter));
@@ -188,11 +190,34 @@ const CreateBookStore = () => {
             )}
           </div>
         );
+      case "Image":
+        return (
+          <div className="mb-4 p-2 border rounded-lg">
+            <input
+              type="file"
+              className="w-full p-2 border rounded-lg"
+              accept="image/*"
+              onChange={(e) =>
+                handleComponentChange(
+                  component.id,
+                  URL.createObjectURL(e.target.files[0])
+                )
+              }
+            />
+            {component.content && (
+              <img
+                src={component.content}
+                alt="Uploaded"
+                className="mt-4 max-h-64 w-auto max-w-full object-contain"
+              />
+            )}
+          </div>
+        );
       default:
         return null;
     }
   };
-
+  console.log(chapters);
   return (
     <div className="container mx-auto p-4 min-h-screen flex bg-gray-100 relative">
       {!showPreview && (

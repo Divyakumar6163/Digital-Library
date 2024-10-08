@@ -17,14 +17,21 @@ const FIBPage = ({
   useEffect(() => {
     const contentToMatch = typeof content === "string" ? content : ""; // Ensure content is a string
     const blanksArray = [...contentToMatch.matchAll(blanksRegex)];
-    setAnswers(Array(blanksArray.length).fill(""));
+    const newAnswers = [...answers]; // Preserve existing answers
+
+    // Adjust the size of the answers array to match the number of blanks
+    if (blanksArray.length > answers.length) {
+      newAnswers.push(...Array(blanksArray.length - answers.length).fill(""));
+    } else if (blanksArray.length < answers.length) {
+      newAnswers.splice(blanksArray.length);
+    }
+
+    setAnswers(newAnswers);
   }, [content]);
 
   const handleEditorChange = (newContent) => {
     const contentToMatch = typeof newContent === "string" ? newContent : ""; // Ensure newContent is a string
     setContent(contentToMatch);
-    const blanksArray = [...contentToMatch.matchAll(blanksRegex)];
-    setAnswers(Array(blanksArray.length).fill(""));
 
     // Notify parent component of content change
     if (onContentChange) {
@@ -37,6 +44,7 @@ const FIBPage = ({
     newAnswers[index] = e.target.value;
     setAnswers(newAnswers);
 
+    // Notify parent component of answers change
     if (onAnswersChange) {
       onAnswersChange(newAnswers);
     }
@@ -118,7 +126,7 @@ const FIBPage = ({
       {renderAnswerInputs()}
       <div className="flex justify-center space-x-4">
         <button
-          // onClick={handlePreview}
+          onClick={() => setPreview(!preview)}
           className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300"
         >
           {!preview ? "Preview" : "Close"}

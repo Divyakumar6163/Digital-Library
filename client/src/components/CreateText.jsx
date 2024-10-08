@@ -39,7 +39,7 @@ const TextEditorWithPreview = ({ value, onChange }) => {
         <>
           <SunEditor
             lang="en"
-            placeholder="Add Summary"
+            placeholder="Add Text"
             setOptions={{
               height: 150,
               buttonList: [
