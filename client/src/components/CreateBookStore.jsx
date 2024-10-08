@@ -124,7 +124,7 @@ const CreateBookStore = () => {
       case "Heading":
         return (
           <Heading
-            heading={component.content}
+            value={component.content}
             onChange={(content) => handleComponentChange(component.id, content)}
           />
         );
@@ -151,19 +151,12 @@ const CreateBookStore = () => {
           />
         );
       case "Fill in the Blanks":
+        console.log(component);
         return (
           <CreateFIB
-            initialContent={component.content || ""}
-            initialQuestions={component.questions || []}
-            initialAnswers={component.answers || []}
-            onContentChange={(newContent) =>
-              handleComponentChange(component.id, { content: newContent })
-            }
-            onQuestionsChange={(newQuestions) =>
-              handleComponentChange(component.id, { questions: newQuestions })
-            }
-            onAnswersChange={(newAnswers) =>
-              handleComponentChange(component.id, { answers: newAnswers })
+            value={component.content}
+            onChange={(newContent) =>
+              handleComponentChange(component.id, newContent)
             }
           />
         );
@@ -268,7 +261,8 @@ const CreateBookStore = () => {
                         .filter((comp) => comp.type === "Heading")
                         .map((comp) => (
                           <li key={comp.id}>
-                            <strong>Heading:</strong> {comp.content}
+                            {comp.content.replace(/<[^>]+>/g, "")}{" "}
+                            {/* Strips HTML tags */}
                           </li>
                         ))}
                     </ul>

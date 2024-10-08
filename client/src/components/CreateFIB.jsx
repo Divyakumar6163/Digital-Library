@@ -3,19 +3,19 @@ import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 
 const FIBPage = ({
-  initialContent = "",
-  initialAnswers = [],
-  onContentChange,
-  onAnswersChange,
-  onSave, // Add a callback for saving
+  onChange, // Callback to send questions and answers to parent
+  value, // Initial value from parent, containing questions and answers
 }) => {
   const [preview, setPreview] = useState(false);
-  const [content, setContent] = useState(initialContent);
   const blanksRegex = /___/g;
-  const [answers, setAnswers] = useState(initialAnswers);
+
+  // Separate useState for questions and answers
+  const [questions, setQuestions] = useState(value?.questions || "");
+  const [answers, setAnswers] = useState(value?.answers || []);
 
   useEffect(() => {
-    const contentToMatch = typeof content === "string" ? content : ""; // Ensure content is a string
+    // Extract blanks from the questions and ensure the answers array is in sync with them
+    const contentToMatch = typeof questions === "string" ? questions : "";
     const blanksArray = [...contentToMatch.matchAll(blanksRegex)];
     const newAnswers = [...answers]; // Preserve existing answers
 
@@ -27,56 +27,29 @@ const FIBPage = ({
     }
 
     setAnswers(newAnswers);
-  }, [content]);
+  }, [questions]);
 
-  const handleEditorChange = (newContent) => {
-    const contentToMatch = typeof newContent === "string" ? newContent : ""; // Ensure newContent is a string
-    setContent(contentToMatch);
-
-    // Notify parent component of content change
-    if (onContentChange) {
-      onContentChange(contentToMatch);
-    }
+  // Update parent whenever questions or answers change
+  const updateParent = (updatedQuestions, updatedAnswers) => {
+    const updatedData = {
+      questions: updatedQuestions || questions,
+      answers: updatedAnswers || answers,
+    };
+    onChange(updatedData); // Trigger the parent callback with the updated questions and answers
   };
 
+  // Handle changes in the SunEditor for the question
+  const handleEditorChange = (newContent) => {
+    setQuestions(newContent);
+    updateParent(newContent, answers); // Update parent with the new question content
+  };
+
+  // Handle changes in the answer inputs
   const handleInputChange = (e, index) => {
     const newAnswers = [...answers];
     newAnswers[index] = e.target.value;
     setAnswers(newAnswers);
-
-    // Notify parent component of answers change
-    if (onAnswersChange) {
-      onAnswersChange(newAnswers);
-    }
-  };
-
-  const handleSave = () => {
-    // Notify parent component with both content and answers
-    if (onSave) {
-      onSave({ content, answers });
-    }
-  };
-
-  const renderSentenceWithInputs = () => {
-    const parts = content.split(blanksRegex);
-
-    return (
-      <div>
-        {parts.map((part, index) => (
-          <span key={index}>
-            <span dangerouslySetInnerHTML={{ __html: part }} />
-            {index < answers.length && (
-              <input
-                type="text"
-                className="border-b-2 border-gray-300 mx-2 px-1 focus:outline-none focus:border-blue-500"
-                value={answers[index]} // Display answers in preview
-                onChange={(e) => handleInputChange(e, index)} // Allow changes
-              />
-            )}
-          </span>
-        ))}
-      </div>
-    );
+    updateParent(questions, newAnswers); // Update parent with the new answers
   };
 
   const renderAnswerInputs = () => {
@@ -98,11 +71,41 @@ const FIBPage = ({
     );
   };
 
+  // Updated renderPreview function to replace ___ with <input />
+  const renderPreview = () => {
+    // Split the question content based on '___' and alternate with input fields
+    const parts = questions.split(blanksRegex);
+
+    return (
+      <div className="mt-6 p-6 bg-white shadow-lg rounded-lg">
+        {/* <h3 className="text-xl font-semibold mb-4">Preview:</h3> */}
+        <div className="flex flex-wrap text-lg">
+          {parts.map((part, index) => (
+            <span key={index} className="flex items-center">
+              {/* Render the text part */}
+              <span dangerouslySetInnerHTML={{ __html: part }} />
+              {/* Render input fields in place of '___' */}
+              {index < answers.length && (
+                <input
+                  type="text"
+                  className="border-b-2 border-gray-300 mx-2 px-1 focus:outline-none focus:border-blue-500 flex-grow"
+                  // value={answers[index]}
+                  // readOnly
+                  style={{ minWidth: "100px" }}
+                />
+              )}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <SunEditor
-          setContents={content || ""}
+          setContents={questions || ""}
           onChange={handleEditorChange}
           height="300px"
           placeholder="Type your sentence here. Use '___' for blanks."
@@ -131,19 +134,8 @@ const FIBPage = ({
         >
           {!preview ? "Preview" : "Close"}
         </button>
-        <button
-          onClick={handleSave}
-          className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300"
-        >
-          Save
-        </button>
       </div>
-      {preview && (
-        <div className="mt-6 p-6 bg-white shadow-lg rounded-lg">
-          <h3 className="text-xl font-semibold mb-4">Preview:</h3>
-          {renderSentenceWithInputs()}
-        </div>
-      )}
+      {preview && renderPreview()}
     </div>
   );
 };

@@ -6,6 +6,7 @@ const HeadingEditorWithPreview = ({ value, onChange }) => {
   const [heading, setHeading] = useState(value || "");
   const [backupHeading, setBackupHeading] = useState(value || "");
   const [isPreview, setIsPreview] = useState(false);
+
   useEffect(() => {
     setHeading(value || "");
     setBackupHeading(value || "");
@@ -13,19 +14,22 @@ const HeadingEditorWithPreview = ({ value, onChange }) => {
 
   const togglePreview = () => {
     setIsPreview(!isPreview);
+    if (!isPreview) {
+      setBackupHeading(heading); // Restore previous saved value on edit toggle
+    }
   };
 
   const handleSave = () => {
-    setBackupHeading(heading);
+    setBackupHeading(heading); // Save the current value as backup
     setIsPreview(true);
     if (onChange) {
-      onChange(heading);
+      onChange(heading); // Notify parent of the updated value
     }
   };
 
   const handleCancel = () => {
-    setHeading(backupHeading);
-    setIsPreview(true);
+    setHeading(backupHeading); // Restore the text to its last saved state
+    setIsPreview(true); // Switch back to preview mode
   };
 
   return (
@@ -36,38 +40,24 @@ const HeadingEditorWithPreview = ({ value, onChange }) => {
             lang="en"
             placeholder="Enter heading..."
             setOptions={{
-              height: 50,
+              height: 150,
               buttonList: [
-                ["font", "fontSize", "formatBlock"],
-                ["bold", "italic", "underline", "strike"],
-                ["align", "list"],
                 ["undo", "redo"],
-                ["codeView"],
+                ["font", "fontSize", "formatBlock"],
+                ["paragraphStyle", "blockquote"],
+                ["bold", "underline", "italic", "strike"],
+                ["fontColor", "hiliteColor", "textStyle"],
+                ["removeFormat"],
+                ["outdent", "indent"],
+                ["align", "horizontalRule", "list", "lineHeight"],
+                ["table", "link", "image", "video", "audio"],
+                ["fullScreen", "showBlocks", "codeView", "preview"],
+                ["print", "save", "template"],
               ],
-              fontSize: [
-                "12px",
-                "14px",
-                "16px",
-                "18px",
-                "20px",
-                "24px",
-                "30px",
-                "36px",
-                "48px",
-                "60px",
-                "72px",
-              ],
-              formatBlock: ["H1", "H2", "H3", "H4", "H5", "H6"],
             }}
             setContents={heading}
             onChange={setHeading}
           />
-          <button
-            onClick={togglePreview}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Preview
-          </button>
           <div className="mt-2 flex justify-end space-x-2">
             <button
               onClick={handleSave}
@@ -89,12 +79,14 @@ const HeadingEditorWithPreview = ({ value, onChange }) => {
             className="p-2 border-b rounded-lg"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
-          <button
-            onClick={togglePreview}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Edit
-          </button>
+          <div className="flex justify-end mt-2 space-x-2">
+            <button
+              onClick={togglePreview}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Edit
+            </button>
+          </div>
         </>
       )}
     </div>

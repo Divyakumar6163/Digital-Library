@@ -24,7 +24,7 @@ const MCQPage = ({ value, onChange }) => {
   };
 
   useEffect(() => {
-    updateParent(); // Initial update to parent when the component mounts
+    updateParent();
   }, []);
 
   const handleQuestionChange = (content) => {
@@ -104,7 +104,7 @@ const MCQPage = ({ value, onChange }) => {
   const renderPreview = () => {
     return (
       <div className="mt-6 p-6 bg-white shadow-lg rounded-lg">
-        <h3 className="text-xl font-semibold mb-4 text-center">Preview:</h3>
+        {/* <h3 className="text-xl font-semibold mb-4 text-center">Preview:</h3> */}
         <div className="mb-6 text-center">
           <div
             className="text-2xl font-bold"
