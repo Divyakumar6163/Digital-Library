@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./../config.env" });
 
-var Schema  = mongoose.Schema;
+var Schema = mongoose.Schema;
 
 const ComponentSchema = new Schema({
     type: {
@@ -11,68 +10,76 @@ const ComponentSchema = new Schema({
         enum: ['Heading', 'Text', 'Graph', 'Equation', 'Video', 'Image', 'Quote', 'FillInTheBlanks', 'MCQs'],
         required: true
     },
-    id: { 
+    id: {
         type: Number,
         required: true
     }
 }, { _id: false, discriminatorKey: 'type' });
+
 const HeadingComponent = ComponentSchema.discriminator('Heading', new Schema({
     content: {
         type: String,
         required: true
     }
 }, { _id: false }));
+
 const TextComponent = ComponentSchema.discriminator('Text', new Schema({
     content: {
         type: String,
         required: true
     }
 }, { _id: false }));
+
 const GraphComponent = ComponentSchema.discriminator('Graph', new Schema({
     content: {
         type: Object,
         required: true
     }
 }, { _id: false }));
+
 const EquationComponent = ComponentSchema.discriminator('Equation', new Schema({
     content: {
-        type: String, 
+        type: String,
         required: true
     }
 }, { _id: false }));
+
 const VideoComponent = ComponentSchema.discriminator('Video', new Schema({
     content: {
         type: String,
         required: true
     }
 }, { _id: false }));
+
 const QuoteComponent = ComponentSchema.discriminator('Quote', new Schema({
     content: {
-        type: String, 
+        type: String,
         required: true
     },
     author: {
-        type: String, 
+        type: String,
         required: false
     }
 }, { _id: false }));
+
 const FillInTheBlanksComponent = ComponentSchema.discriminator('FillInTheBlanks', new Schema({
     content: {
         type: String,
         required: true
     },
     answers: {
-        type: [String], 
+        type: [String],
         required: true
     }
 }, { _id: false }));
+
 const MCQsComponent = ComponentSchema.discriminator('MCQs', new Schema({
     question: {
         type: String,
         required: true
     },
     options: {
-        type: [String], 
+        type: [String],
         required: true
     },
     correctAnswer: {
@@ -80,7 +87,6 @@ const MCQsComponent = ComponentSchema.discriminator('MCQs', new Schema({
         required: true
     }
 }, { _id: false }));
-
 
 const ChapterSchema = new Schema({
     title: {
@@ -91,55 +97,59 @@ const ChapterSchema = new Schema({
         type: String,
         default: ''
     },
-    components: [ComponentSchema] 
+    components: [ComponentSchema]
 });
 
-const Bookschema  = new Schema({
-    booktitle : {
-        type: "string",
+const BookSchema = new Schema({
+    booktitle: {
+        type: String,
         required: true
     },
-    cratedby : {
-        type : Schema.ObjectId,
-        ref:"User"
+    image : {
+        type: String,
+        default: ""
     },
-    description : {
-        type: "string",
+    createdby: {
+        type: Schema.ObjectId,
+        ref: "User"
+    },
+    description: {
+        type: String,
         default: "",
     },
-    creaters:{
-        type :Array,
-        default:null,
+    creaters: {
+        type: Array,
+        default: []
     },
-    author:{
-        type : "string",
-        default: "",
+    author: {
+        type: String,
+        default: ""
     },
     chapters: [ChapterSchema],
-    tags:{
+    tags: {
         type: Array,
-        default:null,
+        default: []
     },
-    summary:{
-        type: "string",
-        default: "",
+    summary: {
+        type: String,
+        default: ""
     },
-    booktype:{
-        type: "string",
-        enum:['Premium', 'Normal'],
+    booktype: {
+        type: String,
+        enum: ['Premium', 'Normal'],
         required: true,
-        default:"Normal"
+        default: "Normal"
     },
     createdat: {
         type: Date,
-        default: Date.now 
+        default: Date.now
     },
-    ispublised:{
+    ispublished: {
         type: Boolean,
         default: false
     }
 });
 
-const Book = mongoose.model("Book", Bookschema);
+const Book = mongoose.model("Book", BookSchema);
 
 module.exports = Book;
