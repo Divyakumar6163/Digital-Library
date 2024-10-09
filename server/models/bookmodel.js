@@ -61,17 +61,51 @@ const QuoteComponent = ComponentSchema.discriminator('Quote', new Schema({
         required: false
     }
 }, { _id: false }));
+const QuizComponent = ComponentSchema.discriminator('Quiz', new Schema({
+    content: {
+        question: {
+            type: String,
+            required: true
+        },
+        options: [{
+            id: {
+                type: Number,
+                required: true
+            },
+            value: {
+                type: String,
+                required: true
+            }
+        }],
+        correctAnswer: {
+            type: Number,
+            required: true
+        }
+    }
+}, { _id: false }));
 
 const FillInTheBlanksComponent = ComponentSchema.discriminator('FillInTheBlanks', new Schema({
     content: {
-        type: String,
-        required: true
-    },
-    answers: {
-        type: [String],
-        required: true
+        questions: {
+            type: String,
+            required: true
+        },
+        answers: {
+            type: [String],
+            required: true
+        }
     }
 }, { _id: false }));
+// const FillInTheBlanksComponent = ComponentSchema.discriminator('FillInTheBlanks', new Schema({
+//     content: {
+//         type: String,
+//         required: true
+//     },
+//     answers: {
+//         type: [String],
+//         required: true
+//     }
+// }, { _id: false }));
 
 const MCQsComponent = ComponentSchema.discriminator('MCQs', new Schema({
     question: {

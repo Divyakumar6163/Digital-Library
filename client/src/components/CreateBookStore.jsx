@@ -14,7 +14,7 @@ import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";
-import { createbook } from "../API/createbook";
+import { createbook,updateChapters } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +22,7 @@ const CreateBookStore = () => {
   const curbookdispatch = useDispatch();
   const curbook = useSelector((state) => state.createbook);
   console.log(curbook);
-  const [chapters, setChapters] = useState([]);
+  const [chapters, setChapters] = useState(curbook.chapters);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [selectedComponents, setSelectedComponents] = useState([]);
@@ -65,11 +65,13 @@ const CreateBookStore = () => {
       curbookdispatch(
         useractions.updateChapter(selectedChapterIndex, newChapter)
       );
+      updateChapters("67065b27633079c222acc34f",chapters);
     } else {
       setChapters([...chapters, newChapter]);
       curbookdispatch(useractions.addChapter(newChapter));
+      updateChapters("67065b27633079c222acc34f",chapters);
     }
-    addNewChapter();
+    // addNewChapter();
     // createbook(chapters)
   };
 
