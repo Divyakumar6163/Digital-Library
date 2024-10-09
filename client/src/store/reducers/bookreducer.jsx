@@ -27,7 +27,8 @@ const bookreducer = (state = initialState, action) => {
                 summary: action.summary,
                 booktype: action.booktype,
                 createdat: action.createdat,
-                ispublished: action.ispublished
+                ispublished: action.ispublished,
+                chapters: action.chapters
             };
 
         case bookactions.SET_CHAPTERS:

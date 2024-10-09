@@ -277,12 +277,12 @@ const CreateBookStore = ({ setIsIntro }) => {
                 </li>
               ))}
             </ul>
-            {/* <button
+            <button
               onClick={addNewChapter}
               className="w-full bg-blue-500 text-white py-2 rounded-lg"
             >
               Add New Chapter
-            </button> */}
+            </button>
           </div>
 
           <div className="lg:w-3/4 p-6 w-full">

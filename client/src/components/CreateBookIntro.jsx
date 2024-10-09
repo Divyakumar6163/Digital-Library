@@ -3,20 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { setBookDetails } from "./../store/actions/bookactions";
-
+import * as useractions from "./../store/actions/bookactions";
 const CreateBookPage = ({ setIsIntro }) => {
   const dispatch = useDispatch();
 
   // Retrieve the previous book details from the Redux state
   const bookDetails = useSelector((state) => state.createbook);
-
+  // const curbookdispatch = useDispatch();
   // Local component state initialized with Redux values or empty if not available
   const [bookName, setBookName] = useState(bookDetails?.booktitle || "");
   const [authorName, setAuthorName] = useState(bookDetails?.author || "");
   const [bookCategory, setBookCategory] = useState(bookDetails?.booktype || "");
   const [bookTagline, setBookTagline] = useState(bookDetails?.summary || "");
   const [coverImage, setCoverImage] = useState(bookDetails?.coverImage || null);
-
+  
   // Update local state when bookDetails changes
   useEffect(() => {
     setBookName(bookDetails?.booktitle || "");
@@ -43,6 +43,7 @@ const CreateBookPage = ({ setIsIntro }) => {
       booktitle: bookName,
       author: authorName,
       booktype: bookCategory,
+      chapters:[],
       summary: bookTagline,
       createdby: "User", // You can replace this with dynamic data if available
       createdat: new Date().toISOString(),
@@ -54,6 +55,7 @@ const CreateBookPage = ({ setIsIntro }) => {
 
     // Dispatch the action to update book details in the Redux store
     dispatch(setBookDetails(updatedBookDetails));
+    dispatch(useractions.updateChapter([])); 
     setIsIntro((prev) => !prev);
     console.log(updatedBookDetails);
   };
