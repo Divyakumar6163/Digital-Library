@@ -18,7 +18,7 @@ import { createbook,updateChapters } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useDispatch, useSelector } from "react-redux";
-const CreateBookStore = () => {
+const CreateBookStore = ({ setIsIntro }) => {
   const curbookdispatch = useDispatch();
   const curbook = useSelector((state) => state.createbook);
   console.log(curbook);
@@ -48,6 +48,11 @@ const CreateBookStore = () => {
   const handlePreviewBookStore = () => {
     setShowPreview((prev) => {
       console.log(chapters);
+      return !prev;
+    });
+  };
+  const handleBack = () => {
+    setIsIntro((prev) => {
       return !prev;
     });
   };
@@ -272,16 +277,22 @@ const CreateBookStore = () => {
                 </li>
               ))}
             </ul>
-            <button
+            {/* <button
               onClick={addNewChapter}
               className="w-full bg-blue-500 text-white py-2 rounded-lg"
             >
               Add New Chapter
-            </button>
+            </button> */}
           </div>
 
           <div className="lg:w-3/4 p-6 w-full">
             <div className="flex justify-between mb-6">
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={handleBack}
+              >
+                Back
+              </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
                 onClick={saveChapter}

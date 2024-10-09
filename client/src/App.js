@@ -25,7 +25,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HeroPage />} />
-          {/* <Route path="/createBook" element={<ReadFIB />} /> */}
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

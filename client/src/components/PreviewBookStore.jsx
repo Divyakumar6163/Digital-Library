@@ -1,7 +1,7 @@
 import React from "react";
 import CreateGraph from "./CreateGraph";
 import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css"; // Ensure you have the required CSS for rendering LaTeX
+import "katex/dist/katex.min.css";
 
 const PreviewBook = ({ chapters }) => {
   const renderComponent = (component) => {
