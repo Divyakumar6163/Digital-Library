@@ -39,7 +39,30 @@ exports.createbook = async (req,res) =>{
         })
     }
 }
-
+exports.getbookbyID = async (req,res) =>{
+    try{
+        const book = await Bookschema.findById(req.params.bookId);
+        if(!book){
+            return res.status(404).json({
+                status: 'error',
+                message: "book not found"
+            })
+        }
+        res.status(200).json({
+            data:{
+                book: book
+            },
+            messege:"book found"
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            status: 'error',
+            message: "Error While fetching book",
+            error: err
+        })
+    }
+}
 exports.getalldistincttags = async (req, res) => {
     try {
         const listmap = new Map();

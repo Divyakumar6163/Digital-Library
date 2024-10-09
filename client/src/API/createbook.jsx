@@ -24,11 +24,9 @@ export const updateChapters = async (bookID, updatedChapters) => {
               // }
           // }/
       );
-
-      // Handle the response
       if (response.status === 200) {
           console.log('Chapters updated successfully', response.data);
-          return response.data; // Return the response data
+          return response.data; 
       } else {
           console.error('Failed to update chapters:', response.data);
           return null;
@@ -38,3 +36,19 @@ export const updateChapters = async (bookID, updatedChapters) => {
       return null;
   }
 };
+
+export const getbookbyID = async (bookID) =>{
+  try {
+      const response = await axios.get(`http://localhost:5000/book/${bookID}`);
+      if (response.status === 200) {
+          console.log('Book fetched successfully', response.data.data.book.chapters);
+          return response.data.data.book; 
+      } else {
+          console.error('Failed to fetch book:', response.data);
+          return null;
+      }
+  } catch (error) {
+      console.error('Error occurred while fetching book:', error);
+      return null;
+  }
+}

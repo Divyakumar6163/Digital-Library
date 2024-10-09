@@ -10,6 +10,7 @@ import SetNewPassword from "./components/newpassword.jsx";
 import ForgotPassword from "./components/forgotpassword.jsx";
 import { getuserlogin } from "./API/userlogin.jsx";
 import { getallbooks, getalltags } from "./API/filteringbook.jsx";
+import Readbook from "./pages/Readbook.jsx";
 // export const ToLink = "https://digital-library-cryf.onrender.com";
 export const ToLink = "http://localhost:5000";
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/createBook" element={<CreateBook />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
+          <Route path="/readbook/:bookID" element= {<Readbook/>}/>
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/:token/:userId" element={<SetNewPassword />} />
         </Routes>

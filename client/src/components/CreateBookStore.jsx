@@ -152,7 +152,7 @@ const CreateBookStore = () => {
             onChange={(content) => handleComponentChange(component.id, content)}
           />
         );
-      case "Fill in the Blanks":
+      case "FillInTheBlanks":
         console.log(component);
         return (
           <CreateFIB
@@ -353,7 +353,7 @@ const CreateBookStore = () => {
                     "Equation",
                     "Quiz",
                     "Video",
-                    "Fill in the Blanks",
+                    "FillInTheBlanks",
                   ].map((option, index) => (
                     <button
                       key={index}
