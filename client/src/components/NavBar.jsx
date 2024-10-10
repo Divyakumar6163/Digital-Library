@@ -31,6 +31,8 @@ export default function NavBar1() {
   }
   const islogin = useSelector((state) => state.user.islogin);
   const username = useSelector((state) => state.user.userinfo.name);
+  const profile = useSelector((state) => state.user.userinfo.profileImage);
+  console.log(profile);
   return (
     <Navbar fluid style={{ backgroundColor: "black" }}>
       <Navbar.Brand href="/">
@@ -103,7 +105,7 @@ export default function NavBar1() {
             label={
               <Avatar
                 alt="User settings"
-                img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                img={profile}
                 rounded
               />
             }
