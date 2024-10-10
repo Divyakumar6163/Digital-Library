@@ -10,8 +10,8 @@ router.get("/alluser", usercontroller.getallusers);
 
 router.post("/user/signup", usercontroller.createUsers);
 
-router.post("/user/login", usercontroller.userlogin);
-// router.post("/user/login", authcontroller.checkauth, usercontroller.userlogin);
+// router.post("/user/login", usercontroller.userlogin);
+router.post("/user/login", authcontroller.checkauth, usercontroller.userlogin);
 
 router.get("/getuser/:id", usercontroller.getuserinfo);
 
@@ -26,5 +26,11 @@ router.post('/:userID/wishlist', userbookcontroller.addToWishlist);
 router.get('/:userID/wishlist', userbookcontroller.getWishlistBooks);
 
 router.delete('/:userID/wishlist', userbookcontroller.removeFromWishlist);
+
+router.post('/auth/google', usercontroller.googleLoginSignup)
+
+router.get('/authcheck', authcontroller.checkaccesstoken)
+
+router.post('/authcheck/refresh', authcontroller.refreshAccessToken)
 
 module.exports = router;

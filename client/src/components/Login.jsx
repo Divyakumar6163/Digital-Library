@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+// import { store } from "./../store/store";
 // import { loginUser } from "../store2/userSlice";
 import { Link } from "react-router-dom";
 import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
+import * as authactions from "./../store/actions/authactions";
 import { useNavigate } from "react-router-dom";
+import GoogleLoginPage from './Auth/login_signupgoogle'
+
 // import { ToLink } from "../App";
 import axios from "axios";
 function Login() {
@@ -50,11 +54,13 @@ function Login() {
         {
           withCredentials: true,
         }
-      );
-      console.log(response.cookie);
+      );;
+      // console.log(response.cookie);
       // window.alert("Login successful");
       navigate("/");
       store.dispatch(useractions.setuserinfo(response.data.data));
+      store.dispatch(authactions.SET_ACCESS_TOKEN(response.data.AccessToken));
+      store.dispatch(authactions.setRefreshToken(response.data.RefreshToken));
       store.dispatch(useractions.setlogin(true));
       console.log(response.data);
     } catch (e) {
@@ -131,6 +137,9 @@ function Login() {
               >
                 Sign in
               </button>
+             <div>
+             <GoogleLoginPage />
+             </div>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account?{" "}
                 <Link

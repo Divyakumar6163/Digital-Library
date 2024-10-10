@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { ToLink } from "../App";
 import { useNavigate } from "react-router-dom";
+import GoogleLoginPage from './Auth/login_signupgoogle'
 function SignUpPage() {
   const navigate = useNavigate();
   const [name, setname] = useState("");

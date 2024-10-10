@@ -3,7 +3,8 @@ import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import { ToLink } from "../App";
 // const navigate = useNavigate();
-
+import { useDispatch, useSelector } from "react-redux";
+import * as authactions from "./../store/actions/authactions";
 export const getuserlogin = async () => {
   try {
     const data = {};
@@ -24,5 +25,53 @@ export const getuserlogin = async () => {
   } catch (e) {
     console.log("sadfghjk");
     console.log(e);
+  }
+};
+export const checktoken = async (accessToken, refreshToken) => {
+  console.log(accessToken);
+  // console.log(refreshToken);
+  try {
+    const response = await axios.get('http://localhost:5000/authcheck', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    console.log(response.data);
+    if (response.status === 200) {
+      // return response;
+      store.dispatch(useractions.setuserinfo(response.data.data.user))
+      store.dispatch(useractions.setlogin(true));
+    }
+    // console.log(response.status)
+    if (response.status === 401 || response.status === 403) {
+      console.log(refreshToken)
+      const refreshResponse = await axios.post('http://localhost:5000/authcheck/refresh', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { token: refreshToken },
+      });
+      console.log(refreshResponse.data.accessToken);
+      if (refreshResponse.status === 200) {
+        console.log(refreshResponse.data)
+        const newAccessToken = refreshResponse.data.accessToken;
+        store.dispatch(authactions.setAccessToken(newAccessToken));
+        // store.dispatch(authactions.setRefreshToken(refreshResponse.data.refreshToken));
+
+        const retryResponse = await axios.get('http://localhost:5000/authcheck', {
+          headers: {
+            'Authorization': `Bearer ${newAccessToken}`,
+          },
+        });
+
+        // return retryResponse;
+        console.log(retryResponse.data);
+      } else {
+        store.dispatch(authactions.setAccessToken(null));
+        store.dispatch(authactions.setRefreshToken(null));
+      }
+    }
+  } catch (e) {
+    console.error('An error occurred while checking the tokens:', e);
   }
 };

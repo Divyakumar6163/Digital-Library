@@ -9,14 +9,20 @@ import Login from "./components/Login";
 import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
 import ForgotPassword from "./components/forgotpassword.jsx";
-import { getuserlogin } from "./API/userlogin.jsx";
+import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getuserlogin ,checktoken} from "./API/userlogin.jsx";
 import { getallbooks, getalltags } from "./API/filteringbook.jsx";
 import Readbook from "./pages/Readbook.jsx";
+import "react-toastify/dist/ReactToastify.css";
 // export const ToLink = "https://digital-library-cryf.onrender.com";
 export const ToLink = "http://localhost:5000";
 function App() {
+  const access_token = useSelector((state) => state.auth.accessToken)
+  const refresh_token = useSelector((state) => state.auth.refreshToken)
   useEffect(() => {
-    getuserlogin();
+    // getuserlogin();
+    checktoken(access_token, refresh_token);
     getallbooks();
     getalltags();
   }, []);
@@ -37,6 +43,7 @@ function App() {
           <Route path="/:token/:userId" element={<SetNewPassword />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer draggable />
     </div>
   );
 }
