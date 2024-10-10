@@ -2,7 +2,7 @@ import * as userinfoaction from '../actions/userinfoactions.jsx'
 
 const initialState = {
     userinfo: {},
-    islogin: false
+    islogin: false,
 }
 
 const userinfoeeducer = (state = initialState, action) => {

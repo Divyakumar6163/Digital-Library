@@ -2,11 +2,14 @@ import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { NavLink, Link } from "react-router-dom";
 import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
+import * as authactions from "./../store/actions/authactions";
+import * as bookactions from "./../store/actions/bookactions";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import Logo from "../image/Logo.png";
 import styles from "./NavBar.module.css";
+
 import { useSelector } from "react-redux";
 export default function NavBar1() {
   const [isSearch, setIsSearch] = useState(false);
@@ -19,6 +22,9 @@ export default function NavBar1() {
   const handleSignOut = () => {
     store.dispatch(useractions.setlogin(false));
     store.dispatch(useractions.setuserinfo({}));
+    store.dispatch(authactions.setAccessToken(null));
+    store.dispatch(authactions.setRefreshToken(null));
+    store.dispatch(bookactions.setBookDetails(null));
   };
   function handleSearch() {
     // Implement your search logic here
@@ -131,7 +137,7 @@ export default function NavBar1() {
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
         <Navbar.Link style={{ color: "white" }}>
-          {!islogin ? <Link to="/login">SignUp/Login</Link> : null}
+          {!islogin ? <Link to="/login">SignUp/Login</Link> :null}
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>

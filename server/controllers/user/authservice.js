@@ -4,7 +4,9 @@ const userSchema = require('../../models/usermodel')
 const bcrypt = require('bcrypt')
 const dotenv = require('dotenv');
 const crypto = require("crypto");
+const { promisify } = require("util");
 dotenv.config({ path: './../config.env' });
+const  catchAsync =  require('../../utils/catchAsync');
 const email = require('../../utils/mails/resetpasswordmail')
 const bcryptsalt = process.env.BCRYPT_SALT
 exports.requestresetuserpassword = async (req, res) => {
@@ -129,3 +131,92 @@ exports.checkauth = async (req, res, next) => {
         return res.sendStatus(403);
     }
 }
+
+const signToken = (id) => {
+    const Accesstoken = JWT.sign(id, process.env.ACCESS_JWT_SECRET, {
+      expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
+    });
+  
+    const Refreshtoken = JWT.sign(id, process.env.REFRESH_JWT_SECRET, {
+      expiresIn: process.env.REFRESH_JWT_EXPIRES_IN,
+    });
+  
+    console.log("AccessToken", Accesstoken);
+    console.log("RefreshToken", Refreshtoken);
+    return [Accesstoken, Refreshtoken];
+  };
+  
+  exports.createSendToken = catchAsync(async (user, statusCode, res) => {
+    user.lastLogin = Date.now();
+    await user.save({ validateBeforeSave: false });
+    const [AccessToken, RefreshToken] = signToken({ id: user._id });
+    console.log(AccessToken);
+    user.password = undefined;
+    res.status(statusCode).json({
+      status: "success",
+      AccessToken,
+      RefreshToken,
+      user: user,
+    });
+  });
+  
+  exports.checkaccesstoken = async (req, res, next) => {
+    try {
+      let token;
+      if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+      }
+  
+      if (!token) {
+        return res.status(401).json({ message: 'You are not logged in. Token is missing.' });
+      }
+      const decoded = await promisify(JWT.verify)(token, process.env.ACCESS_JWT_SECRET);
+      const currentUser = await userSchema.findById(decoded.id);
+      if (!currentUser) {
+        return res.status(401).json({ message: 'The user belonging to this token does not exist.' });
+      }
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return res.status(401).json({ message: 'token session expired' });
+      }
+      res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Login sucessfull!',
+          user: currentUser,
+        },
+      });
+    } catch (error) {
+      console.log('Error verifying token:', error);
+      return res.status(403).json({ message: 'Invalid user expired token' });
+    }
+  };
+
+  exports.refreshAccessToken = async (req, res, next) => {
+    try {
+        console.log(req.body)
+      const { token: refreshToken } = req.body;
+        console.log(refreshToken)
+      if (!refreshToken) {
+        return res.status(401).json({ message: 'Refresh token is required' });
+      }
+
+      const decoded = await promisify(JWT.verify)(refreshToken, process.env.REFRESH_JWT_SECRET);
+      const currentUser = await userSchema.findById(decoded.id);
+      if (!currentUser) {
+        return res.status(401).json({ message: 'User not found' });
+      }
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return res.status(401).json({ message: 'token expired' });
+      }
+      const newAccessToken = JWT.sign({ id: currentUser._id }, process.env.ACCESS_JWT_SECRET, {
+        expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
+      });
+      res.status(200).json({
+        status: 'success',
+        accessToken: newAccessToken,
+      });
+    } catch (error) {
+      console.error('Error refreshing access token:', error);
+      res.status(403).json({ message: 'Invalid or expired refresh token' });
+    }
+  };

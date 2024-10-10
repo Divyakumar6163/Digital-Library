@@ -7,7 +7,7 @@ import minReducer from './reducer';
 const persistConfig = {
   key: 'root',
   storage, 
-  whitelist: ['user', 'books','createbook']
+  whitelist: ['auth', 'books','createbook']
 };
 const persistedReducer = persistReducer(persistConfig, minReducer);
 export const store = createStore(

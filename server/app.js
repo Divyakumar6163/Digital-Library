@@ -11,13 +11,21 @@ const app = express();
 
 app.use(cookieParser());
 
-var corsOptions = {
-  origin: "http://localhost:3000",
-  // origin:"https://digital-library-alpha.vercel.app/",
-  credentials: true,
-};
+// var corsOptions = {
+//   origin: "http://localhost:3000",
+//   // origin:"https://digital-library-alpha.vercel.app/",
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+    ], 
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
 app.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) {
       return res.status(400).send('No file uploaded.');

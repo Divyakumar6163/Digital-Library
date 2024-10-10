@@ -9,6 +9,11 @@ const userSchema = new Schema({
     type: "string",
     required: true,
   },
+  profileImage: {
+    type: String,
+    default:
+      "https://img.freepik.com/vector-premium/icono-perfil-avatar_188544-4755.jpg?w=360",
+  },
   emailid: {
     type: "string",
     required: true,
@@ -16,7 +21,7 @@ const userSchema = new Schema({
   },
   phoneno: {
     type: Number,
-    required: true,
+    // required: false,
   },
   password: {
     type: "string",
@@ -34,7 +39,11 @@ const userSchema = new Schema({
   wishlistbooks: [{
     type: Schema.ObjectId,
     ref: "Book"
-  }]  
+  }],
+  lastLogin: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 userSchema.pre("save", async function (next) {
@@ -45,6 +54,17 @@ userSchema.pre("save", async function (next) {
   this.password = hash;
   next();
 });
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    console.log(changedTimestamp, JWTTimestamp);
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
+};
 
 const user = mongoose.model("User", userSchema);
 
