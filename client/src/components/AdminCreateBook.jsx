@@ -4,7 +4,118 @@ import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 
-const PreviewBook = ({ chapters }) => {
+const initialChapters = [
+  {
+    title: "Chapter 1: Introduction to Knowledge",
+    summary:
+      "This chapter provides an introduction to knowledge and its importance in various fields.",
+    components: [
+      {
+        id: 1,
+        type: "Heading",
+        content: "What is Knowledge?",
+        locked: false,
+      },
+      {
+        id: 2,
+        type: "Text",
+        content:
+          "Knowledge is the awareness and understanding of facts, truths, or information gained through experience or education.",
+        locked: false,
+      },
+      {
+        id: 3,
+        type: "Image",
+        content: {
+          url: "https://via.placeholder.com/300",
+          alt: "Placeholder image about knowledge",
+        },
+        locked: false,
+      },
+      {
+        id: 4,
+        type: "Quiz",
+        content: {
+          question: "Which of the following is a source of knowledge?",
+          options: [
+            { value: "Books" },
+            { value: "TV shows" },
+            { value: "Social media" },
+            { value: "All of the above" },
+          ],
+        },
+        locked: true, // This quiz is locked
+      },
+    ],
+  },
+  {
+    title: "Chapter 2: Advanced Concepts in Knowledge",
+    summary: "This chapter explores deeper into the concepts of knowledge.",
+    components: [
+      {
+        id: 5,
+        type: "Heading",
+        content: "Types of Knowledge",
+        locked: false,
+      },
+      {
+        id: 6,
+        type: "Text",
+        content:
+          "There are various types of knowledge including empirical, rational, and tacit knowledge.",
+        locked: false,
+      },
+      {
+        id: 7,
+        type: "Equation",
+        content: "E = mc^2",
+        locked: true, // This equation is locked
+      },
+      {
+        id: 8,
+        type: "Video",
+        content: {
+          url: "https://www.example.com/sample-video.mp4",
+        },
+        locked: false,
+      },
+    ],
+  },
+  {
+    title: "Chapter 3: Interactive Knowledge",
+    summary:
+      "This chapter focuses on interactive methods of acquiring knowledge.",
+    components: [
+      {
+        id: 9,
+        type: "Heading",
+        content: "Interactive Learning",
+        locked: false,
+      },
+      {
+        id: 10,
+        type: "Graph",
+        content: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+          dataPoints: [10, 20, 30, 40, 50],
+        },
+        locked: true, // This graph is locked
+      },
+      {
+        id: 11,
+        type: "Fill in the Blanks",
+        content: {
+          questions: "Knowledge is ___ and understanding is ___.",
+          answers: ["power", "key"],
+        },
+        locked: false,
+      },
+    ],
+  },
+];
+
+const AdminBook = ({ isSubscribed }) => {
+  const [chapters, setChapters] = useState(initialChapters); // Store chapters in state
   const [expandedChapters, setExpandedChapters] = useState([]);
 
   const toggleChapterExpansion = (index) => {
@@ -13,7 +124,34 @@ const PreviewBook = ({ chapters }) => {
     );
   };
 
-  const renderComponent = (component) => {
+  const toggleLockComponent = (chapterIndex, componentIndex) => {
+    const updatedChapters = chapters.map((chapter, chIndex) => {
+      if (chIndex === chapterIndex) {
+        const updatedComponents = chapter.components.map(
+          (component, compIndex) => {
+            if (compIndex === componentIndex) {
+              return { ...component, locked: !component.locked };
+            }
+            return component;
+          }
+        );
+        return { ...chapter, components: updatedComponents };
+      }
+      return chapter;
+    });
+
+    setChapters(updatedChapters); // Update the chapters state
+  };
+
+  const renderComponent = (component, chapterIndex, componentIndex) => {
+    if (component.locked && !isSubscribed) {
+      return (
+        <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
+          <p>This content is locked. Please subscribe to view it.</p>
+        </div>
+      );
+    }
+
     switch (component.type) {
       case "Text":
         return <p dangerouslySetInnerHTML={{ __html: component.content }} />;
@@ -117,7 +255,7 @@ const PreviewBook = ({ chapters }) => {
 
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Preview Book</h1>
+      <h1 className="text-3xl font-bold mb-6">Admin: Manage Book Content</h1>
       {chapters.length === 0 ? (
         <p>No chapters available.</p>
       ) : (
@@ -167,9 +305,9 @@ const PreviewBook = ({ chapters }) => {
 
           {/* Chapter Content on the right */}
           <div className="lg:w-3/4 p-4 bg-gray-100">
-            {chapters.map((chapter, index) => (
+            {chapters.map((chapter, chapterIndex) => (
               <div
-                key={index}
+                key={chapterIndex}
                 className="mb-8 p-4 bg-white shadow-md rounded-lg"
               >
                 <h2
@@ -181,9 +319,24 @@ const PreviewBook = ({ chapters }) => {
                   dangerouslySetInnerHTML={{ __html: chapter.summary }}
                 />
                 <div>
-                  {chapter.components.map((component) => (
+                  {chapter.components.map((component, componentIndex) => (
                     <div key={component.id} className="mb-4">
-                      {renderComponent(component)}
+                      {renderComponent(component, chapterIndex, componentIndex)}
+
+                      {/* Lock/Unlock button */}
+                      {/* Lock/Unlock button */}
+                      <div className="flex justify-end">
+                        {" "}
+                        {/* Ensure the button is on the right side */}
+                        <button
+                          className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
+                          onClick={() =>
+                            toggleLockComponent(chapterIndex, componentIndex)
+                          }
+                        >
+                          {component.locked ? "Unlock" : "Lock"}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -196,4 +349,4 @@ const PreviewBook = ({ chapters }) => {
   );
 };
 
-export default PreviewBook;
+export default AdminBook;

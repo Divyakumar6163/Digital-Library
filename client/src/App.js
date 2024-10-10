@@ -3,6 +3,7 @@ import BookStore from "./pages/BookStorePage.jsx";
 import BooksLibrary from "./pages/BooksLibrary.jsx";
 import { useEffect } from "react";
 import CreateBook from "./pages/CreateBook.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import SignUpPage from "./components/SignUp";
@@ -28,9 +29,10 @@ function App() {
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />
+          <Route path="/adminBook" element={<AdminPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
-          <Route path="/readbook/:bookID" element= {<Readbook/>}/>
+          <Route path="/readbook/:bookID" element={<Readbook />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/:token/:userId" element={<SetNewPassword />} />
         </Routes>

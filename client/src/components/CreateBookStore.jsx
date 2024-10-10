@@ -14,7 +14,7 @@ import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";
-import { createbook,updateChapters } from "../API/createbook";
+import { createbook, updateChapters } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,11 +70,11 @@ const CreateBookStore = ({ setIsIntro }) => {
       curbookdispatch(
         useractions.updateChapter(selectedChapterIndex, newChapter)
       );
-      updateChapters("67065b27633079c222acc34f",chapters);
+      updateChapters("67065b27633079c222acc34f", chapters);
     } else {
       setChapters([...chapters, newChapter]);
       curbookdispatch(useractions.addChapter(newChapter));
-      updateChapters("67065b27633079c222acc34f",chapters);
+      updateChapters("67065b27633079c222acc34f", chapters);
     }
     // addNewChapter();
     // createbook(chapters)
@@ -83,9 +83,9 @@ const CreateBookStore = ({ setIsIntro }) => {
   const editChapter = (index) => {
     const chapter = chapters[index];
     setSelectedChapterIndex(index);
-    setTitle(chapter.title);
-    setSummary(chapter.summary);
-    setSelectedComponents(chapter.components);
+    setTitle(chapter?.title);
+    setSummary(chapter?.summary);
+    setSelectedComponents(chapter?.components);
   };
 
   const deleteChapter = (index) => {
@@ -101,7 +101,7 @@ const CreateBookStore = ({ setIsIntro }) => {
   const handleFormOptionClick = (option) => {
     setSelectedComponents([
       ...selectedComponents,
-      { type: option, id: Date.now(), content: "" },
+      { type: option, id: Date.now(), content: "", locked: false },
     ]);
   };
 
@@ -118,7 +118,6 @@ const CreateBookStore = ({ setIsIntro }) => {
     );
     setSelectedComponents(updatedComponents);
   };
-
   const renderComponent = (component) => {
     switch (component.type) {
       case "Text":
@@ -233,7 +232,7 @@ const CreateBookStore = ({ setIsIntro }) => {
               </p>
             </div>
             <ul className="mb-6">
-              {chapters.map((chapter, index) => (
+              {chapters?.map((chapter, index) => (
                 <li key={index} className="mb-2 cursor-pointer">
                   <div className="flex justify-between items-center">
                     <div
@@ -245,7 +244,7 @@ const CreateBookStore = ({ setIsIntro }) => {
                       ) : (
                         <FaChevronRight className="mr-2" />
                       )}
-                      <span>{chapter.title || `Chapter ${index + 1}`}</span>
+                      <span>{chapter?.title || `Chapter ${index + 1}`}</span>
                     </div>
                     <div>
                       <button
@@ -301,6 +300,18 @@ const CreateBookStore = ({ setIsIntro }) => {
               </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={saveChapter}
+              >
+                Discard
+              </button>
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={saveChapter}
+              >
+                Publish
+              </button>
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
                 onClick={handlePreviewBookStore}
               >
                 {!showPreview ? "Preview" : "Close"}
@@ -332,7 +343,7 @@ const CreateBookStore = ({ setIsIntro }) => {
               />
             </div>
 
-            {selectedComponents.map((component) => (
+            {selectedComponents?.map((component) => (
               <div key={component.id} className="relative">
                 {renderComponent(component)}
                 <div className="absolute right-2 top-2 flex space-x-2">
