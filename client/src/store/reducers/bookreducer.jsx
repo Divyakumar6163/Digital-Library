@@ -11,7 +11,8 @@ const initialState = {
     summary: '',
     booktype: '',
     createdat: '',
-    ispublished: false
+    ispublished: false,
+    coverImg:null
 };
 
 const bookreducer = (state = initialState, action) => {
@@ -28,7 +29,9 @@ const bookreducer = (state = initialState, action) => {
                 booktype: action.booktype,
                 createdat: action.createdat,
                 ispublished: action.ispublished,
-                chapters: action.chapters
+                chapters: action.chapters,
+                tags: action.tags,
+                coverImg: action.coverImg,
             };
 
         case bookactions.SET_CHAPTERS:

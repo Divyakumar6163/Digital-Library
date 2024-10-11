@@ -41,7 +41,7 @@ const ReadBookStore = ({ heading }) => {
                   <a href="/" className="block h-full w-full">
                     <img
                       className="object-cover w-full h-full rounded-t-lg"
-                      src={BookCover1}
+                      src={data.image?data.image:BookCover1}
                       alt={data.booktitle}
                     />
                   </a>

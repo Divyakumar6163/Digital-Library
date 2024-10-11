@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getuserlogin ,checktoken} from "./API/userlogin.jsx";
 import { getallbooks, getalltags } from "./API/filteringbook.jsx";
+import Updatebook from "./pages/Updatebook.jsx";
 import Readbook from "./pages/Readbook.jsx";
 import "react-toastify/dist/ReactToastify.css";
 // export const ToLink = "https://digital-library-cryf.onrender.com";
@@ -39,6 +40,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
           <Route path="/readbook/:bookID" element={<Readbook />} />
+          <Route path="/updatebook/:bookID" element={<Updatebook />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/:token/:userId" element={<SetNewPassword />} />
         </Routes>

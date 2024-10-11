@@ -1,5 +1,5 @@
 import React from "react";
-import img1 from "../image/HeroImg.png";
+// import img1 from "."
 
 const Carousel = () => {
   return (
@@ -15,7 +15,7 @@ const Carousel = () => {
           <div className="hidden duration-700 ease-in-out" data-carousel-item>
             <div className="relative w-full h-full">
               <img
-                src={img1}
+                src='/Hero.png'
                 className="absolute block w-full h-full object-cover"
                 alt="Slide 1"
               />
@@ -36,7 +36,7 @@ const Carousel = () => {
           <div className="hidden duration-700 ease-in-out" data-carousel-item>
             <div className="relative w-full h-full">
               <img
-                src={img1}
+               src='/Hero.png'
                 className="absolute block w-full h-full object-cover"
                 alt="Slide 2"
               />
@@ -56,7 +56,7 @@ const Carousel = () => {
           <div className="hidden duration-700 ease-in-out" data-carousel-item>
             <div className="relative w-full h-full">
               <img
-                src={img1}
+                src='/Hero.png'
                 className="absolute block w-full h-full object-cover"
                 alt="Slide 3"
               />

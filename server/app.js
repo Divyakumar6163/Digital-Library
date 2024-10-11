@@ -16,7 +16,6 @@ app.use(cookieParser());
 //   // origin:"https://digital-library-alpha.vercel.app/",
 //   credentials: true,
 // };
-
 app.use(
   cors({
     origin: [
@@ -27,15 +26,23 @@ app.use(
   })
 );
 app.post('/upload', upload.single('image'), (req, res) => {
+  console.log('Uploaded File:', req.file);
+  console.log('Form Data:', req.body); 
+
   if (!req.file) {
       return res.status(400).send('No file uploaded.');
   }
+  console.log('Uploaded File:', req.file);
+  console.log('Form Data:', req.body); 
+
   res.status(200).json({
       message: 'File uploaded successfully!',
       fileUrl: req.file.path,
-      public_id: req.file.filename,
+      public_id: req.file.filename, 
+      formData: req.body, 
   });
 });
+
 app.use(express.json());
 app.use("/", userroutes);
 app.use("/", bookroutes);

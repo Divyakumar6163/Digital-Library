@@ -5,6 +5,7 @@ import {
   FaChevronDown,
   FaChevronRight,
 } from "react-icons/fa";
+import BookCover1 from "../image/BookCover1.png";
 import CreateMCQ from "./CreateMCQ";
 import CreateFIB from "./CreateFIB";
 import Heading from "./CreateHeading";
@@ -18,11 +19,13 @@ import { createbook, updateChapters } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useDispatch, useSelector } from "react-redux";
-const CreateBookStore = ({ setIsIntro }) => {
+const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
-  const curbook = useSelector((state) => state.createbook);
-  console.log(curbook);
-  const [chapters, setChapters] = useState(curbook.chapters);
+  // const curbook = useSelector((state) => state.createbook);
+  // store.dispatch(useractions.setBookDetails(bookinfo));
+  const book_ID = bookinfo._id;
+  // console.log(curbook);
+  const [chapters, setChapters] = useState(bookinfo.chapters);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [selectedComponents, setSelectedComponents] = useState([]);
@@ -52,9 +55,9 @@ const CreateBookStore = ({ setIsIntro }) => {
     });
   };
   const handleBack = () => {
-    setIsIntro((prev) => {
-      return !prev;
-    });
+    // setIsIntro((prev) => {
+    //   // return !prev;
+    // });
   };
   const saveChapter = () => {
     const newChapter = {
@@ -70,11 +73,11 @@ const CreateBookStore = ({ setIsIntro }) => {
       curbookdispatch(
         useractions.updateChapter(selectedChapterIndex, newChapter)
       );
-      updateChapters("67065b27633079c222acc34f", chapters);
+      updateChapters(book_ID, chapters);
     } else {
       setChapters([...chapters, newChapter]);
       curbookdispatch(useractions.addChapter(newChapter));
-      updateChapters("67065b27633079c222acc34f", chapters);
+      updateChapters(book_ID, chapters);
     }
     // addNewChapter();
     // createbook(chapters)
@@ -224,12 +227,12 @@ const CreateBookStore = ({ setIsIntro }) => {
           <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
             <div className="mb-6">
               <h2 className="text-xl font-bold mb-2">
-                Nothing purifies than knowledge
+              {bookinfo.booktitle}
               </h2>
               <p>
-                The whole idea is to develop an authoring platform to create
-                interactive content with just a few clicks.
+                {bookinfo.description}
               </p>
+              <img src={bookinfo.image? bookinfo.image:BookCover1} className="h-1/2"/>
             </div>
             <ul className="mb-6">
               {chapters?.map((chapter, index) => (
@@ -399,7 +402,7 @@ const CreateBookStore = ({ setIsIntro }) => {
         {showPreview && "Close"}
       </button>
       {/* </div> */}
-      {showPreview && <PreviewBook chapters={chapters} />}
+      {showPreview && <PreviewBook chapters={chapters} bookinfo={bookinfo} />}
     </div>
   );
 };

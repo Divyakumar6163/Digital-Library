@@ -3,61 +3,126 @@ import { useDispatch, useSelector } from "react-redux";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { setBookDetails } from "./../store/actions/bookactions";
+import { createBook } from "../API/createbook";
+import axios from "axios";
 import * as useractions from "./../store/actions/bookactions";
+import { notify } from './../store/utils/notify'
+import { useNavigate } from "react-router";
 const CreateBookPage = ({ setIsIntro }) => {
   const dispatch = useDispatch();
-
-  // Retrieve the previous book details from the Redux state
+  const navigate = useNavigate();
   const bookDetails = useSelector((state) => state.createbook);
-  // const curbookdispatch = useDispatch();
-  // Local component state initialized with Redux values or empty if not available
   const [bookName, setBookName] = useState(bookDetails?.booktitle || "");
   const [authorName, setAuthorName] = useState(bookDetails?.author || "");
-  const [bookCategory, setBookCategory] = useState(bookDetails?.booktype || "");
+  const [description, setdescription] = useState(bookDetails?.description || "");
   const [bookTagline, setBookTagline] = useState(bookDetails?.summary || "");
-  const [coverImage, setCoverImage] = useState(bookDetails?.coverImage || null);
-  
+  const [tags, setTags] = useState(bookDetails?.tags || []);
+  const [tagInputValue, setTagInputValue] = useState("");
+  // const [coverImage, setCoverImage] = useState(bookDetails?.coverImage || null);
+
+
+
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploadResponse, setUploadResponse] = useState(null); 
+
+
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    setImageFile(file); // Store the file in state
+
+    // For image preview
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setPreviewUrl(preview);
+    }
+  };
+
+  // const handleUpload = async () => {
+  //   if (!imageFile) {
+  //     alert("Please select an image to upload!");
+  //     return;
+  //   }
+
+  //   const formData = new FormData(); 
+  //   formData.append('image', imageFile); 
+
+  //   try {
+  //     const response = await axios.post('http://localhost:5000/upload', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data', 
+  //       },
+  //     });
+      
+  //     setUploadResponse(response.data); 
+  //     alert('File uploaded successfully!');
+  //     console.log(response.data);
+
+  //   } catch (error) {
+  //     console.error("There was an error uploading the image:", error);
+  //     alert("Error uploading file!");
+  //   }
+  // };
+
+  const handleInputChange = (e) => {
+    setTagInputValue(e.target.value);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      addTag(tagInputValue);
+    }
+  };
+  const handleBlur = () => {
+    addTag(tagInputValue);
+  };
+  const addTag = (tag) => {
+    if (tag.trim() !== "" && !tags.includes(tag.trim())) {
+      setTags([...tags, tag.trim()]);
+    }
+    setTagInputValue("");
+  };
+  const handleTagRemove = (tagToRemove) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
   // Update local state when bookDetails changes
   useEffect(() => {
     setBookName(bookDetails?.booktitle || "");
     setAuthorName(bookDetails?.author || "");
-    setBookCategory(bookDetails?.booktype || "");
+    setdescription(bookDetails?.description || "");
     setBookTagline(bookDetails?.summary || "");
-    setCoverImage(bookDetails?.coverImage || null);
+    // setCoverImage(bookDetails?.coverImage || null);
   }, [bookDetails]);
 
-  // Handle Cover Image Upload
-  const handleCoverImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setCoverImage(event.target.result); // Display image as base64
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
+    console.log(description)
+    // console.log("sdfv")
     const updatedBookDetails = {
       booktitle: bookName,
       author: authorName,
-      booktype: bookCategory,
       chapters:[],
-      summary: bookTagline,
-      createdby: "User", // You can replace this with dynamic data if available
-      createdat: new Date().toISOString(),
-      ispublished: false, // Set it to false by default
-      description: "", // Optional: you can add more fields based on user input
-      creaters: [], // If there are additional creators, this can be updated
-      coverImage, // Add the cover image to the book details
+      summary: bookTagline, 
+      description: "jnjnjn",
+      tags:tags, 
     };
-
-    // Dispatch the action to update book details in the Redux store
-    dispatch(setBookDetails(updatedBookDetails));
-    dispatch(useractions.updateChapter([])); 
-    setIsIntro((prev) => !prev);
+    const res = await createBook(imageFile, updatedBookDetails)
     console.log(updatedBookDetails);
+    console.log(res);
+    // Dispatch the action to update book details in the Redux store
+    if(res){
+      navigate(`/updatebook/${res}`);
+      // dispatch(setBookDetails(updatedBookDetails));
+      // dispatch(useractions.updateChapter([])); 
+      // setIsIntro((prev) => !prev);
+    }
+    else{
+      // notify("Error while creating book")
+    }
+    // console.log(updatedBookDetails);
   };
 
   return (
@@ -66,11 +131,11 @@ const CreateBookPage = ({ setIsIntro }) => {
 
       {/* Book Name */}
       <div className="mb-4">
-        <label className="block text-lg mb-2">Book Name</label>
+        <label className="block text-lg mb-2">Book Title</label>
         <SunEditor
           setContents={bookName}
           onChange={(content) => setBookName(content)}
-          placeholder="Enter Book Name"
+          placeholder="Enter Book Title"
           setOptions={{
             height: 50,
             buttonList: [
@@ -100,11 +165,11 @@ const CreateBookPage = ({ setIsIntro }) => {
 
       {/* Book Category */}
       <div className="mb-4">
-        <label className="block text-lg mb-2">Book Category</label>
+        <label className="block text-lg mb-2">Book Description</label>
         <SunEditor
-          setContents={bookCategory}
-          onChange={(content) => setBookCategory(content)}
-          placeholder="Enter Book Category"
+          setContents={description}
+          onChange={(content) => setdescription(content)}
+          placeholder="Enter Book Description"
           setOptions={{
             height: 50,
             buttonList: [
@@ -117,11 +182,11 @@ const CreateBookPage = ({ setIsIntro }) => {
 
       {/* Book Tagline */}
       <div className="mb-4">
-        <label className="block text-lg mb-2">Book Tagline</label>
+        <label className="block text-lg mb-2">Book Summary</label>
         <SunEditor
           setContents={bookTagline}
           onChange={(content) => setBookTagline(content)}
-          placeholder="Enter Book Tagline"
+          placeholder="Enter Book Summary"
           setOptions={{
             height: 50,
             buttonList: [
@@ -131,6 +196,66 @@ const CreateBookPage = ({ setIsIntro }) => {
           }}
         />
       </div>
+      <div className="mb-6 max-w-[600px]">
+        <button
+          data-tooltip-target="tooltip-tags"
+          type="button"
+          for="success"
+          className="block mb-1 text-sm font-medium text-black"
+        >
+          Tags (Tags of the Book)
+        </button>
+        <div
+          id="tooltip-tags"
+          role="tooltip"
+          className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+        >
+          eg. Education , Fiction ,Science
+          <div className="tooltip-arrow" data-popper-arrow></div>
+        </div>
+        <input
+          type="text"
+          id="success"
+          value={tagInputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
+          className="border border-green-500 text-black  text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 "
+          placeholder="eg. Education , Fiction ,Science"
+        />
+        <div className="mt-2">
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-500 text-white px-2 py-1 rounded-full text-sm flex items-center gap-2"
+                >
+                  {tag}
+                  <button
+                    onClick={() => handleTagRemove(tag)}
+                    className="bg-blue-700 text-white rounded-full p-1 text-xs flex items-center justify-center"
+                    aria-label={`Remove tag ${tag}`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Cover Image Upload */}
       <div className="mb-4">
@@ -138,10 +263,11 @@ const CreateBookPage = ({ setIsIntro }) => {
         <input
           type="file"
           accept="image/*"
-          onChange={handleCoverImageChange}
+          onChange={handleFileChange}
           className="mb-2"
         />
-        {coverImage && (
+        {/* <button onClick={handleUpload}>Upload Image</button> */}
+        {/* {coverImage && (
           <div className="mt-4">
             <img
               src={coverImage}
@@ -149,7 +275,8 @@ const CreateBookPage = ({ setIsIntro }) => {
               className="w-48 h-64 object-cover border rounded-md shadow-md"
             />
           </div>
-        )}
+        )} */}
+        {previewUrl && <img src={previewUrl} alt="Preview" width="200" height="200" />}
       </div>
 
       {/* Submit Button */}

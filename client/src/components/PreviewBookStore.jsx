@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import CreateGraph from "./CreateGraph";
 import { BlockMath } from "react-katex";
+import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 
-const PreviewBook = ({ chapters }) => {
+const PreviewBook = ({ bookinfo , chapters }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
 
   const toggleChapterExpansion = (index) => {
@@ -126,12 +127,12 @@ const PreviewBook = ({ chapters }) => {
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
             <div className="mb-6">
               <h2 className="text-xl font-bold mb-2">
-                Nothing purifies than knowledge
+                {bookinfo.booktitle}
               </h2>
               <p>
-                The whole idea is to develop an authoring platform to create
-                interactive content with just a few clicks.
+                {bookinfo.description}
               </p>
+              <img src={bookinfo.image? bookinfo.image: BookCover1} className="h-1/2"/>
             </div>
             <ul className="mb-6">
               {chapters?.map((chapter, index) => (

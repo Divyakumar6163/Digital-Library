@@ -2,29 +2,12 @@ import React, { useEffect, useState } from "react";
 import PreviewBook from "../components/PreviewBookStore";
 import NavBar from "../components/NavBar";
 import { getbookbyID } from "../API/createbook";
-import { useParams ,useNavigate} from "react-router-dom"; 
+import CreateBookStore from './../components/CreateBookStore'
+import { useParams, useNavigate } from "react-router-dom"; 
 import { notify } from "../store/utils/notify";
-const chapter = [
-    {
-        "title": "Quantum Theory Basics",
-        "summary": "<p>An introduction to the core principles of quantum mechanics.<br></p>",
-        "components": [
-            {
-                "type": "Text",
-                "id": 1728453684007,
-                "content": "<p>Quantum mechanics explains the behavior of particles on the atomic scale.<br></p>"
-            },
-            {
-                "type": "Equation",
-                "id": 1728453826441,
-                "content": "Schrödinger Equation: iħ∂Ψ/∂t = HΨ"
-            }
-        ]
-    }
-]
-export default function Readbook() {
-    const navigate = useNavigate();
+export default function Updatebook() {
     const { bookID } = useParams(); 
+    const navigate = useNavigate();
     const [book, setBook] = useState(null); 
     useEffect(() => {
         const fetchBook = async () => {
@@ -44,7 +27,7 @@ export default function Readbook() {
         <>
             <NavBar />
             {book ? (
-                <PreviewBook chapters={book.chapters}  bookinfo = {book}/> 
+                <CreateBookStore bookinfo={book} /> 
             ) : (
                 <p>Loading book data...</p> 
             )}
