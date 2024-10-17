@@ -9,7 +9,7 @@ import * as useractions from "./../store/actions/userinfoactions";
 import * as authactions from "./../store/actions/authactions";
 import { useNavigate } from "react-router-dom";
 import GoogleLoginPage from './Auth/login_signupgoogle'
-
+import { ToLink } from "../App";
 // import { ToLink } from "../App";
 import axios from "axios";
 function Login() {
@@ -49,7 +49,7 @@ function Login() {
       };
       // console.log(response.data);
       const response = await axios.post(
-        "http://localhost:5000/user/login",
+        `${ToLink}/user/login`,
         data,
         {
           withCredentials: true,

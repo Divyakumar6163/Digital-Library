@@ -31,7 +31,7 @@ export const checktoken = async (accessToken, refreshToken) => {
   console.log(accessToken);
   // console.log(refreshToken);
   try {
-    const response = await axios.get('http://localhost:5000/authcheck', {
+    const response = await axios.get(`${ToLink}/authcheck`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
@@ -45,7 +45,7 @@ export const checktoken = async (accessToken, refreshToken) => {
     // console.log(response.status)
     if (response.status === 401 || response.status === 403) {
       console.log(refreshToken)
-      const refreshResponse = await axios.post('http://localhost:5000/authcheck/refresh', {
+      const refreshResponse = await axios.post(`${ToLink}/authcheck/refresh`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -58,7 +58,7 @@ export const checktoken = async (accessToken, refreshToken) => {
         store.dispatch(authactions.setAccessToken(newAccessToken));
         // store.dispatch(authactions.setRefreshToken(refreshResponse.data.refreshToken));
 
-        const retryResponse = await axios.get('http://localhost:5000/authcheck', {
+        const retryResponse = await axios.get(`${ToLink}/authcheck`, {
           headers: {
             'Authorization': `Bearer ${newAccessToken}`,
           },

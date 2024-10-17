@@ -5,9 +5,6 @@ import { ToLink } from "../App";
 import { notify } from "../store/utils/notify";
 import { useNavigate } from "react-router";
 
-
-
-
 export const createbook = async (bookinfo) => {
     // console.log(bookinfo)
     const chaptersObject = bookinfo.reduce((acc, chapter, index) => {
@@ -20,7 +17,7 @@ export const createbook = async (bookinfo) => {
 export const updateChapters = async (bookID, updatedChapters) => {
     try {
         const response = await axios.patch(
-            `http://localhost:5000/updatebook/${bookID}`,
+            `${ToLink}/updatebook/${bookID}`,
             { chapters: updatedChapters },
             // {
             // headers: {
@@ -44,7 +41,7 @@ export const updateChapters = async (bookID, updatedChapters) => {
 
 export const getbookbyID = async (bookID) => {
     try {
-        const response = await axios.get(`http://localhost:5000/book/${bookID}`);
+        const response = await axios.get(`${ToLink}/book/${bookID}`);
         if (response.status === 200) {
             console.log('Book fetched successfully', response.data.data.book.chapters);
             return response.data.data.book;
@@ -68,7 +65,7 @@ export const createBook = async (imageFile, bookdata) => {
     formData.append('image', imageFile); 
   
     try {
-      const uploadResponse = await axios.post('http://localhost:5000/upload', formData, {
+      const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -78,7 +75,7 @@ export const createBook = async (imageFile, bookdata) => {
         image: uploadResponse.data.fileUrl,
       };
 
-      const createResponse = await axios.post("http://localhost:5000/createbook", bookinfo, {
+      const createResponse = await axios.post(`${ToLink}/createbook`, bookinfo, {
         headers: {
           'Content-Type': 'application/json', 
         }

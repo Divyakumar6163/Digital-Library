@@ -2,13 +2,8 @@ import React, { useEffect, useState } from "react";
 import PreviewBook from "../components/PreviewBookStore";
 import NavBar from "../components/NavBar";
 import { getbookbyID } from "../API/createbook";
-<<<<<<< Updated upstream
 import { useParams ,useNavigate} from "react-router-dom"; 
 import { notify } from "../store/utils/notify";
-=======
-import { useParams } from "react-router-dom";
-import Footer from "../components/Footer";
->>>>>>> Stashed changes
 const chapter = [
   {
     title: "Quantum Theory Basics",
@@ -30,7 +25,6 @@ const chapter = [
   },
 ];
 export default function Readbook() {
-<<<<<<< Updated upstream
     const navigate = useNavigate();
     const { bookID } = useParams(); 
     const [book, setBook] = useState(null); 
@@ -58,29 +52,4 @@ export default function Readbook() {
             )}
         </>
     );
-=======
-  const { bookID } = useParams();
-  const [book, setBook] = useState(null);
-  useEffect(() => {
-    const fetchBook = async () => {
-      if (bookID) {
-        const fetchedBook = await getbookbyID(bookID);
-        setBook(fetchedBook);
-      }
-    };
-    fetchBook();
-  }, [bookID]);
-
-  return (
-    <>
-      <NavBar />
-      {book ? (
-        <PreviewBook chapters={book.chapters} />
-      ) : (
-        <p>Loading book data...</p>
-      )}
-      <Footer />
-    </>
-  );
->>>>>>> Stashed changes
 }

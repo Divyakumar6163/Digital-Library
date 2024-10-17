@@ -7,6 +7,7 @@ import store  from "./../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import * as authactions from "./../../store/actions/authactions";
 import * as useractions from "./../../store/actions/userinfoactions";
+import { ToLink } from "../../App";
 const GoogleLoginPage = () => {
 //   const authCtx = useAuth();
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ const GoogleLoginPage = () => {
     if (response) {
       const authenticate = async () => {
         try {
-          const resp = await axios.post("http://localhost:5000/auth/google", {
+          console.log(`${ToLink}/auth/google`)
+          const resp = await axios.post(`${ToLink}/auth/google`, {
             token: response.credential,
           });
           console.log(resp.data);
