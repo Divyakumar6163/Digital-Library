@@ -4,43 +4,30 @@ import NavBar from "../components/NavBar";
 import { getbookbyID } from "../API/createbook";
 import { useParams ,useNavigate} from "react-router-dom"; 
 import { notify } from "../store/utils/notify";
-const chapter = [
-  {
-    title: "Quantum Theory Basics",
-    summary:
-      "<p>An introduction to the core principles of quantum mechanics.<br></p>",
-    components: [
-      {
-        type: "Text",
-        id: 1728453684007,
-        content:
-          "<p>Quantum mechanics explains the behavior of particles on the atomic scale.<br></p>",
-      },
-      {
-        type: "Equation",
-        id: 1728453826441,
-        content: "Schrödinger Equation: iħ∂Ψ/∂t = HΨ",
-      },
-    ],
-  },
-];
+
 export default function Readbook() {
     const navigate = useNavigate();
     const { bookID } = useParams(); 
     const [book, setBook] = useState(null); 
+
     useEffect(() => {
         const fetchBook = async () => {
-            if (bookID) {
-                const fetchedBook = await getbookbyID(bookID); 
-                setBook(fetchedBook); 
-                if(!fetchedBook){
-                    notify("Book not found")
-                    navigate('/bookStore')
+            try {
+                if (bookID) {
+                    const fetchedBook = await getbookbyID(bookID); 
+                    setBook(fetchedBook); 
+                    if (!fetchedBook) {
+                        notify("Book not found");
+                        navigate('/bookStore');
+                    }
                 }
+            } catch (error) {
+                notify("An error occurred while fetching the book.");
+                navigate('/bookStore');
             }
         };
         fetchBook();
-    }, [bookID]); 
+    }, [bookID, navigate]);
 
     return (
         <>

@@ -20,12 +20,18 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://digital-library-alpha.vercel.app"
+      "https://digital-library-alpha.vercel.app",
+      "https://digital-library-cryf.onrender.com"
     ], 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"], // Add more headers if needed
   })
 );
+
+// Enable pre-flight requests for all routes (Optional)
+app.options('*', cors());
+
 app.post('/upload', upload.single('image'), (req, res) => {
   console.log('Uploaded File:', req.file);
   console.log('Form Data:', req.body); 
