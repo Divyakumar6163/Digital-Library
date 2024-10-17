@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { notify } from "../../store/utils/notify";
 import axios from "axios";
 import store  from "./../../store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import * as authactions from "./../../store/actions/authactions";
 import * as useractions from "./../../store/actions/userinfoactions";
 import { ToLink } from "../../App";
