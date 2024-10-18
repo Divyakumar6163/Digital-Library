@@ -5,7 +5,7 @@ import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 
-const PreviewBook = ({ bookinfo , chapters }) => {
+const PreviewBook = ({ bookinfo, chapters }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
 
   const toggleChapterExpansion = (index) => {
@@ -41,7 +41,7 @@ const PreviewBook = ({ bookinfo , chapters }) => {
         );
       case "Quiz":
         return renderMCQ(component.content);
-      case "Fill in the Blanks":
+      case "FillInTheBlanks":
         return renderFIB(component.content); // Rendering FIB component
       case "Image":
         return (
@@ -118,21 +118,26 @@ const PreviewBook = ({ bookinfo , chapters }) => {
 
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Preview Book</h1>
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
+        Preview Book
+      </h1>
       {chapters.length === 0 ? (
-        <p>No chapters available.</p>
+        <p className="text-lg text-gray-500 italic text-center">
+          No chapters available.
+        </p>
       ) : (
+        // Render chapters here
+
         <div className="flex">
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">
-                {bookinfo.booktitle}
-              </h2>
-              <p>
-                {bookinfo.description}
-              </p>
-              <img src={bookinfo.image? bookinfo.image: BookCover1} className="h-1/2"/>
+              <h2 className="text-xl font-bold mb-2">{bookinfo.booktitle}</h2>
+              <p>{bookinfo.description}</p>
+              <img
+                src={bookinfo.image ? bookinfo.image : BookCover1}
+                className="h-1/2"
+              />
             </div>
             <ul className="mb-6">
               {chapters?.map((chapter, index) => (
