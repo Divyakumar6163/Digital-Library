@@ -75,3 +75,18 @@ export const checktoken = async (accessToken, refreshToken) => {
     console.error('An error occurred while checking the tokens:', e);
   }
 };
+export const getuserbook = async (accessToken) => {
+  try {
+    const response = await axios.get(`${ToLink}/mybooks`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  }
+  catch (error) {
+    console.log(error);
+    // console.error('An error occurred while fetching user books:', error);
+  }
+}

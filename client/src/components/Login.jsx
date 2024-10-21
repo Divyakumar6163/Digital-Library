@@ -11,10 +11,13 @@ import { useNavigate } from "react-router-dom";
 import GoogleLoginPage from './Auth/login_signupgoogle'
 import { ToLink } from "../App";
 // import { ToLink } from "../App";
+import { notify } from "../store/utils/notify";
+import Spinner from "../store/utils/spinner";
 import axios from "axios";
 function Login() {
   const [email, setEmailId] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   // useEffect(() => {
   //   async function loginuserbycookie() {
@@ -42,32 +45,51 @@ function Login() {
 
   async function loginuser(e) {
     e.preventDefault();
+    setLoading(true); // Start loading immediately
+
     try {
-      const data = {
-        emailid: email,
-        password: password,
-      };
-      // console.log(response.data);
-      const response = await axios.post(
-        `${ToLink}/user/login`,
-        data,
-        {
-          withCredentials: true,
+        const data = {
+            emailid: email,
+            password: password,
+        };
+
+        // Check for empty fields
+        if (data.emailid === "" || data.password === "") {
+            notify("Please fill all the fields");
+            setLoading(false); // Stop loading on validation error
+            return;
         }
-      );;
-      // console.log(response.cookie);
-      // window.alert("Login successful");
-      navigate("/");
-      store.dispatch(useractions.setuserinfo(response.data.data));
-      store.dispatch(authactions.SET_ACCESS_TOKEN(response.data.AccessToken));
-      store.dispatch(authactions.setRefreshToken(response.data.RefreshToken));
-      store.dispatch(useractions.setlogin(true));
-      console.log(response.data);
+
+        // Perform login request
+        const response = await axios.post(
+            `${ToLink}/user/login`,
+            data,
+            { withCredentials: true }
+        );
+
+        if (response.data) {
+  
+            store.dispatch(useractions.setuserinfo(response.data.user));
+            store.dispatch(authactions.setAccessToken(response.data.AccessToken));
+            store.dispatch(authactions.setRefreshToken(response.data.RefreshToken));
+            store.dispatch(useractions.setlogin(true));
+            notify("Login successful");
+            navigate("/");
+        }
+
+        setLoading(false); 
+
     } catch (e) {
-      console.log("sadfghjk");
-      console.log(e);
+        setLoading(false);
+        if (e.response && e.response.data) {
+            notify(e.response.data.message); 
+            console.log(e.response.data.message);
+        } else {
+            notify("An unexpected error occurred");
+            console.log(e.message);
+        }
     }
-  }
+}
 
   return (
     <>
@@ -133,9 +155,9 @@ function Login() {
               <button
                 onClick={loginuser}
                 type="submit"
-                className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full flex justify-around text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Sign in
+                {loading? <Spinner/> : "Sign in" }
               </button>
              <div>
              <GoogleLoginPage />

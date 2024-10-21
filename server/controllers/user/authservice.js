@@ -220,3 +220,29 @@ const signToken = (id) => {
       res.status(403).json({ message: 'Invalid or expired refresh token' });
     }
   };
+
+  exports.checkvaliduser = async (req, res, next) => {
+    try {
+      let token;
+      if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+      }
+  
+      if (!token) {
+        return res.status(401).json({ message: 'You are not logged in' });
+      }
+      const decoded = await promisify(JWT.verify)(token, process.env.ACCESS_JWT_SECRET);
+      const currentUser = await userSchema.findById(decoded.id);
+      if (!currentUser) {
+        return res.status(401).json({ message: 'You are not valid user' });
+      }
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return res.status(401).json({ message: 'token session expired' });
+      }
+      req.user = currentUser;
+      next();
+    } catch (error) {
+      console.log('Error verifying token:', error);
+      return res.status(403).json({ message: 'Your session expaired ' });
+    }
+  };

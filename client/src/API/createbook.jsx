@@ -55,39 +55,40 @@ export const getbookbyID = async (bookID) => {
     }
 }
 
-export const createBook = async (imageFile, bookdata) => {
+export const createBook = async (imageFile, bookdata,accessToken) => {
     if (!imageFile) {
       notify("Please select an image to upload!");
       return;
     }
-  
+
     const formData = new FormData();
-    formData.append('image', imageFile); 
-  
+    formData.append('image', imageFile);
+
     try {
       const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${accessToken}`,
         },
       });
       const bookinfo = {
         ...bookdata,
         image: uploadResponse.data.fileUrl,
       };
-
+      console.log(bookinfo);
+      console.log(accessToken)
       const createResponse = await axios.post(`${ToLink}/createbook`, bookinfo, {
         headers: {
-          'Content-Type': 'application/json', 
-        }
+          'Authorization': `Bearer ${accessToken}`,
+        },
       });
-  
+
       console.log(createResponse.data.data.books);
       const id = createResponse.data.data.books._id;
       notify("Book created!");
       return id;
     } catch (error) {
       console.error("There was an error:", error);
-      notify(error.message);
+      notify("Error while creating book");
       return null;
     }
   };

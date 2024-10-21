@@ -4,13 +4,16 @@ import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { setBookDetails } from "./../store/actions/bookactions";
 import { createBook } from "../API/createbook";
+import { useLoader } from "../store/utils/loaderprovider";
 import axios from "axios";
 import * as useractions from "./../store/actions/bookactions";
 import { notify } from './../store/utils/notify'
 import { useNavigate } from "react-router";
+import { Createbookloader } from "../store/utils/createbookloader";
 const CreateBookPage = ({ setIsIntro }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const loader = useLoader()
   const bookDetails = useSelector((state) => state.createbook);
   const [bookName, setBookName] = useState(bookDetails?.booktitle || "");
   const [authorName, setAuthorName] = useState(bookDetails?.author || "");
@@ -18,15 +21,12 @@ const CreateBookPage = ({ setIsIntro }) => {
   const [bookTagline, setBookTagline] = useState(bookDetails?.summary || "");
   const [tags, setTags] = useState(bookDetails?.tags || []);
   const [tagInputValue, setTagInputValue] = useState("");
+  const accessToken = useSelector((state) => state.auth.accessToken);
   // const [coverImage, setCoverImage] = useState(bookDetails?.coverImage || null);
-
-
-
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [uploadResponse, setUploadResponse] = useState(null); 
-
-
+  const [uploadResponse, setUploadResponse] = useState(null);
+  const [createBookstate, setCreateBookstate] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
@@ -54,7 +54,7 @@ const CreateBookPage = ({ setIsIntro }) => {
   //         'Content-Type': 'multipart/form-data', 
   //       },
   //     });
-      
+
   //     setUploadResponse(response.data); 
   //     alert('File uploaded successfully!');
   //     console.log(response.data);
@@ -96,39 +96,83 @@ const CreateBookPage = ({ setIsIntro }) => {
     // setCoverImage(bookDetails?.coverImage || null);
   }, [bookDetails]);
 
-
-
   const handleSubmit = async () => {
-    console.log(description)
-    // console.log("sdfv")
+    // Start the loader when form submission begins
+    loader.start("Creating your book...");
+  
+    // Basic validation
+    if (!bookName.trim() || !authorName.trim() || !description.trim()) {
+      alert("Please fill in all the required fields.");
+      loader.stop(); // Stop the loader if validation fails
+      return;
+    }
+    setCreateBookstate(true);
     const updatedBookDetails = {
       booktitle: bookName,
       author: authorName,
-      chapters:[],
-      summary: bookTagline, 
-      description: "jnjnjn",
-      tags:tags, 
+      chapters: [],
+      summary: bookTagline,
+      description: description,
+      tags: tags,
     };
-    const res = await createBook(imageFile, updatedBookDetails)
-    console.log(updatedBookDetails);
-    console.log(res);
-    // Dispatch the action to update book details in the Redux store
-    if(res){
-      navigate(`/updatebook/${res}`);
-      // dispatch(setBookDetails(updatedBookDetails));
-      // dispatch(useractions.updateChapter([])); 
-      // setIsIntro((prev) => !prev);
+  
+    try {
+      const res = await createBook(imageFile, updatedBookDetails, accessToken);
+  
+      if (res) {
+        console.log("Book created successfully:", res);
+        setCreateBookstate(false);
+        navigate(`/updatebook/${res}`);
+        dispatch(setBookDetails(updatedBookDetails));
+        dispatch(useractions.updateChapter([]));
+        // notify("Book created successfully.");
+      } else {
+        setCreateBookstate(false);
+        console.log("Error occurred while creating the book.");
+        notify("Error while creating the book.");
+      }
+    } catch (error) {
+      setCreateBookstate(false);
+      console.error("Error in book creation:", error);
+      notify("An error occurred while creating the book.");
+    } finally {
+      setCreateBookstate(false);
     }
-    else{
-      // notify("Error while creating book")
-    }
-    // console.log(updatedBookDetails);
   };
+  
+
+  // const handleSubmit = async () => {
+  //   console.log(description)
+  //   // console.log("sdfv")
+  //   const updatedBookDetails = {
+  //     booktitle: bookName,
+  //     author: authorName,
+  //     chapters:[],
+  //     summary: bookTagline, 
+  //     description: "jnjnjn",
+  //     tags:tags, 
+  //   };
+  //   const res = await createBook(imageFile, updatedBookDetails,accessToken)
+  //   console.log(updatedBookDetails);
+  //   console.log(res);
+  //   // Dispatch the action to update book details in the Redux store
+  //   if(res){
+  //     navigate(`/updatebook/${res}`);
+  //     // dispatch(setBookDetails(updatedBookDetails));
+  //     // dispatch(useractions.updateChapter([])); 
+  //     // setIsIntro((prev) => !prev);
+  //   }
+  //   else{
+  //     // notify("Error while creating book")
+  //   }
+  //   // console.log(updatedBookDetails);
+  // };
 
   return (
-    <div className="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg max-w-2xl">
+      <>
+      {createBookstate ? <Createbookloader/> : <div className="container mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
       <h1 className="text-2xl font-semibold mb-4">Create a New Book</h1>
-
+      
       {/* Book Name */}
       <div className="mb-4">
         <label className="block text-lg mb-2">Book Title</label>
@@ -288,7 +332,9 @@ const CreateBookPage = ({ setIsIntro }) => {
           Save and Continue
         </button>
       </div>
-    </div>
+    </div>}
+      </>
+   
   );
 };
 

@@ -2,17 +2,17 @@ const Bookschema = require('./../models/bookmodel')
 const dotenv = require('dotenv');
 dotenv.config({ path: './../config.env' });
 
-exports.getallbook = async (req,res) =>{
-    try{
-        const books  = await Bookschema.find();
+exports.getallbook = async (req, res) => {
+    try {
+        const books = await Bookschema.find();
         res.status(200).json({
-            data:{
+            data: {
                 books: books
             },
-            messege:"all books found"
+            messege: "all books found"
         })
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({
             status: 'error',
             message: "Error While fetching books",
@@ -21,17 +21,22 @@ exports.getallbook = async (req,res) =>{
     }
 }
 
-exports.createbook = async (req,res) =>{
-    try{
-        const newBook = await Bookschema.create(req.body);
+exports.createbook = async (req, res) => {
+    try {
+        const bookinfo = {
+            ...req.body,
+            createdby: req.user._id,
+        };
+        console.log(bookinfo);
+        const newBook = await Bookschema.create(bookinfo);
         res.status(200).json({
-            data:{
+            data: {
                 books: newBook
             },
-            messege:"book created"
+            messege: "book created"
         })
     }
-    catch (err){
+    catch (err) {
         return res.status(500).json({
             status: 'error',
             message: "Error While creating books",
@@ -39,23 +44,23 @@ exports.createbook = async (req,res) =>{
         })
     }
 }
-exports.getbookbyID = async (req,res) =>{
-    try{
+exports.getbookbyID = async (req, res) => {
+    try {
         const book = await Bookschema.findById(req.params.bookId);
-        if(!book){
+        if (!book) {
             return res.status(404).json({
                 status: 'error',
                 message: "book not found"
             })
         }
         res.status(200).json({
-            data:{
+            data: {
                 book: book
             },
-            messege:"book found"
+            messege: "book found"
         })
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({
             status: 'error',
             message: "Error While fetching book",
@@ -98,8 +103,8 @@ exports.getalldistincttags = async (req, res) => {
     }
 };
 exports.updatebookcontent = async (req, res) => {
-    const { bookId } = req.params; 
-    const { chapters } = req.body; 
+    const { bookId } = req.params;
+    const { chapters } = req.body;
 
     try {
         const book = await Bookschema.findById(bookId);
@@ -120,7 +125,7 @@ exports.updatebookcontent = async (req, res) => {
         res.status(500).json({
             status: 'error',
             message: 'Error updating book content',
-            error: error.message 
+            error: error.message
         });
     }
 };
@@ -154,8 +159,8 @@ exports.updatebooktype = async (req, res) => {
 };
 
 exports.updatebookimg = async (req, res) => {
-    const { bookId } = req.params; 
-    const { imageUrl } = req.body; 
+    const { bookId } = req.params;
+    const { imageUrl } = req.body;
 
     try {
         const book = await Bookschema.findById(bookId);
@@ -182,8 +187,8 @@ exports.updatebookimg = async (req, res) => {
 };
 
 exports.updatebooktags = async (req, res) => {
-    const { bookId } = req.params; 
-    const { tags } = req.body; 
+    const { bookId } = req.params;
+    const { tags } = req.body;
 
     try {
         const book = await Bookschema.findById(bookId);
@@ -275,6 +280,26 @@ exports.getBookByAuthor = async (req, res) => {
         res.status(500).json({
             status: 'error',
             message: 'Error fetching books by author',
+            error: error.message
+        });
+    }
+}
+exports.getBookByUser = async (req, res) => {
+    const  userId  = req.user._id;
+
+    try {
+        console.log(userId);
+        const books = await Bookschema.find({ createdby: userId });
+
+        res.status(200).json({
+            books,
+            message: 'Books created by user'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Error while fetching your book',
             error: error.message
         });
     }

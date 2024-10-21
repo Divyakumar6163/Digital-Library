@@ -88,40 +88,38 @@ exports.getuserinfo = async (req, res) => {
 }
 exports.userlogin = async (req, res) => {
     try {
-        console.log(req.body)
         if (!req.body.emailid) {
-            return res.status(404).json({
-                message: 'please enter your email address'
-            })
+            return res.status(400).json({
+                message: 'Please enter your email address'
+            });
         }
         if (!req.body.password) {
-            return res.status(404).json({
-                message: 'please enter your password'
-            })
+            return res.status(400).json({
+                message: 'Please enter your password'
+            });
         }
         const user = await userSchema.findOne({ emailid: req.body.emailid }).select("+password");
-        console.log(user.password);
         if (!user) {
             return res.status(404).json({
-                message: 'User not found with this email',
-            })
+                message: 'Your account does not exist',
+            });
         }
-        const validuser = await bcrypt.compare(req.body.password, user.password)
-        console.log(validuser)
+        const validuser = await bcrypt.compare(req.body.password, user.password);
         if (!validuser) {
-            return res.status(404).json({
+            return res.status(401).json({
                 message: 'Invalid password',
-            })
+            });
         }
-        return auth.createSendToken(validuser,201,res);
-    }
-    catch (err) {
+        return auth.createSendToken(user, 201, res);
+
+    } catch (err) {
         return res.status(500).json({
             message: "Login failed",
             error: err.message
-        })
+        });
     }
-}
+};
+
 exports.googleLoginSignup = catchAsync(async (req, res, next) => {
     const { token } = req.body;
 

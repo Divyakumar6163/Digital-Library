@@ -4,6 +4,7 @@ import NavBar from "../components/NavBar";
 import { getbookbyID } from "../API/createbook";
 import { useParams ,useNavigate} from "react-router-dom"; 
 import { notify } from "../store/utils/notify";
+import Pageloader from "../store/utils/pageloader";
 const chapter = [
     {
         "title": "Quantum Theory Basics",
@@ -43,10 +44,11 @@ export default function Readbook() {
     return (
         <>
             <NavBar />
+            
             {book ? (
                 <PreviewBook chapters={book.chapters}  bookinfo = {book}/> 
             ) : (
-                <p>Loading book data...</p> 
+                <div className="flex justify-around"><Pageloader/></div>
             )}
         </>
     );

@@ -24,8 +24,8 @@ function Footer() {
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <a href="https://flowbite.com/" className="hover:underline">
-                    Flowbite
+                  <a href="/bookStore" className="hover:underline">
+                    Books
                   </a>
                 </li>
                 <li>
@@ -33,7 +33,7 @@ function Footer() {
                     href="https://tailwindcss.com/"
                     className="hover:underline"
                   >
-                    Tailwind CSS
+                    
                   </a>
                 </li>
               </ul>
@@ -45,18 +45,18 @@ function Footer() {
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
                   <a
-                    href="https://github.com/themesberg/flowbite"
+                    // href="https://github.com/themesberg/flowbite"
                     className="hover:underline "
                   >
-                    Github
+                    Instagram
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://discord.gg/4eeurUVvTy"
+                    // href="https://discord.gg/4eeurUVvTy"
                     className="hover:underline"
                   >
-                    Discord
+                    Linkdin
                   </a>
                 </li>
               </ul>
@@ -67,12 +67,16 @@ function Footer() {
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <a href="/" className="hover:underline">
+                  <a
+                  //  href="/" 
+                  className="hover:underline">
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="/" className="hover:underline">
+                  <a 
+                  // href="/"
+                   className="hover:underline">
                     Terms & Conditions
                   </a>
                 </li>

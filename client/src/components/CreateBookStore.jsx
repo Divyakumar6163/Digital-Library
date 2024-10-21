@@ -18,6 +18,7 @@ import PreviewBook from "./PreviewBookStore";
 import { createbook, updateChapters } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
+import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
@@ -25,6 +26,7 @@ const CreateBookStore = ({ bookinfo }) => {
   // store.dispatch(useractions.setBookDetails(bookinfo));
   const book_ID = bookinfo._id;
   // console.log(curbook);
+  const navigate = useNavigate();
   const [chapters, setChapters] = useState(bookinfo.chapters);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
@@ -58,6 +60,7 @@ const CreateBookStore = ({ bookinfo }) => {
     // setIsIntro((prev) => {
     //   // return !prev;
     // });
+    navigate(-1);
   };
   const saveChapter = () => {
     const newChapter = {
