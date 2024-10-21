@@ -2,8 +2,18 @@ import React, { useEffect, useState } from "react";
 import PreviewBook from "../components/PreviewBookStore";
 import NavBar from "../components/NavBar";
 import { getbookbyID } from "../API/createbook";
+<<<<<<< Updated upstream
 import { useParams ,useNavigate} from "react-router-dom"; 
 import { notify } from "../store/utils/notify";
+=======
+// <<<<<<< Updated upstream
+import { useParams, useNavigate } from "react-router-dom";
+import { notify } from "../store/utils/notify";
+// // =======
+// import { useParams } from "react-router-dom";
+// import Footer from "../components/Footer";
+// // >>>>>>> Stashed changes
+>>>>>>> Stashed changes
 import Pageloader from "../store/utils/pageloader";
 const chapter = [
     {
@@ -24,6 +34,7 @@ const chapter = [
     }
 ]
 export default function Readbook() {
+<<<<<<< Updated upstream
     const navigate = useNavigate();
     const { bookID } = useParams(); 
     const [book, setBook] = useState(null); 
@@ -53,3 +64,59 @@ export default function Readbook() {
         </>
     );
 }
+=======
+  // <<<<<<< Updated upstream
+  const navigate = useNavigate();
+  const { bookID } = useParams();
+  const [book, setBook] = useState(null);
+  useEffect(() => {
+    const fetchBook = async () => {
+      if (bookID) {
+        const fetchedBook = await getbookbyID(bookID);
+        setBook(fetchedBook);
+        if (!fetchedBook) {
+          notify("Book not found");
+          navigate("/bookStore");
+        }
+      }
+    };
+    fetchBook();
+  }, [bookID]);
+
+  return (
+    <>
+      <NavBar />
+      {book ? (
+        <PreviewBook chapters={book.chapters} bookinfo={book} />
+      ) : (
+        <p>Loading book data...</p>
+      )}
+    </>
+  );
+  // =======
+  // const { bookID } = useParams();
+  // const [book, setBook] = useState(null);
+  // useEffect(() => {
+  //   const fetchBook = async () => {
+  //     if (bookID) {
+  //       const fetchedBook = await getbookbyID(bookID);
+  //       setBook(fetchedBook);
+  //     }
+  //   };
+  //   fetchBook();
+  // }, [bookID]);
+
+  // return (
+  //   <>
+  //     <NavBar />
+  //     {book ? (
+  //       <PreviewBook chapters={book.chapters} />
+  //     ) : (
+  //       <p>Loading book data...</p>
+  //     )}
+  //     <Footer />
+  //   </>
+  // );
+  // >>>>>>> Stashed changes
+}
+>>>>>>> Stashed changes

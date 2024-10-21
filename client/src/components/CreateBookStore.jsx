@@ -62,6 +62,18 @@ const CreateBookStore = ({ bookinfo }) => {
     // });
     navigate(-1);
   };
+  const handleDiscard = () => {
+    setChapters([]);
+    // setIsIntro(false);
+    setShowFormOptions(false);
+    setSelectedComponents([]);
+    setTitle("");
+    setSummary("");
+    setSelectedChapterIndex(null);
+    setShowPreview(false);
+    setSelectedChapterIndex(null);
+  };
+  const handlePublish = () => {};
   const saveChapter = () => {
     const newChapter = {
       title,
@@ -229,13 +241,12 @@ const CreateBookStore = ({ bookinfo }) => {
         <>
           <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">
-              {bookinfo.booktitle}
-              </h2>
-              <p>
-                {bookinfo.description}
-              </p>
-              <img src={bookinfo.image? bookinfo.image:BookCover1} className="h-1/2"/>
+              <h2 className="text-xl font-bold mb-2">{bookinfo.booktitle}</h2>
+              <p>{bookinfo.description}</p>
+              <img
+                src={bookinfo.image ? bookinfo.image : BookCover1}
+                className="h-1/2"
+              />
             </div>
             <ul className="mb-6">
               {chapters?.map((chapter, index) => (
@@ -306,13 +317,13 @@ const CreateBookStore = ({ bookinfo }) => {
               </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={saveChapter}
+                onClick={handleDiscard}
               >
                 Discard
               </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={saveChapter}
+                onClick={handlePublish}
               >
                 Publish
               </button>
