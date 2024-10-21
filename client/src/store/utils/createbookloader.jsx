@@ -1,14 +1,12 @@
 import { FallingLines } from 'react-loader-spinner';
 
-export function Createbookloader() {
+export function Createbookloader({Heading}) {
     return (
         <div className='flex flex-col items-center justify-center h-screen'>
             {/* Book Creation Text */}
             <h1 className='text-3xl font-semibold text-gray-800 mb-4'>
-                Creating your book...
+                {Heading}
             </h1>
-
-            {/* Loader Animation */}
             <div className='flex items-center justify-center'>
                 <FallingLines
                     color="#4fa94d"

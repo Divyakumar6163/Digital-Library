@@ -20,6 +20,7 @@ import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+import { notify } from "../store/utils/notify";
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
   // const curbook = useSelector((state) => state.createbook);
@@ -36,6 +37,7 @@ const CreateBookStore = ({ bookinfo }) => {
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [issave, setissave] = useState(false);
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
       setExpandedChapters(expandedChapters.filter((i) => i !== index));
@@ -57,9 +59,6 @@ const CreateBookStore = ({ bookinfo }) => {
     });
   };
   const handleBack = () => {
-    // setIsIntro((prev) => {
-    //   // return !prev;
-    // });
     navigate(-1);
   };
   const handleDiscard = () => {
@@ -73,30 +72,36 @@ const CreateBookStore = ({ bookinfo }) => {
     setShowPreview(false);
     setSelectedChapterIndex(null);
   };
-  const handlePublish = () => {};
-  const saveChapter = () => {
+  const handlePublish = () => { };
+  const saveChapter = async () => {
+    setissave(true);
     const newChapter = {
-      title,
-      summary,
-      components: selectedComponents,
+        title,
+        summary,
+        components: selectedComponents,
     };
 
+    let updatedChapters;
+
     if (selectedChapterIndex !== null) {
-      const updatedChapters = [...chapters];
-      updatedChapters[selectedChapterIndex] = newChapter;
-      setChapters(updatedChapters);
-      curbookdispatch(
-        useractions.updateChapter(selectedChapterIndex, newChapter)
-      );
-      updateChapters(book_ID, chapters);
+        updatedChapters = chapters.map((chapter, index) =>
+            index === selectedChapterIndex ? newChapter : chapter
+        );
+        curbookdispatch(useractions.updateChapter(selectedChapterIndex, newChapter));
     } else {
-      setChapters([...chapters, newChapter]);
-      curbookdispatch(useractions.addChapter(newChapter));
-      updateChapters(book_ID, chapters);
+        updatedChapters = [...chapters, newChapter];
+        curbookdispatch(useractions.addChapter(newChapter));
     }
-    // addNewChapter();
-    // createbook(chapters)
-  };
+    const res = await updateChapters(book_ID, updatedChapters);
+    if (!res) {
+        notify("Failed to save chapters");
+    } else {
+        setChapters(updatedChapters);
+    }
+
+    setissave(false);
+};
+
 
   const editChapter = (index) => {
     const chapter = chapters[index];
@@ -241,8 +246,8 @@ const CreateBookStore = ({ bookinfo }) => {
         <>
           <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">{bookinfo.booktitle}</h2>
-              <p>{bookinfo.description}</p>
+              <h2 className="text-xl font-bold mb-2" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
+              <p dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
                 className="h-1/2"
@@ -313,7 +318,7 @@ const CreateBookStore = ({ bookinfo }) => {
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
                 onClick={saveChapter}
               >
-                Save
+                {issave ? "Saving..." : "Save"}
               </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"

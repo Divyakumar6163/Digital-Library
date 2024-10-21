@@ -170,7 +170,7 @@ const CreateBookPage = ({ setIsIntro }) => {
 
   return (
       <>
-      {createBookstate ? <Createbookloader/> : <div className="container mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
+      {createBookstate ? <Createbookloader Heading="Creating your book..."/> : <div className="container mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
       <h1 className="text-2xl font-semibold mb-4">Create a New Book</h1>
       
       {/* Book Name */}

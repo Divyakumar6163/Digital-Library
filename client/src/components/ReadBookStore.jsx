@@ -78,9 +78,8 @@ const ReadBookStore = ({ heading,books }) => {
                     <h5
                       className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2"
                       id={styles.cardReadTitle}
-                    >
-                      {data.description}
-                    </h5>
+                      dangerouslySetInnerHTML={{ __html: data.booktitle }}
+                    />
                   </a>
                   <p
                     onClick={() => handleReadMore(data)}

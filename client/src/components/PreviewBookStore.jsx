@@ -132,8 +132,8 @@ const PreviewBook = ({ bookinfo, chapters }) => {
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">{bookinfo.booktitle}</h2>
-              <p>{bookinfo.description}</p>
+              <h2 className="text-xl font-bold mb-2" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }}/>
+              <p dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
                 className="h-1/2"
@@ -172,23 +172,23 @@ const PreviewBook = ({ bookinfo, chapters }) => {
           </div>
 
           {/* Chapter Content on the right */}
-          <div className="lg:w-3/4 p-4 bg-gray-100">
+          <div className="lg:w-3/4 p-4 bg-gray-100 flex justify-around flex-col">
             {chapters.map((chapter, index) => (
               <div
                 key={index}
                 className="mb-8 p-4 bg-white shadow-md rounded-lg"
               >
                 <h2
-                  className="text-xl font-bold mb-2"
+                  className="text-xl font-bold mb-2 text-center"
                   dangerouslySetInnerHTML={{ __html: chapter.title }}
                 />
                 <p
-                  className="mb-4"
+                  className="mb-4 text-center "
                   dangerouslySetInnerHTML={{ __html: chapter.summary }}
                 />
                 <div>
                   {chapter.components.map((component) => (
-                    <div key={component.id} className="mb-4">
+                    <div key={component.id} className="mb-4 text-left">
                       {renderComponent(component)}
                     </div>
                   ))}

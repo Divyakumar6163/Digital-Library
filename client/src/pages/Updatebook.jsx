@@ -5,6 +5,7 @@ import { getbookbyID } from "../API/createbook";
 import CreateBookStore from "./../components/CreateBookStore";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import { Createbookloader } from "../store/utils/createbookloader";
 import { notify } from "../store/utils/notify";
 export default function Updatebook() {
   const { bookID } = useParams();
@@ -27,7 +28,7 @@ export default function Updatebook() {
   return (
     <>
       <NavBar />
-      {book ? <CreateBookStore bookinfo={book} /> : <p>Loading book data...</p>}
+      {book ? <CreateBookStore bookinfo={book} /> : <Createbookloader Heading="Fetching your book..."/>}
       <Footer />
     </>
   );
