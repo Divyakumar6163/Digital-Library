@@ -10,13 +10,8 @@ import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
 import ForgotPassword from "./components/forgotpassword.jsx";
 import { ToastContainer } from "react-toastify";
-<<<<<<< Updated upstream
 import {  useSelector } from "react-redux";
 import { checktoken} from "./API/userlogin.jsx";
-=======
-import { useDispatch, useSelector } from "react-redux";
-import { getuserlogin, checktoken } from "./API/userlogin.jsx";
->>>>>>> Stashed changes
 import { getallbooks, getalltags } from "./API/filteringbook.jsx";
 import Updatebook from "./pages/Updatebook.jsx";
 import Readbook from "./pages/Readbook.jsx";
