@@ -62,15 +62,15 @@ const CreateBookStore = ({ bookinfo }) => {
     navigate(-1);
   };
   const handleDiscard = () => {
-    setChapters([]);
+    // setChapters([]);
     // setIsIntro(false);
-    setShowFormOptions(false);
-    setSelectedComponents([]);
-    setTitle("");
-    setSummary("");
-    setSelectedChapterIndex(null);
-    setShowPreview(false);
-    setSelectedChapterIndex(null);
+    // setShowFormOptions(false);
+    // setSelectedComponents([]);
+    // setTitle("");
+    // setSummary("");
+    // setSelectedChapterIndex(null);
+    // setShowPreview(false);
+    // setSelectedChapterIndex(null);
   };
   const handlePublish = () => { };
   const saveChapter = async () => {
@@ -321,13 +321,13 @@ const CreateBookStore = ({ bookinfo }) => {
                 {issave ? "Saving..." : "Save"}
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-not-allowed"
                 onClick={handleDiscard}
               >
                 Discard
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-not-allowed"
                 onClick={handlePublish}
               >
                 Publish
