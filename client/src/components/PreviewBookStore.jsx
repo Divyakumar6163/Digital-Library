@@ -132,7 +132,7 @@ const PreviewBook = ({ bookinfo, chapters }) => {
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }}/>
+              <h2 className="text-xl font-bold mb-2" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
               <p dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
@@ -172,23 +172,28 @@ const PreviewBook = ({ bookinfo, chapters }) => {
           </div>
 
           {/* Chapter Content on the right */}
-          <div className="lg:w-3/4 p-4 bg-gray-100 flex justify-around flex-col">
+          <div className="lg:w-3/4 bg-gray-50 flex flex-col items-start justify-start p-8 space-y-6">
             {chapters.map((chapter, index) => (
               <div
                 key={index}
-                className="mb-8 p-4 bg-white shadow-md rounded-lg"
+                className="w-full p-6 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
               >
+                {/* Chapter Title */}
                 <h2
-                  className="text-xl font-bold mb-2 text-center"
+                  className="text-2xl font-bold mb-4 text-center text-gray-800 border-b pb-2"
                   dangerouslySetInnerHTML={{ __html: chapter.title }}
                 />
+
+                {/* Chapter Summary */}
                 <p
-                  className="mb-4 text-center "
+                  className="text-base text-gray-600 mb-4 text-center leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: chapter.summary }}
                 />
-                <div>
+
+                {/* Chapter Components */}
+                <div className="space-y-4">
                   {chapter.components.map((component) => (
-                    <div key={component.id} className="mb-4 text-left">
+                    <div key={component.id} className="text-left">
                       {renderComponent(component)}
                     </div>
                   ))}
@@ -196,6 +201,7 @@ const PreviewBook = ({ bookinfo, chapters }) => {
               </div>
             ))}
           </div>
+
         </div>
       )}
     </div>

@@ -116,9 +116,10 @@ export default function NavBar1() {
                 {userState.userinfo.emailid}
               </span>
             </Dropdown.Header>
-            <Dropdown.Item>Dashboard</Dropdown.Item>
+            <Dropdown.Item>Profile</Dropdown.Item>
             <Dropdown.Item>Premium</Dropdown.Item>
             <Dropdown.Item>Books</Dropdown.Item>
+            <Dropdown.Item>Saved Books</Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
           </Dropdown>

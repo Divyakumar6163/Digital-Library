@@ -24,9 +24,9 @@ import { notify } from "../store/utils/notify";
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
   // const curbook = useSelector((state) => state.createbook);
-  // store.dispatch(useractions.setBookDetails(bookinfo));
+  store.dispatch(useractions.setBookDetails(bookinfo));
   const book_ID = bookinfo._id;
-  // console.log(curbook);
+  console.log(bookinfo);
   const navigate = useNavigate();
   const [chapters, setChapters] = useState(bookinfo.chapters);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
