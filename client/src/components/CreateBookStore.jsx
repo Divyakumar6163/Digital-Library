@@ -241,13 +241,13 @@ const CreateBookStore = ({ bookinfo }) => {
   };
   console.log(chapters);
   return (
-    <div className="container mx-auto p-4 min-h-screen flex bg-gray-100 relative">
+    <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-row">
       {!showPreview && (
         <>
-          <div className="lg:w-1/4 bg-white p-4 shadow-md lg:static absolute top-0 left-0 h-full transition-transform duration-300">
+          <div className="sm:w-1/4 bg-white p-4 shadow-md lg:static top-0 left-0 h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
-              <p dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
+              <h2 className="text-2xl font-bold mb-2 text-center" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
+              <p className="text-center" dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
                 className="h-1/2"
@@ -306,34 +306,34 @@ const CreateBookStore = ({ bookinfo }) => {
             </button>
           </div>
 
-          <div className="lg:w-3/4 p-6 w-full">
-            <div className="flex justify-between mb-6">
+          <div className=" w-full sm:w-3/4 p-2 sm:p-6">
+            <div className="flex  flex-col justify-around mb-6 sm:flex-row">
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg my-1"
                 onClick={handleBack}
               >
                 Back
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                className="bg-green-500 text-white py-2 px-4 rounded-lg  my-1"
                 onClick={saveChapter}
               >
                 {issave ? "Saving..." : "Save"}
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-not-allowed"
+                className="bg-red-500 text-white py-2 px-4 rounded-lg cursor-not-allowed  my-1"
                 onClick={handleDiscard}
               >
                 Discard
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-not-allowed"
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-not-allowed  my-1"
                 onClick={handlePublish}
               >
                 Publish
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                className="bg-yellow-500 text-white py-2 px-4 rounded-lg  my-1"
                 onClick={handlePreviewBookStore}
               >
                 {!showPreview ? "Preview" : "Close"}

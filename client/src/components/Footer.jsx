@@ -56,7 +56,7 @@ function Footer() {
                     // href="https://discord.gg/4eeurUVvTy"
                     className="hover:underline"
                   >
-                    Linkdin
+                    Linkedin
                   </a>
                 </li>
               </ul>
