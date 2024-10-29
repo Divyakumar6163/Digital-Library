@@ -46,7 +46,7 @@ export default function Readbook() {
             <NavBar />
             
             {book ? (
-                <PreviewBook chapters={book.chapters}  bookinfo = {book}/> 
+                <PreviewBook chapters={book.chapters}  bookinfo = {book} ispre={false}/> 
             ) : (
                 <div className="flex justify-around"><Pageloader/></div>
             )}

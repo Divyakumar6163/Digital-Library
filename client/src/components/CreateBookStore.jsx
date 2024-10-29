@@ -76,31 +76,31 @@ const CreateBookStore = ({ bookinfo }) => {
   const saveChapter = async () => {
     setissave(true);
     const newChapter = {
-        title,
-        summary,
-        components: selectedComponents,
+      title,
+      summary,
+      components: selectedComponents,
     };
 
     let updatedChapters;
 
     if (selectedChapterIndex !== null) {
-        updatedChapters = chapters.map((chapter, index) =>
-            index === selectedChapterIndex ? newChapter : chapter
-        );
-        curbookdispatch(useractions.updateChapter(selectedChapterIndex, newChapter));
+      updatedChapters = chapters.map((chapter, index) =>
+        index === selectedChapterIndex ? newChapter : chapter
+      );
+      curbookdispatch(useractions.updateChapter(selectedChapterIndex, newChapter));
     } else {
-        updatedChapters = [...chapters, newChapter];
-        curbookdispatch(useractions.addChapter(newChapter));
+      updatedChapters = [...chapters, newChapter];
+      curbookdispatch(useractions.addChapter(newChapter));
     }
     const res = await updateChapters(book_ID, updatedChapters);
     if (!res) {
-        notify("Failed to save chapters");
+      notify("Failed to save chapters");
     } else {
-        setChapters(updatedChapters);
+      setChapters(updatedChapters);
     }
 
     setissave(false);
-};
+  };
 
 
   const editChapter = (index) => {
@@ -414,14 +414,18 @@ const CreateBookStore = ({ bookinfo }) => {
         </>
       )}
       {/* <div className="flex justify-between mb-6"> */}
-      <button
-        // className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-        onClick={handlePreviewBookStore}
-      >
-        {showPreview && "Close"}
-      </button>
-      {/* </div> */}
-      {showPreview && <PreviewBook chapters={chapters} bookinfo={bookinfo} />}
+      {showPreview ? <div className="flex flex-col w-full">
+        <button
+          className={`w-48 bg-blue-500 text-white py-4 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 ${showPreview ? "mt-4" : ""
+            }`}
+          onClick={handlePreviewBookStore}
+        >
+          {showPreview ? "Close Preview" : "Preview"}
+        </button>
+
+        {showPreview && <PreviewBook chapters={chapters} bookinfo={bookinfo} ispre={true} />}
+      </div> : ""
+      }
     </div>
   );
 };

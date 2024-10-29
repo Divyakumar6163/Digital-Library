@@ -65,7 +65,7 @@ export default function NavBar1() {
         )}
         <div
           className="relative w-56"
-          // style={{ marginRight: "3vw" }}
+          style={{ marginRight: "2px" }}
           id={styles.seachBar1}
         >
           <input

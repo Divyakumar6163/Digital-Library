@@ -5,7 +5,7 @@ import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 
-const PreviewBook = ({ bookinfo, chapters }) => {
+const PreviewBook = ({ bookinfo, chapters,ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
 
   const toggleChapterExpansion = (index) => {
@@ -117,10 +117,10 @@ const PreviewBook = ({ bookinfo, chapters }) => {
   };
 
   return (
-    <div className="container mx-auto p-4 min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
+    <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-col ">
+      {ispre ? <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
         Preview Book
-      </h1>
+      </h1> :""}
       {chapters.length === 0 ? (
         <p className="text-lg text-gray-500 italic text-center">
           No chapters available.
@@ -128,15 +128,15 @@ const PreviewBook = ({ bookinfo, chapters }) => {
       ) : (
         // Render chapters here
 
-        <div className="flex">
+        <div className="flex flex-col sm:flex-row">
           {/* Chapter List on the left */}
-          <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
-              <p dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
+          <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300 ">
+            <div className="mb-6 flex justify-around flex-col">
+              <h2 className="text-xl font-bold mb-2 text-center" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
+              <p dangerouslySetInnerHTML={{ __html: bookinfo.description }}  className="text-center"/>
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
-                className="h-1/2"
+                className="h-1/2 items-center"
               />
             </div>
             <ul className="mb-6">
@@ -172,15 +172,15 @@ const PreviewBook = ({ bookinfo, chapters }) => {
           </div>
 
           {/* Chapter Content on the right */}
-          <div className="lg:w-3/4 bg-gray-50 flex flex-col items-start justify-start p-8 space-y-6">
+          <div className="sm:w-3/4 bg-gray-50 flex flex-col items-start justify-start space-y-6">
             {chapters.map((chapter, index) => (
               <div
                 key={index}
-                className="w-full p-6 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
+                className="w-full p-4 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
               >
                 {/* Chapter Title */}
                 <h2
-                  className="text-2xl font-bold mb-4 text-center text-gray-800 border-b pb-2"
+                  className="text-2xl font-bold mb-4 text-center text-gray-800 border-b pb-2 "
                   dangerouslySetInnerHTML={{ __html: chapter.title }}
                 />
 
