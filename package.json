@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "primeicons": "^7.0.0",
+    "primereact": "^10.8.4",
+    "react-loader-spinner": "^6.1.6",
     "react-toastify": "^10.0.5"
   }
 }
