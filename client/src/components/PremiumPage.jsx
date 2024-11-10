@@ -1,7 +1,12 @@
 import React from "react";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
+import { useNavigate } from "react-router";
 const PremiumPage = () => {
+  const navigate = useNavigate();
+  const handlePlan = () => {
+    navigate("/payment");
+  };
   return (
     <>
       <Navbar />
@@ -15,9 +20,9 @@ const PremiumPage = () => {
             Choose a subscription plan that works for you and enjoy unlimited
             access to premium eBooks and more.
           </p>
-          <button className="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
+          {/* <button className="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
             Get Started
-          </button>
+          </button> */}
         </section>
 
         {/* Subscription Offers Section */}
@@ -33,7 +38,10 @@ const PremiumPage = () => {
                 <h3 className="text-xl font-bold mb-2">{plan.title}</h3>
                 <p className="text-gray-500 mb-4">{plan.description}</p>
                 <p className="text-2xl font-semibold mb-4">${plan.price}</p>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+                  onClick={handlePlan}
+                >
                   Choose Plan
                 </button>
               </div>

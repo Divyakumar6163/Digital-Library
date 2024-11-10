@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import * as userinfoactions from "../store/actions/userinfoactions.jsx";
 import Footer from "./Footer";
 import Navbar from "./NavBar";
-
+import { store } from "./../store/store";
+import * as useractions from "./../store/actions/userinfoactions";
+import * as authactions from "./../store/actions/authactions";
+import * as bookactions from "./../store/actions/bookactions";
+import { useNavigate } from "react-router";
 const UserProfile = () => {
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
@@ -21,7 +25,7 @@ const UserProfile = () => {
 
   // Editable mode toggle
   const [isEditing, setIsEditing] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Load initial values for the profile on component mount
     setName(userState.userinfo.name || "");
@@ -74,7 +78,14 @@ const UserProfile = () => {
       reader.readAsDataURL(file);
     }
   };
-
+  const handleSignOut = () => {
+    store.dispatch(useractions.setlogin(false));
+    store.dispatch(useractions.setuserinfo({}));
+    store.dispatch(authactions.setAccessToken(null));
+    store.dispatch(authactions.setRefreshToken(null));
+    store.dispatch(bookactions.setBookDetails(null));
+    navigate("/");
+  };
   return (
     <>
       <Navbar />
@@ -216,7 +227,10 @@ const UserProfile = () => {
 
         {/* Sign Out Button */}
         <div className="w-full max-w-2xl mt-8 text-center">
-          <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition">
+          <button
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition"
+            onClick={handleSignOut}
+          >
             Sign Out
           </button>
         </div>

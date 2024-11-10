@@ -4,22 +4,35 @@ import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import * as authactions from "./../store/actions/authactions";
 import * as bookactions from "./../store/actions/bookactions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import Logo from "../image/Logo.png";
 import styles from "./NavBar.module.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+const adminMail = ["divyakumar768800@gmail.com", "pushkargupta063@gmail.com"];
+
 export default function NavBar1() {
   const navigate = useNavigate();
   const [isSearch, setIsSearch] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const userState = useSelector((state) => state.user);
-  // const dispatch = useDispatch();
-  console.log(userState);
+  const islogin = useSelector((state) => state.user.islogin);
+  const username = useSelector((state) => state.user.userinfo.name);
+  const profile = useSelector((state) => state.user.userinfo.profileImage);
+
+  // Set isAdmin only when userState.userinfo.emailid changes
+  useEffect(() => {
+    setIsAdmin(adminMail.includes(userState.userinfo.emailid));
+  }, [userState.userinfo.emailid]);
+
   const handleIsSearch = () => {
     setIsSearch(!isSearch);
   };
+
   const handleSignOut = () => {
     store.dispatch(useractions.setlogin(false));
     store.dispatch(useractions.setuserinfo({}));
@@ -27,17 +40,23 @@ export default function NavBar1() {
     store.dispatch(authactions.setRefreshToken(null));
     store.dispatch(bookactions.setBookDetails(null));
   };
-  function handleSearch() {}
+
+  function handleSearch() {
+    // Search functionality
+  }
+
   function handleProfile() {
     navigate("/profile");
   }
+
   function handlePremium() {
     navigate("/premium");
   }
-  const islogin = useSelector((state) => state.user.islogin);
-  const username = useSelector((state) => state.user.userinfo.name);
-  const profile = useSelector((state) => state.user.userinfo.profileImage);
-  console.log(profile);
+
+  function handleBooks() {
+    navigate("/bookStore");
+  }
+
   return (
     <Navbar fluid style={{ backgroundColor: "black" }}>
       <Navbar.Brand href="/">
@@ -57,7 +76,6 @@ export default function NavBar1() {
               id={styles.seachInput}
               type="text"
               className="w-full px-3 py-2 pl-10 text-sm text-white placeholder-gray-500 bg-gray-800 border border-gray-100 rounded-lg focus:outline-none focus:ring focus:ring-white "
-              //   style={{ borderColor: "white" }}
               placeholder="Search..."
             />
             <FaSearch
@@ -77,7 +95,6 @@ export default function NavBar1() {
             id={styles.seachInput1}
             type="text"
             className="w-full-[20px] px-3 py-2 pl-10 text-sm text-white placeholder-gray-500 bg-gray-800 border border-gray-100 rounded-lg focus:outline-none focus:ring focus:ring-white "
-            //   style={{ borderColor: "white" }}
             placeholder="Search..."
           />
           <FaSearch
@@ -117,8 +134,7 @@ export default function NavBar1() {
             </Dropdown.Header>
             <Dropdown.Item onClick={handleProfile}>Profile</Dropdown.Item>
             <Dropdown.Item onClick={handlePremium}>Premium</Dropdown.Item>
-            <Dropdown.Item>Books</Dropdown.Item>
-            <Dropdown.Item>Saved Books</Dropdown.Item>
+            <Dropdown.Item onClick={handleBooks}>Books</Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
           </Dropdown>
@@ -129,15 +145,17 @@ export default function NavBar1() {
         <Navbar.Link style={{ color: "white" }}>
           <Link to="/">Home</Link>
         </Navbar.Link>
-        {/* <Navbar.Link style={{ color: "white" }}>
-          <NavLink to="#about">About</NavLink>
-        </Navbar.Link> */}
         <Navbar.Link style={{ color: "white" }}>
           <Link to="/bookStore">Read Books</Link>
         </Navbar.Link>
         <Navbar.Link href="/createBook" style={{ color: "white" }}>
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
+        {isAdmin && (
+          <Navbar.Link style={{ color: "white" }}>
+            <Link to="/adminStore">Publish Books</Link>
+          </Navbar.Link>
+        )}
         <Navbar.Link style={{ color: "white" }}>
           {!islogin ? <Link to="/login">SignUp/Login</Link> : null}
         </Navbar.Link>

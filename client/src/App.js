@@ -5,12 +5,14 @@ import BookStore from "./pages/BookStorePage.jsx";
 import BooksLibrary from "./pages/BooksLibrary.jsx";
 import { useEffect } from "react";
 import CreateBook from "./pages/CreateBook.jsx";
-import AdminPage from "./pages/AdminPage.jsx";
+// import AdminPage from "./pages/AdminPage.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
+import PaymentPage from "./components/PaymentPage";
 import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
+import AdminStore from "./components/AdminStore.jsx";
 import ForgotPassword from "./components/forgotpassword.jsx";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -42,10 +44,12 @@ function App() {
           <Route path="/" element={<HeroPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<PremiumPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />
-          <Route path="/adminBook" element={<AdminPage />} />
+          <Route path="/adminStore" element={<AdminStore />} />
+          {/* <Route path="/adminBook/:bookID" element={<AdminPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
           <Route path="/readbook/:bookID" element={<Readbook />} />

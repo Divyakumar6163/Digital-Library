@@ -1,121 +1,18 @@
 import React, { useState } from "react";
 import CreateGraph from "./CreateGraph";
 import { BlockMath } from "react-katex";
+import { store } from "./../store/store";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
-
-const initialChapters = [
-  {
-    title: "Chapter 1: Introduction to Knowledge",
-    summary:
-      "This chapter provides an introduction to knowledge and its importance in various fields.",
-    components: [
-      {
-        id: 1,
-        type: "Heading",
-        content: "What is Knowledge?",
-        locked: false,
-      },
-      {
-        id: 2,
-        type: "Text",
-        content:
-          "Knowledge is the awareness and understanding of facts, truths, or information gained through experience or education.",
-        locked: false,
-      },
-      {
-        id: 3,
-        type: "Image",
-        content: {
-          url: "https://via.placeholder.com/300",
-          alt: "Placeholder image about knowledge",
-        },
-        locked: false,
-      },
-      {
-        id: 4,
-        type: "Quiz",
-        content: {
-          question: "Which of the following is a source of knowledge?",
-          options: [
-            { value: "Books" },
-            { value: "TV shows" },
-            { value: "Social media" },
-            { value: "All of the above" },
-          ],
-        },
-        locked: true, // This quiz is locked
-      },
-    ],
-  },
-  {
-    title: "Chapter 2: Advanced Concepts in Knowledge",
-    summary: "This chapter explores deeper into the concepts of knowledge.",
-    components: [
-      {
-        id: 5,
-        type: "Heading",
-        content: "Types of Knowledge",
-        locked: false,
-      },
-      {
-        id: 6,
-        type: "Text",
-        content:
-          "There are various types of knowledge including empirical, rational, and tacit knowledge.",
-        locked: false,
-      },
-      {
-        id: 7,
-        type: "Equation",
-        content: "E = mc^2",
-        locked: true, // This equation is locked
-      },
-      {
-        id: 8,
-        type: "Video",
-        content: {
-          url: "https://www.example.com/sample-video.mp4",
-        },
-        locked: false,
-      },
-    ],
-  },
-  {
-    title: "Chapter 3: Interactive Knowledge",
-    summary:
-      "This chapter focuses on interactive methods of acquiring knowledge.",
-    components: [
-      {
-        id: 9,
-        type: "Heading",
-        content: "Interactive Learning",
-        locked: false,
-      },
-      {
-        id: 10,
-        type: "Graph",
-        content: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-          dataPoints: [10, 20, 30, 40, 50],
-        },
-        locked: true, // This graph is locked
-      },
-      {
-        id: 11,
-        type: "Fill in the Blanks",
-        content: {
-          questions: "Knowledge is ___ and understanding is ___.",
-          answers: ["power", "key"],
-        },
-        locked: false,
-      },
-    ],
-  },
-];
-
-const AdminBook = ({ isSubscribed }) => {
-  const [chapters, setChapters] = useState(initialChapters); // Store chapters in state
+import { useDispatch, useSelector } from "react-redux";
+import * as bookactions from "./../store/actions/bookactions";
+const AdminBook = ({ book, setIsBook }) => {
+  const dispatch = useDispatch();
+  const reduxBook = useSelector((state) => state.books.allbooks);
+  const bookIndex = reduxBook.find((b) => b._id === book._id);
+  console.log(bookIndex);
+  const [chapters, setChapters] = useState(bookIndex.chapters); // Store chapters in state
+  console.log(chapters);
   const [expandedChapters, setExpandedChapters] = useState([]);
 
   const toggleChapterExpansion = (index) => {
@@ -144,7 +41,7 @@ const AdminBook = ({ isSubscribed }) => {
   };
 
   const renderComponent = (component, chapterIndex, componentIndex) => {
-    if (component.locked && !isSubscribed) {
+    if (component.locked) {
       return (
         <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
           <p>This content is locked. Please subscribe to view it.</p>
@@ -178,7 +75,7 @@ const AdminBook = ({ isSubscribed }) => {
         );
       case "Quiz":
         return renderMCQ(component.content);
-      case "Fill in the Blanks":
+      case "FillInTheBlanks":
         return renderFIB(component.content); // Rendering FIB component
       case "Image":
         return (
@@ -252,10 +149,50 @@ const AdminBook = ({ isSubscribed }) => {
       </div>
     );
   };
+  const handleBack = () => {
+    setIsBook(false);
+  };
 
+  const handlePublish = () => {};
+
+  const handleDiscard = () => {
+    console.log("Discarding changes");
+    // Implement the logic to discard changes
+  };
+  const handleSaveChanges = () => {
+    store.dispatch(bookactions.updateBookChapters(bookIndex._id, chapters));
+  };
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Admin: Manage Book Content</h1>
+      <div className="flex justify-between mb-6">
+        <button
+          onClick={handleBack}
+          className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-400"
+        >
+          Back
+        </button>
+        <div>
+          <button
+            onClick={handleSaveChanges}
+            className="mr-4 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600"
+          >
+            Save Changes
+          </button>
+          <button
+            onClick={handlePublish}
+            className="mr-4 px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600"
+          >
+            Publish
+          </button>
+          <button
+            onClick={handleDiscard}
+            className="mr-4 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600"
+          >
+            Delete Book
+          </button>
+        </div>
+      </div>
       {chapters.length === 0 ? (
         <p>No chapters available.</p>
       ) : (
