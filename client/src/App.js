@@ -8,16 +8,18 @@ import CreateBook from "./pages/CreateBook.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Login from "./components/Login";
+import Profile from "./components/Profile";
 import SignUpPage from "./components/SignUp";
 import SetNewPassword from "./components/newpassword.jsx";
 import ForgotPassword from "./components/forgotpassword.jsx";
 import { ToastContainer } from "react-toastify";
-import {  useSelector } from "react-redux";
-import { checktoken} from "./API/userlogin.jsx";
+import { useSelector } from "react-redux";
+import { checktoken } from "./API/userlogin.jsx";
 import { getallbooks, getalltags } from "./API/filteringbook.jsx";
 import Updatebook from "./pages/Updatebook.jsx";
 import Readbook from "./pages/Readbook.jsx";
 import "react-toastify/dist/ReactToastify.css";
+import PremiumPage from "./components/PremiumPage.jsx";
 
 // export const ToLink  = process.env.TO_LINK
 export const ToLink = "https://digital-library-cryf.onrender.com";
@@ -38,6 +40,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HeroPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/premium" element={<PremiumPage />} />
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

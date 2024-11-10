@@ -8,23 +8,22 @@ import { FiArrowRightCircle } from "react-icons/fi";
 import Pageloader from "../store/utils/pageloader";
 import { notify } from "../store/utils/notify";
 import PremiumImage from "./../image/premium.jpg";
-const ReadBookStore = ({ heading,books }) => {
+const ReadBookStore = ({ heading, books }) => {
   const navigate = useNavigate();
   const Filteredbooks = books;
-  const [visibleBooks, setVisibleBooks] = useState(7); 
+  const [visibleBooks, setVisibleBooks] = useState(7);
   const [hoveredBook, setHoveredBook] = useState(null);
-  const isuser  =  useSelector((state) => state.user);
+  const isuser = useSelector((state) => state.user);
   function handleReadMore(data) {
-    console.log(data.booktype)
-    if(!isuser.islogin){
-      notify("Please login first")
+    console.log(data.booktype);
+    if (!isuser.islogin) {
+      notify("Please login first");
       return;
     }
-    if(data.booktype ==="Premium"){
-      notify("Please purchase a membership to access this book")
+    if (data.booktype === "Premium") {
+      notify("Please purchase a membership to access this book");
       return;
-    }
-    else{
+    } else {
       navigate(`/readbook/${data._id}`);
     }
   }
@@ -48,7 +47,7 @@ const ReadBookStore = ({ heading,books }) => {
         )}
         {Object.keys(Filteredbooks).length > 0 &&
           Object.values(Filteredbooks)
-            .slice(0, visibleBooks) 
+            .slice(0, visibleBooks)
             .map((data, idx) => (
               <div
                 key={idx}
@@ -58,23 +57,29 @@ const ReadBookStore = ({ heading,books }) => {
                 <div
                   className="h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center "
                   id={styles.cardReadImg}
-                  onMouseEnter={() => data.booktype === "Premium" && setHoveredBook(idx)}
+                  onMouseEnter={() =>
+                    data.booktype === "Premium" && setHoveredBook(idx)
+                  }
                   onMouseLeave={() => setHoveredBook(null)}
                 >
                   <a className="block h-full w-full">
                     <img
-                      className={`object-cover w-full h-full rounded-t-lg  ${data.booktype==="Premium" ? "cursor-not-allowed":""}`}
-                      src={hoveredBook === idx && data.booktype === "Premium"
+                      className={`object-cover w-full h-full rounded-t-lg  ${
+                        data.booktype === "Premium" ? "cursor-not-allowed" : ""
+                      }`}
+                      src={
+                        hoveredBook === idx && data.booktype === "Premium"
                           ? PremiumImage
                           : data.image
                           ? data.image
-                          : BookCover1}
+                          : BookCover1
+                      }
                       alt={data.booktitle}
                     />
                   </a>
                 </div>
                 <div className="p-5">
-                  <a >
+                  <a>
                     <h5
                       className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2"
                       id={styles.cardReadTitle}
@@ -113,7 +118,7 @@ const ReadBookStore = ({ heading,books }) => {
               onClick={loadMoreBooks}
               className="px-3 py-2 text-whitefocus:ring-4 focus:outline-none focus:ring-blue-300"
             >
-             <FiArrowRightCircle className="h-16 w-16 text-black"/>
+              <FiArrowRightCircle className="h-16 w-16 text-black" />
             </button>
           </div>
         )}

@@ -9,9 +9,10 @@ import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import Logo from "../image/Logo.png";
 import styles from "./NavBar.module.css";
-
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 export default function NavBar1() {
+  const navigate = useNavigate();
   const [isSearch, setIsSearch] = useState(false);
   const userState = useSelector((state) => state.user);
   // const dispatch = useDispatch();
@@ -26,8 +27,12 @@ export default function NavBar1() {
     store.dispatch(authactions.setRefreshToken(null));
     store.dispatch(bookactions.setBookDetails(null));
   };
-  function handleSearch() {
-    // Implement your search logic here
+  function handleSearch() {}
+  function handleProfile() {
+    navigate("/profile");
+  }
+  function handlePremium() {
+    navigate("/premium");
   }
   const islogin = useSelector((state) => state.user.islogin);
   const username = useSelector((state) => state.user.userinfo.name);
@@ -102,13 +107,7 @@ export default function NavBar1() {
           <Dropdown
             arrowIcon={false}
             inline
-            label={
-              <Avatar
-                alt="User settings"
-                img={profile}
-                rounded
-              />
-            }
+            label={<Avatar alt="User settings" img={profile} rounded />}
           >
             <Dropdown.Header>
               <span className="block text-sm">{username}</span>
@@ -116,8 +115,8 @@ export default function NavBar1() {
                 {userState.userinfo.emailid}
               </span>
             </Dropdown.Header>
-            <Dropdown.Item>Profile</Dropdown.Item>
-            <Dropdown.Item>Premium</Dropdown.Item>
+            <Dropdown.Item onClick={handleProfile}>Profile</Dropdown.Item>
+            <Dropdown.Item onClick={handlePremium}>Premium</Dropdown.Item>
             <Dropdown.Item>Books</Dropdown.Item>
             <Dropdown.Item>Saved Books</Dropdown.Item>
             <Dropdown.Divider />
@@ -140,7 +139,7 @@ export default function NavBar1() {
           <NavLink to="/createBook">Create Books</NavLink>
         </Navbar.Link>
         <Navbar.Link style={{ color: "white" }}>
-          {!islogin ? <Link to="/login">SignUp/Login</Link> :null}
+          {!islogin ? <Link to="/login">SignUp/Login</Link> : null}
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
