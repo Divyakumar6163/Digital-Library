@@ -12,7 +12,11 @@ import styles from "./NavBar.module.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const adminMail = ["divyakumar768800@gmail.com", "pushkargupta063@gmail.com"];
+const adminMail = [
+  "divyakumar768800@gmail.com",
+  "pushkargupta063@gmail.com",
+  "22me02037@gmail.com",
+];
 
 export default function NavBar1() {
   const navigate = useNavigate();
