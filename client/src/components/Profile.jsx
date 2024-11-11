@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { notify } from "../store/utils/notify";
 import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "../API/userlogin.jsx";
 import * as userinfoactions from "../store/actions/userinfoactions.jsx";
 import Footer from "./Footer";
 import Navbar from "./NavBar";
@@ -36,18 +38,36 @@ const UserProfile = () => {
   }, [userState.userinfo]);
 
   // Save handler
-  const handleSave = () => {
-    // Dispatch update to the Redux store
-    dispatch(
-      userinfoactions.updateUserProfile({
-        name,
-        phoneno: mobile,
-        about,
-        favoriteCategories: categories,
-        profileImage,
-      })
-    );
+  // Save handler
+  const handleSave = async () => {
     setIsEditing(false);
+
+    const userInfoUpdate = {
+      ...userState.userinfo, // Ensures existing info is carried over
+      name,
+      phoneno: mobile,
+      about,
+      favoriteCategories: categories,
+      profileImage,
+    };
+    // console.log(userInfoUpdate);
+    try {
+      const response = await updateProfile(userInfoUpdate); // Pass the full updated object
+      console.log(response);
+
+      // Adjust this condition based on actual API response structure
+      if (response.status === "success") {
+        notify("Data successfully updated");
+
+        // Update profile in the Redux store after a successful update
+        dispatch(userinfoactions.updateUserProfile(userInfoUpdate));
+      } else {
+        notify("Failed to update user profile");
+      }
+    } catch (error) {
+      console.error("Error in profile updation", error);
+      notify("An error occurred while updating the user profile");
+    }
   };
 
   // Add new category

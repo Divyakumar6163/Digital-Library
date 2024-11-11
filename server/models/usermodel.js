@@ -28,18 +28,29 @@ const userSchema = new Schema({
     required: true,
     select: false,
   },
+  about: {
+    type: String,
+    default: "Write about yourself",
+  },
+  favoriteCategories: {
+    type: Array,
+    default: [],
+    // enum: ["Fiction", "Non-Fiction", "Technology", "Sci-Fi"],
+  },
   ispreminum: {
     type: "boolean",
     default: false,
   },
-  purchedbooks:{
+  purchedbooks: {
     type: Schema.ObjectId,
-    ref : "Book"
+    ref: "Book",
   },
-  wishlistbooks: [{
-    type: Schema.ObjectId,
-    ref: "Book"
-  }],
+  wishlistbooks: [
+    {
+      type: Schema.ObjectId,
+      ref: "Book",
+    },
+  ],
   lastLogin: {
     type: Date,
     default: Date.now,

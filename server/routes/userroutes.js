@@ -21,16 +21,18 @@ router.post("/resetpassword", authcontroller.resetpassword);
 
 router.get("/getresettoken", authcontroller.getallresettoken);
 
-router.post('/:userID/wishlist', userbookcontroller.addToWishlist);
+router.post("/user/profile", userbookcontroller.profile);
 
-router.get('/:userID/wishlist', userbookcontroller.getWishlistBooks);
+router.post("/:userID/wishlist", userbookcontroller.addToWishlist);
 
-router.delete('/:userID/wishlist', userbookcontroller.removeFromWishlist);
+router.get("/:userID/wishlist", userbookcontroller.getWishlistBooks);
 
-router.post('/auth/google', usercontroller.googleLoginSignup)
+router.delete("/:userID/wishlist", userbookcontroller.removeFromWishlist);
 
-router.get('/authcheck', authcontroller.checkaccesstoken)
+router.post("/auth/google", usercontroller.googleLoginSignup);
 
-router.post('/authcheck/refresh', authcontroller.refreshAccessToken)
+router.get("/authcheck", authcontroller.checkaccesstoken);
+
+router.post("/authcheck/refresh", authcontroller.refreshAccessToken);
 
 module.exports = router;
