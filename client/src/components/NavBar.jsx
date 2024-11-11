@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 const adminMail = [
   "divyakumar768800@gmail.com",
   "pushkargupta063@gmail.com",
-  "22me02037@gmail.com",
+  "22me02037@iitbbs.ac.in",
 ];
 
 export default function NavBar1() {
