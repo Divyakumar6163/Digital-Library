@@ -15,7 +15,7 @@ import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";
-import { createbook, updateChapters } from "../API/createbook";
+import { updatePublish, updateChapters } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useNavigate } from "react-router";
@@ -72,7 +72,33 @@ const CreateBookStore = ({ bookinfo }) => {
     // setShowPreview(false);
     // setSelectedChapterIndex(null);
   };
-  const handlePublish = () => { };
+
+  // Update `handlePublish` function
+  const handlePublish = async () => {
+    if (bookinfo.ispublished === null) {
+      const updatedBookInfo = { ...bookinfo, ispublished: false }; // Update `ispublished` to false
+      // console.log(updatedBookInfo);
+      try {
+        const response = await updatePublish(updatedBookInfo._id, false); // Pass only the ID to the API function
+        console.log(response?.status);
+
+        if (response === true) {
+          notify("Book successfully published");
+
+          // Update `bookinfo` in the Redux store with the new state of `ispublished`
+          curbookdispatch(useractions.setPublish(updatedBookInfo));
+        } else {
+          notify("Failed to publish book");
+        }
+      } catch (error) {
+        console.error("Error publishing book:", error);
+        notify("An error occurred while publishing the book");
+      }
+    } else {
+      notify("Book is already published");
+    }
+  };
+
   const saveChapter = async () => {
     setissave(true);
     const newChapter = {
@@ -87,7 +113,9 @@ const CreateBookStore = ({ bookinfo }) => {
       updatedChapters = chapters.map((chapter, index) =>
         index === selectedChapterIndex ? newChapter : chapter
       );
-      curbookdispatch(useractions.updateChapter(selectedChapterIndex, newChapter));
+      curbookdispatch(
+        useractions.updateChapter(selectedChapterIndex, newChapter)
+      );
     } else {
       updatedChapters = [...chapters, newChapter];
       curbookdispatch(useractions.addChapter(newChapter));
@@ -101,7 +129,6 @@ const CreateBookStore = ({ bookinfo }) => {
 
     setissave(false);
   };
-
 
   const editChapter = (index) => {
     const chapter = chapters[index];
@@ -246,8 +273,14 @@ const CreateBookStore = ({ bookinfo }) => {
         <>
           <div className="sm:w-1/4 bg-white p-4 shadow-md lg:static top-0 left-0 h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2 text-center" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
-              <p className="text-center" dangerouslySetInnerHTML={{ __html: bookinfo.description }} />
+              <h2
+                className="text-2xl font-bold mb-2 text-center"
+                dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }}
+              />
+              <p
+                className="text-center"
+                dangerouslySetInnerHTML={{ __html: bookinfo.description }}
+              />
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
                 className="h-1/2"
@@ -321,13 +354,13 @@ const CreateBookStore = ({ bookinfo }) => {
                 {issave ? "Saving..." : "Save"}
               </button>
               <button
-                className="bg-red-500 text-white py-2 px-4 rounded-lg cursor-not-allowed  my-1"
+                className="bg-red-500 text-white py-2 px-4 rounded-lg cursor-pointer  my-1"
                 onClick={handleDiscard}
               >
                 Discard
               </button>
               <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-not-allowed  my-1"
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg cursor-pointer  my-1"
                 onClick={handlePublish}
               >
                 Publish
@@ -414,18 +447,24 @@ const CreateBookStore = ({ bookinfo }) => {
         </>
       )}
       {/* <div className="flex justify-between mb-6"> */}
-      {showPreview ? <div className="flex flex-col w-full">
-        <button
-          className={`w-48 bg-blue-500 text-white py-4 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 ${showPreview ? "mt-4" : ""
+      {showPreview ? (
+        <div className="flex flex-col w-full">
+          <button
+            className={`w-48 bg-blue-500 text-white py-4 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 ${
+              showPreview ? "mt-4" : ""
             }`}
-          onClick={handlePreviewBookStore}
-        >
-          {showPreview ? "Close Preview" : "Preview"}
-        </button>
+            onClick={handlePreviewBookStore}
+          >
+            {showPreview ? "Close Preview" : "Preview"}
+          </button>
 
-        {showPreview && <PreviewBook chapters={chapters} bookinfo={bookinfo} ispre={true} />}
-      </div> : ""
-      }
+          {showPreview && (
+            <PreviewBook chapters={chapters} bookinfo={bookinfo} ispre={true} />
+          )}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

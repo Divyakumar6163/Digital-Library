@@ -5,12 +5,15 @@ import Footer from "../components/Footer";
 import { useSelector } from "react-redux";
 const BookStore = () => {
   const Filteredbooks = useSelector((state) => state.books.filteredbooks);
-  const filterpremiumbook = Filteredbooks.filter((book) => book.booktype === "Premium");
-  const Normalbooks = Filteredbooks.filter((book) => book.booktype === "Normal");
+  const filterpremiumbook = Filteredbooks.filter(
+    (book) => book.booktype === "Premium" && book.ispublished === true
+  );
+  const Normalbooks = Filteredbooks.filter(
+    (book) => book.booktype === "Normal" && book.ispublished === true
+  );
   const today = new Date();
   const thresholdDate = new Date(today);
   thresholdDate.setDate(today.getDate() - 5);
-
 
   const categorizeBooks = (books) => {
     const newReleases = [];
@@ -18,7 +21,7 @@ const BookStore = () => {
 
     books.forEach((book) => {
       // console.log(book.createdat)
-      const bookCreatedAt = new Date(book.createdat); 
+      const bookCreatedAt = new Date(book.createdat);
       if (bookCreatedAt >= thresholdDate) {
         newReleases.push(book);
       } else {
@@ -29,7 +32,9 @@ const BookStore = () => {
     return { newReleases, pastReleases };
   };
   const { newReleases, pastReleases } = categorizeBooks(Normalbooks);
-  const newrelebook = newReleases.sort((a, b) => new Date(b.createdat) - new Date(a.createdat));
+  const newrelebook = newReleases.sort(
+    (a, b) => new Date(b.createdat) - new Date(a.createdat)
+  );
   console.log("New Releases:", newReleases);
   console.log("Past Releases:", pastReleases);
   return (

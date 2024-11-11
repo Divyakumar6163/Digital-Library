@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import CreateGraph from "./CreateGraph";
 import { BlockMath } from "react-katex";
 import { store } from "./../store/store";
+import { notify } from "../store/utils/notify";
+import * as useractions from "./../store/actions/bookactions";
+import { updatePublish } from "../API/createbook";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useDispatch, useSelector } from "react-redux";
@@ -153,7 +156,30 @@ const AdminBook = ({ book, setIsBook }) => {
     setIsBook(false);
   };
 
-  const handlePublish = () => {};
+  const handlePublish = async () => {
+    if (book.ispublished === false) {
+      const updatedBookInfo = { ...book, ispublished: true }; // Update `ispublished` to true
+      console.log(updatedBookInfo);
+      try {
+        const response = await updatePublish(updatedBookInfo._id, true); // Pass only the ID to the API function
+        console.log(response?.status);
+
+        if (response === true) {
+          notify("Book successfully published");
+
+          // Update `bookinfo` in the Redux store with the new state of `ispublished`
+          dispatch(useractions.setPublish(updatedBookInfo));
+        } else {
+          notify("Failed to publish book");
+        }
+      } catch (error) {
+        console.error("Error publishing book:", error);
+        notify("An error occurred while publishing the book");
+      }
+    } else {
+      notify("Book is already published");
+    }
+  };
 
   const handleDiscard = () => {
     console.log("Discarding changes");

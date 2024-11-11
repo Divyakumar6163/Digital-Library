@@ -4,6 +4,7 @@ export const ADD_CHAPTER = "ADD_CHAPTER";
 export const UPDATE_CHAPTER = "UPDATE_CHAPTER";
 export const DELETE_CHAPTER = "DELETE_CHAPTER";
 export const SET_TAGS = "SET_TAGS";
+export const SET_PUBLISH = "SET_PUBLISH";
 export const UPDATE_BOOK_CHAPTERS = "UPDATE_BOOK_CHAPTERS";
 export const setBookDetails = (bookDetails) => ({
   type: SET_BOOK_DETAILS,
@@ -13,6 +14,10 @@ export const setBookDetails = (bookDetails) => ({
 export const setChapters = (chapters) => ({
   type: SET_CHAPTERS,
   chapters,
+});
+export const setPublish = (book) => ({
+  type: SET_PUBLISH,
+  book,
 });
 
 export const addChapter = (chapter) => ({

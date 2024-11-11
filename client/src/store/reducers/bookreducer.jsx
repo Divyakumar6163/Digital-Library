@@ -39,7 +39,11 @@ const bookreducer = (state = initialState, action) => {
         ...state,
         chapters: action.chapters,
       };
-
+    case bookactions.SET_PUBLISH:
+      return {
+        ...state,
+        ispublished: action.book.ispublished,
+      };
     case bookactions.ADD_CHAPTER:
       return {
         ...state,
