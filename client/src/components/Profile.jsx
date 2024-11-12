@@ -53,10 +53,13 @@ const UserProfile = () => {
     try {
       const response = await updateProfile(userInfoUpdate, accessToken);
       console.log(response);
-
+      const profileInfo = {
+        ...userState.userinfo,
+        profileImage: response.data.profileImage,
+      };
       if (response.status === "success") {
         notify("Data successfully updated");
-        dispatch(userinfoactions.updateUserProfile(userInfoUpdate));
+        dispatch(userinfoactions.updateUserProfile(profileInfo));
       } else {
         notify("Failed to update user profile");
       }

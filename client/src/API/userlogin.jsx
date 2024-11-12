@@ -96,7 +96,7 @@ export const updateProfile = async (userInfo, accessToken) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      profileImageUrl = uploadResponse.data.fileUrl;
+      profileImageUrl = await uploadResponse.data.fileUrl;
     }
     const profileInfo = {
       ...userInfo,
@@ -107,7 +107,7 @@ export const updateProfile = async (userInfo, accessToken) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
+    
     console.log(response.data);
     return response.data;
   } catch (error) {
