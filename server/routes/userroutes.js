@@ -21,7 +21,11 @@ router.post("/resetpassword", authcontroller.resetpassword);
 
 router.get("/getresettoken", authcontroller.getallresettoken);
 
-router.post("/user/profile", userbookcontroller.profile);
+router.post(
+  "/user/profile",
+  // authcontroller.checkvaliduser,
+  userbookcontroller.profile
+);
 
 router.post("/:userID/wishlist", userbookcontroller.addToWishlist);
 

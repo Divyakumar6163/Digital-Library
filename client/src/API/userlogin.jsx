@@ -85,18 +85,32 @@ export const getuserbook = async (accessToken) => {
     // console.error('An error occurred while fetching user books:', error);
   }
 };
-export const updateProfile = async (userInfo) => {
-  console.log(userInfo);
+export const updateProfile = async (userInfo, accessToken) => {
   try {
-    const response = await axios.post(`${ToLink}/user/profile`, userInfo, {
+    let profileImageUrl = userInfo.profileImage;
+    if (userInfo.profileImage instanceof File) {
+      const formData = new FormData();
+      formData.append("image", userInfo.profileImage);
+      const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      profileImageUrl = uploadResponse.data.fileUrl;
+    }
+    const profileInfo = {
+      ...userInfo,
+      profileImage: profileImageUrl,
+    };
+    const response = await axios.post(`${ToLink}/user/profile`, profileInfo, {
       headers: {
-        Authorization: `Bearer ${store.getState().auth.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
+
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.log(error);
-    // console.error('An error occurred while fetching user books:', error);
+    console.error("An error occurred while updating the profile:", error);
   }
 };

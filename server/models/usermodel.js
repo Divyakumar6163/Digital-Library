@@ -11,8 +11,7 @@ const userSchema = new Schema({
   },
   profileImage: {
     type: String,
-    default:
-      "https://img.freepik.com/vector-premium/icono-perfil-avatar_188544-4755.jpg?w=360",
+    default: "",
   },
   emailid: {
     type: "string",

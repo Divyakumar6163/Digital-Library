@@ -10,56 +10,52 @@ import * as useractions from "./../store/actions/userinfoactions";
 import * as authactions from "./../store/actions/authactions";
 import * as bookactions from "./../store/actions/bookactions";
 import { useNavigate } from "react-router";
+
 const UserProfile = () => {
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
   const profile = useSelector((state) => state.user.userinfo.profileImage);
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
-  // Profile fields from state
   const [name, setName] = useState(userState.userinfo.name || "");
   const [mobile, setMobile] = useState(userState.userinfo.phoneno || "");
-  const [email] = useState(userState.userinfo.emailid); // Email is not editable
+  const [email, setEmail] = useState(userState.userinfo.emailid); // Email is not editable
   const [about, setAbout] = useState(userState.userinfo.about || "");
   const [categories, setCategories] = useState(
     userState.userinfo.favoriteCategories || []
   );
   const [profileImage, setProfileImage] = useState(profile || null);
-
-  // Editable mode toggle
   const [isEditing, setIsEditing] = useState(false);
+  const [showUploadInput, setShowUploadInput] = useState(false);
+
   const navigate = useNavigate();
+
   useEffect(() => {
-    // Load initial values for the profile on component mount
     setName(userState.userinfo.name || "");
     setMobile(userState.userinfo.phoneno || "");
+    setEmail(userState.userinfo.emailid);
     setAbout(userState.userinfo.about || "");
     setCategories(userState.userinfo.favoriteCategories || []);
     setProfileImage(userState.userinfo.profileImage || null);
   }, [userState.userinfo]);
 
-  // Save handler
-  // Save handler
   const handleSave = async () => {
     setIsEditing(false);
 
     const userInfoUpdate = {
-      ...userState.userinfo, // Ensures existing info is carried over
+      ...userState.userinfo,
       name,
       phoneno: mobile,
       about,
       favoriteCategories: categories,
       profileImage,
     };
-    // console.log(userInfoUpdate);
     try {
-      const response = await updateProfile(userInfoUpdate); // Pass the full updated object
+      const response = await updateProfile(userInfoUpdate, accessToken);
       console.log(response);
 
-      // Adjust this condition based on actual API response structure
       if (response.status === "success") {
         notify("Data successfully updated");
-
-        // Update profile in the Redux store after a successful update
         dispatch(userinfoactions.updateUserProfile(userInfoUpdate));
       } else {
         notify("Failed to update user profile");
@@ -70,34 +66,28 @@ const UserProfile = () => {
     }
   };
 
-  // Add new category
   const addCategory = () => {
     setCategories([...categories, ""]);
   };
 
-  // Update specific category
   const updateCategory = (index, value) => {
     const updatedCategories = [...categories];
     updatedCategories[index] = value;
     setCategories(updatedCategories);
   };
 
-  // Remove category
   const removeCategory = (index) => {
     setCategories(categories.filter((_, i) => i !== index));
   };
 
-  // Handle profile image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setProfileImage(file);
     }
+    setShowUploadInput(false);
   };
+
   const handleSignOut = () => {
     store.dispatch(useractions.setlogin(false));
     store.dispatch(useractions.setuserinfo({}));
@@ -106,11 +96,11 @@ const UserProfile = () => {
     store.dispatch(bookactions.setBookDetails(null));
     navigate("/");
   };
+
   return (
     <>
       <Navbar />
       <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
-        {/* Profile Header */}
         <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-2xl">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-800">Profile</h2>
@@ -122,7 +112,6 @@ const UserProfile = () => {
             </button>
           </div>
 
-          {/* Profile Image */}
           <div className="flex items-center space-x-4 mt-6">
             <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-2 border-blue-500">
               {profileImage && typeof profileImage === "string" ? (
@@ -137,18 +126,40 @@ const UserProfile = () => {
                 </span>
               )}
               {isEditing && (
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  title="Upload Profile Image"
-                />
+                <>
+                  <button
+                    onClick={() => setShowUploadInput(true)}
+                    className="absolute bottom-2 right-1.5 bg-blue-500 p-1 rounded-full hover:bg-gray-100"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-700"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15.232 5.232l3.536 3.536M6 18v3h3l10.39-10.39a2.5 2.5 0 00-3.536-3.536L6 15.293z"
+                      />
+                    </svg>
+                  </button>
+                  {showUploadInput && (
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      title="Upload Profile Image"
+                    />
+                  )}
+                </>
               )}
             </div>
           </div>
 
-          {/* Editable Fields */}
           <div className="mt-6 space-y-4">
             <div>
               <label className="text-gray-600 font-semibold">Name:</label>
@@ -163,7 +174,6 @@ const UserProfile = () => {
                 <p className="text-gray-800">{name}</p>
               )}
             </div>
-            {/* Mobile Number */}
             <div>
               <label className="text-gray-600 font-semibold">Mobile:</label>
               {isEditing ? (
@@ -178,13 +188,11 @@ const UserProfile = () => {
               )}
             </div>
 
-            {/* Email (Non-Editable) */}
             <div>
               <label className="text-gray-600 font-semibold">Email:</label>
               <p className="text-gray-800">{email}</p>
             </div>
 
-            {/* About Section */}
             <div>
               <label className="text-gray-600 font-semibold">About Me:</label>
               {isEditing ? (
@@ -199,7 +207,6 @@ const UserProfile = () => {
               )}
             </div>
 
-            {/* Favorite Book Categories */}
             <div>
               <label className="text-gray-600 font-semibold">
                 Favorite Book Categories:
@@ -243,16 +250,17 @@ const UserProfile = () => {
               )}
             </div>
           </div>
-        </div>
 
-        {/* Sign Out Button */}
-        <div className="w-full max-w-2xl mt-8 text-center">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition"
-            onClick={handleSignOut}
-          >
-            Sign Out
-          </button>
+          <div className="w-full max-w-2xl mt-8 flex justify-end">
+            {" "}
+            {/* Added flex and justify-end here */}
+            <button
+              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition"
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
       </div>
       <Footer />

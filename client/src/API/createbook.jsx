@@ -95,6 +95,7 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
 
   const formData = new FormData();
   formData.append("image", imageFile);
+  console.log(formData);
 
   try {
     const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
