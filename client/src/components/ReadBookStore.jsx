@@ -11,17 +11,22 @@ import PremiumImage from "./../image/premium.jpg";
 
 const ReadBookStore = ({ heading, books }) => {
   const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
   const Filteredbooks = books;
   const [visibleBooks, setVisibleBooks] = useState(7);
   const [hoveredBook, setHoveredBook] = useState(null);
-  const isuser = useSelector((state) => state.user);
 
+  const isuser = useSelector((state) => state.user);
+  console.log(userState.userinfo.ispreminum);
   function handleReadMore(data) {
     if (!isuser.islogin) {
       notify("Please login first");
       return;
     }
-    if (data.booktype === "Premium") {
+    if (
+      data.booktype === "Premium" &&
+      userState.userinfo.ispreminum === false
+    ) {
       notify("Please purchase a membership to access this book");
       return;
     } else {
@@ -68,17 +73,24 @@ const ReadBookStore = ({ heading, books }) => {
                   className="h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center "
                   id={styles.cardReadImg}
                   onMouseEnter={() =>
-                    data.booktype === "Premium" && setHoveredBook(idx)
+                    data.booktype === "Premium" &&
+                    !userState.userinfo.ispreminum &&
+                    setHoveredBook(idx)
                   }
                   onMouseLeave={() => setHoveredBook(null)}
                 >
                   <a className="block h-full w-full">
                     <img
                       className={`object-cover w-full h-full rounded-t-lg ${
-                        data.booktype === "Premium" ? "cursor-not-allowed" : ""
+                        data.booktype === "Premium" &&
+                        !userState.userinfo.ispreminum
+                          ? "cursor-not-allowed"
+                          : ""
                       }`}
                       src={
-                        hoveredBook === idx && data.booktype === "Premium"
+                        hoveredBook === idx &&
+                        data.booktype === "Premium" &&
+                        !userState.userinfo.ispreminum
                           ? PremiumImage
                           : data.image
                           ? data.image
