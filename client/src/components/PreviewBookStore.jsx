@@ -5,7 +5,7 @@ import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 
-const PreviewBook = ({ bookinfo, chapters,ispre }) => {
+const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
 
   const toggleChapterExpansion = (index) => {
@@ -46,7 +46,7 @@ const PreviewBook = ({ bookinfo, chapters,ispre }) => {
       case "Image":
         return (
           <img
-            src={component.content.url}
+            src={component.content}
             alt={component.content.alt}
             className="max-w-full"
           />
@@ -118,9 +118,13 @@ const PreviewBook = ({ bookinfo, chapters,ispre }) => {
 
   return (
     <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-col ">
-      {ispre ? <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
-        Preview Book
-      </h1> :""}
+      {ispre ? (
+        <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
+          Preview Book
+        </h1>
+      ) : (
+        ""
+      )}
       {chapters.length === 0 ? (
         <p className="text-lg text-gray-500 italic text-center">
           No chapters available.
@@ -132,8 +136,14 @@ const PreviewBook = ({ bookinfo, chapters,ispre }) => {
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300 ">
             <div className="mb-6 flex justify-around flex-col">
-              <h2 className="text-xl font-bold mb-2 text-center" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
-              <p dangerouslySetInnerHTML={{ __html: bookinfo.description }}  className="text-center"/>
+              <h2
+                className="text-xl font-bold mb-2 text-center"
+                dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }}
+              />
+              <p
+                dangerouslySetInnerHTML={{ __html: bookinfo.description }}
+                className="text-center"
+              />
               <img
                 src={bookinfo.image ? bookinfo.image : BookCover1}
                 className="h-1/2 items-center"
@@ -201,7 +211,6 @@ const PreviewBook = ({ bookinfo, chapters,ispre }) => {
               </div>
             ))}
           </div>
-
         </div>
       )}
     </div>

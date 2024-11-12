@@ -82,9 +82,9 @@ const UserProfile = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setProfileImage(file);
-    }
+    // if (file) {
+    setProfileImage(file);
+    // }
     setShowUploadInput(false);
   };
 

@@ -6,6 +6,9 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import BookCover1 from "../image/BookCover1.png";
+import axios from "axios";
+import { ToLink } from "../App";
+
 import CreateMCQ from "./CreateMCQ";
 import CreateFIB from "./CreateFIB";
 import Heading from "./CreateHeading";
@@ -26,8 +29,9 @@ const CreateBookStore = ({ bookinfo }) => {
   // const curbook = useSelector((state) => state.createbook);
   store.dispatch(useractions.setBookDetails(bookinfo));
   const book_ID = bookinfo._id;
-  console.log(bookinfo);
+  // console.log(bookinfo);
   const navigate = useNavigate();
+  const accessToken = useSelector((state) => state.auth.accessToken);
   const [chapters, setChapters] = useState(bookinfo.chapters);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
@@ -162,11 +166,29 @@ const CreateBookStore = ({ bookinfo }) => {
     setSelectedComponents(filteredComponents);
   };
 
-  const handleComponentChange = (id, content) => {
-    const updatedComponents = selectedComponents.map((component) =>
-      component.id === id ? { ...component, content } : component
-    );
-    setSelectedComponents(updatedComponents);
+  const handleComponentChange = async (id, content, component) => {
+    if (component === "Image") {
+      const formData = new FormData();
+      formData.append("image", content);
+      const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const profileImageUrl = uploadResponse.data.fileUrl;
+      console.log(profileImageUrl);
+      const updatedComponents = selectedComponents.map((component) =>
+        component.id === id
+          ? { ...component, content: profileImageUrl }
+          : component
+      );
+      setSelectedComponents(updatedComponents);
+    } else {
+      const updatedComponents = selectedComponents.map((component) =>
+        component.id === id ? { ...component, content } : component
+      );
+      setSelectedComponents(updatedComponents);
+    }
   };
   const renderComponent = (component) => {
     switch (component.type) {
@@ -174,14 +196,18 @@ const CreateBookStore = ({ bookinfo }) => {
         return (
           <Text
             value={component.content}
-            onChange={(content) => handleComponentChange(component.id, content)}
+            onChange={(content) =>
+              handleComponentChange(component.id, content, component.type)
+            }
           />
         );
       case "Heading":
         return (
           <Heading
             value={component.content}
-            onChange={(content) => handleComponentChange(component.id, content)}
+            onChange={(content) =>
+              handleComponentChange(component.id, content, component.type)
+            }
           />
         );
       case "Graph":
@@ -189,21 +215,27 @@ const CreateBookStore = ({ bookinfo }) => {
           <Graph
             labels={component.content.labels || []}
             dataPoints={component.content.dataPoints || []}
-            onChange={(content) => handleComponentChange(component.id, content)}
+            onChange={(content) =>
+              handleComponentChange(component.id, content, component.type)
+            }
           />
         );
       case "Equation":
         return (
           <Equation
             initialEquation={component.content || ""}
-            onChange={(content) => handleComponentChange(component.id, content)}
+            onChange={(content) =>
+              handleComponentChange(component.id, content, component.type)
+            }
           />
         );
       case "Quiz":
         return (
           <CreateMCQ
             value={component.content}
-            onChange={(content) => handleComponentChange(component.id, content)}
+            onChange={(content) =>
+              handleComponentChange(component.id, content, component.type)
+            }
           />
         );
       case "FillInTheBlanks":
@@ -212,7 +244,7 @@ const CreateBookStore = ({ bookinfo }) => {
           <CreateFIB
             value={component.content}
             onChange={(newContent) =>
-              handleComponentChange(component.id, newContent)
+              handleComponentChange(component.id, newContent, component.type)
             }
           />
         );
@@ -249,7 +281,8 @@ const CreateBookStore = ({ bookinfo }) => {
               onChange={(e) =>
                 handleComponentChange(
                   component.id,
-                  URL.createObjectURL(e.target.files[0])
+                  e.target.files[0],
+                  component.type
                 )
               }
             />

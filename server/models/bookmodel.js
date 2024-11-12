@@ -80,7 +80,18 @@ const EquationComponent = ComponentSchema.discriminator(
     { _id: false }
   )
 );
-
+const ImageComponent = ComponentSchema.discriminator(
+  "Image",
+  new Schema(
+    {
+      content: {
+        type: String,
+        required: true,
+      },
+    },
+    { _id: false }
+  )
+);
 const VideoComponent = ComponentSchema.discriminator(
   "Video",
   new Schema(
