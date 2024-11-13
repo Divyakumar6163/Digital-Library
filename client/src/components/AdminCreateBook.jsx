@@ -4,17 +4,20 @@ import { BlockMath } from "react-katex";
 import { store } from "./../store/store";
 import { notify } from "../store/utils/notify";
 import * as useractions from "./../store/actions/bookactions";
-import { updatePublish } from "../API/createbook";
+import BookCover1 from "../image/BookCover1.png";
+import { updatePublish, deleteBook, updateChapters } from "../API/createbook";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import * as bookactions from "./../store/actions/bookactions";
 const AdminBook = ({ book, setIsBook }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const reduxBook = useSelector((state) => state.books.allbooks);
   const bookIndex = reduxBook.find((b) => b._id === book._id);
   console.log(bookIndex);
-  const [chapters, setChapters] = useState(bookIndex.chapters); // Store chapters in state
+  const [chapters, setChapters] = useState(book.chapters); // Store chapters in state
   console.log(chapters);
   const [expandedChapters, setExpandedChapters] = useState([]);
 
@@ -166,6 +169,7 @@ const AdminBook = ({ book, setIsBook }) => {
 
         if (response === true) {
           notify("Book successfully published");
+          setIsBook(false);
 
           // Update `bookinfo` in the Redux store with the new state of `ispublished`
           dispatch(useractions.setPublish(updatedBookInfo));
@@ -181,12 +185,32 @@ const AdminBook = ({ book, setIsBook }) => {
     }
   };
 
-  const handleDiscard = () => {
-    console.log("Discarding changes");
-    // Implement the logic to discard changes
+  const handleDiscard = async () => {
+    try {
+      const response = await deleteBook(book._id);
+      console.log(response?.status);
+      if (response === true) {
+        notify("Book deleted successfully");
+        setIsBook(false);
+      } else {
+        notify("Failed to delete book");
+      }
+    } catch (e) {
+      console.error("Error discarding book:", e);
+      notify("An error occurred while discarding the book");
+    }
   };
-  const handleSaveChanges = () => {
+
+  const handleSaveChanges = async () => {
+    console.log(chapters);
     store.dispatch(bookactions.updateBookChapters(bookIndex._id, chapters));
+    const res = await updateChapters(bookIndex._id, chapters);
+    if (!res) {
+      notify("Failed to save chapters");
+    } else {
+      notify("Book saved successfully");
+      setIsBook(false);
+    }
   };
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
@@ -226,13 +250,18 @@ const AdminBook = ({ book, setIsBook }) => {
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
             <div className="mb-6">
-              <h2 className="text-xl font-bold mb-2">
-                Nothing purifies than knowledge
-              </h2>
-              <p>
-                The whole idea is to develop an authoring platform to create
-                interactive content with just a few clicks.
-              </p>
+              <h2
+                className="text-xl font-bold mb-2 text-center"
+                dangerouslySetInnerHTML={{ __html: book.booktitle }}
+              />
+              <p
+                dangerouslySetInnerHTML={{ __html: book.description }}
+                className="text-center"
+              />
+              <img
+                src={book.image ? book.image : BookCover1}
+                className="h-1/2 items-center"
+              />
             </div>
             <ul className="mb-6">
               {chapters?.map((chapter, index) => (

@@ -37,6 +37,7 @@ const HeadingComponent = ComponentSchema.discriminator(
         type: String,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -50,6 +51,7 @@ const TextComponent = ComponentSchema.discriminator(
         type: String,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -63,6 +65,7 @@ const GraphComponent = ComponentSchema.discriminator(
         type: Object,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -76,6 +79,7 @@ const EquationComponent = ComponentSchema.discriminator(
         type: String,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -88,6 +92,7 @@ const ImageComponent = ComponentSchema.discriminator(
         type: String,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -100,6 +105,7 @@ const VideoComponent = ComponentSchema.discriminator(
         type: String,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -117,6 +123,7 @@ const QuoteComponent = ComponentSchema.discriminator(
         type: String,
         required: false,
       },
+      // locked: { type: Boolean, default: false }
     },
     { _id: false }
   )
@@ -147,6 +154,7 @@ const QuizComponent = ComponentSchema.discriminator(
           required: true,
         },
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -166,6 +174,7 @@ const FillInTheBlanksComponent = ComponentSchema.discriminator(
           required: true,
         },
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )
@@ -197,6 +206,7 @@ const MCQsComponent = ComponentSchema.discriminator(
         type: String,
         required: true,
       },
+      locked: { type: Boolean, default: false },
     },
     { _id: false }
   )

@@ -18,7 +18,7 @@ import Equation from "./CreateEquation";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";
-import { updatePublish, updateChapters } from "../API/createbook";
+import { updatePublish, updateChapters, deleteBook } from "../API/createbook";
 import store from "./../store/store";
 import * as useractions from "./../store/actions/bookactions";
 import { useNavigate } from "react-router";
@@ -65,16 +65,20 @@ const CreateBookStore = ({ bookinfo }) => {
   const handleBack = () => {
     navigate(-1);
   };
-  const handleDiscard = () => {
-    // setChapters([]);
-    // setIsIntro(false);
-    // setShowFormOptions(false);
-    // setSelectedComponents([]);
-    // setTitle("");
-    // setSummary("");
-    // setSelectedChapterIndex(null);
-    // setShowPreview(false);
-    // setSelectedChapterIndex(null);
+  const handleDiscard = async () => {
+    try {
+      const response = await deleteBook(bookinfo._id);
+      console.log(response?.status);
+      if (response === true) {
+        notify("Book deleted successfully");
+        navigate(-1);
+      } else {
+        notify("Failed to delete book");
+      }
+    } catch (e) {
+      console.error("Error discarding book:", e);
+      notify("An error occurred while discarding the book");
+    }
   };
 
   // Update `handlePublish` function
@@ -88,7 +92,7 @@ const CreateBookStore = ({ bookinfo }) => {
 
         if (response === true) {
           notify("Book successfully published");
-
+          navigate(-1);
           // Update `bookinfo` in the Redux store with the new state of `ispublished`
           curbookdispatch(useractions.setPublish(updatedBookInfo));
         } else {

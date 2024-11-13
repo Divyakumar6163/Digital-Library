@@ -263,7 +263,7 @@ exports.updatebooktags = async (req, res) => {
 
 exports.deletebook = async (req, res) => {
   const { bookId } = req.params;
-
+  console.log(bookId);
   try {
     const book = await Bookschema.findByIdAndDelete(bookId);
     if (!book) {

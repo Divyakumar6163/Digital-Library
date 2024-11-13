@@ -13,6 +13,31 @@ export const createbook = async (bookinfo) => {
   }, {});
   console.log(chaptersObject);
 };
+export const deleteBook = async (bookId) => {
+  console.log(bookId);
+  try {
+    const response = await axios.delete(`${ToLink}/deletebook/${bookId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (response.status === 200) {
+      console.log("success", "Book deleted successfully");
+      return true;
+    } else {
+      console.log("error", "Failed to delete book");
+      return false;
+    }
+  } catch (error) {
+    console.error(
+      "Error occurred while deleting book:",
+      error.response ? error.response.data : error.message
+    );
+    console.log("error", "Failed to delete book");
+    return false;
+  }
+};
 
 export const updatePublish = async (bookID, data) => {
   try {
@@ -44,6 +69,7 @@ export const updatePublish = async (bookID, data) => {
 };
 
 export const updateChapters = async (bookID, updatedChapters) => {
+  console.log(updatedChapters);
   try {
     const response = await axios.patch(
       `${ToLink}/updatebook/${bookID}`,
