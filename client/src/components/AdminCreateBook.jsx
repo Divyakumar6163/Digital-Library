@@ -202,14 +202,19 @@ const AdminBook = ({ book, setIsBook }) => {
   };
 
   const handleSaveChanges = async () => {
-    console.log(chapters);
-    store.dispatch(bookactions.updateBookChapters(bookIndex._id, chapters));
-    const res = await updateChapters(bookIndex._id, chapters);
-    if (!res) {
-      notify("Failed to save chapters");
-    } else {
-      notify("Book saved successfully");
-      setIsBook(false);
+    try {
+      const response = await updateChapters(book._id, chapters); // Use the updated chapters state
+      if (response) {
+        notify("Book saved successfully");
+        // Optionally, you can update Redux or any other state with the saved data
+        dispatch(bookactions.updateBookChapters(book._id, chapters));
+        setIsBook(false); // Close the admin view if needed
+      } else {
+        notify("Failed to save chapters");
+      }
+    } catch (error) {
+      console.error("Error saving chapters:", error);
+      notify("An error occurred while saving the book");
     }
   };
   return (
