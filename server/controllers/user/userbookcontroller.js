@@ -9,7 +9,7 @@ exports.profile = async (req, res) => {
   const { name, profileImage, phoneno, about, favoriteCategories } = req.body;
   console.log(req.body.about);
   try {
-    const user = await userSchema.findByIdAndUpdate(req.body._id, {
+    let user = await userSchema.findByIdAndUpdate(req.body._id, {
       ...req.body,
       profileImage: profileImage,
       phoneno: phoneno,
@@ -21,6 +21,8 @@ exports.profile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    user = await userSchema.findById(req.body._id);
+    console.log(user);
     res.status(200).json({
       status: "success",
       message: "User profile updated successfully",

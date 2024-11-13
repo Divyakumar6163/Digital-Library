@@ -102,13 +102,15 @@ export const updateProfile = async (userInfo, accessToken) => {
       ...userInfo,
       profileImage: profileImageUrl,
     };
+    console.log(profileInfo.profileImage);
+    // console.log(profileInfo);
     const response = await axios.post(`${ToLink}/user/profile`, profileInfo, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    
-    console.log(response.data);
+    const imglink = await response.data.data.profileImage;
+    console.log(imglink);
     return response.data;
   } catch (error) {
     console.error("An error occurred while updating the profile:", error);

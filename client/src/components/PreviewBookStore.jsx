@@ -4,10 +4,10 @@ import { BlockMath } from "react-katex";
 import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
-
+import { useSelector } from "react-redux";
 const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
-
+  const userState = useSelector((state) => state.user);
   const toggleChapterExpansion = (index) => {
     setExpandedChapters((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -15,6 +15,16 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   };
 
   const renderComponent = (component) => {
+    // Check if the content is locked
+    if (component.locked && userState.userinfo.ispreminum !== true) {
+      return (
+        <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
+          <p>This content is locked. Please subscribe to view it.</p>
+        </div>
+      );
+    }
+
+    // Render component based on type if not locked
     switch (component.type) {
       case "Text":
         return <p dangerouslySetInnerHTML={{ __html: component.content }} />;
