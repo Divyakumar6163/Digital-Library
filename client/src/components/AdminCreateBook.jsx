@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import CreateGraph from "./CreateGraph";
 import { BlockMath } from "react-katex";
-import { store } from "./../store/store";
 import { notify } from "../store/utils/notify";
 import * as useractions from "./../store/actions/bookactions";
-import BookCover1 from "../image/BookCover1.png";
+import BookCover1 from "../image/NoImage.jpg";
 import { updatePublish, deleteBook, updateChapters } from "../API/createbook";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 import * as bookactions from "./../store/actions/bookactions";
 const AdminBook = ({ book, setIsBook }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const reduxBook = useSelector((state) => state.books.allbooks);
   const bookIndex = reduxBook.find((b) => b._id === book._id);
   console.log(bookIndex);

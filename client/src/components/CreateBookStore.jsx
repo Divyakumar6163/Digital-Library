@@ -42,6 +42,7 @@ const CreateBookStore = ({ bookinfo }) => {
   const [summary, setSummary] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [issave, setissave] = useState(false);
+
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
       setExpandedChapters(expandedChapters.filter((i) => i !== index));

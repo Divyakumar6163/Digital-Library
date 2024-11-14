@@ -115,39 +115,64 @@ export const getbookbyID = async (bookID) => {
 
 export const createBook = async (imageFile, bookdata, accessToken) => {
   if (!imageFile) {
-    notify("Please select an image to upload!");
-    return;
-  }
+    bookdata.image =
+      "https://res.cloudinary.com/ddgyxhpwx/image/upload/v1731611566/CloudinaryDemo/No%20Image.jpg.jpg";
+    try {
+      const createResponse = await axios.post(
+        `${ToLink}/createbook`,
+        bookdata,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-  const formData = new FormData();
-  formData.append("image", imageFile);
-  console.log(formData);
+      console.log(createResponse.data.data.books);
+      const id = createResponse.data.data.books._id;
+      notify("Book created!");
+      return id;
+    } catch (error) {
+      console.error("There was an error:", error);
+      notify("Error while creating book");
+      return null;
+    }
+  } else {
+    console.log(imageFile);
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    console.log(formData);
 
-  try {
-    const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const bookinfo = {
-      ...bookdata,
-      image: uploadResponse.data.fileUrl,
-    };
-    console.log(bookinfo);
-    console.log(accessToken);
-    const createResponse = await axios.post(`${ToLink}/createbook`, bookinfo, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    try {
+      const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const bookinfo = {
+        ...bookdata,
+        image: uploadResponse.data.fileUrl,
+      };
+      console.log(bookinfo);
+      console.log(accessToken);
+      const createResponse = await axios.post(
+        `${ToLink}/createbook`,
+        bookinfo,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-    console.log(createResponse.data.data.books);
-    const id = createResponse.data.data.books._id;
-    notify("Book created!");
-    return id;
-  } catch (error) {
-    console.error("There was an error:", error);
-    notify("Error while creating book");
-    return null;
+      console.log(createResponse.data.data.books);
+      const id = createResponse.data.data.books._id;
+      notify("Book created!");
+      return id;
+    } catch (error) {
+      console.error("There was an error:", error);
+      notify("Error while creating book");
+      return null;
+    }
   }
 };

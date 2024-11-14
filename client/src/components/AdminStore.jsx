@@ -5,12 +5,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import AdminCreateBook from "./AdminCreateBook";
 const BookStore = () => {
-  //   const navigate = useNavigate();
   const [isBook, setIsBook] = React.useState(false);
-
-  //   const dispatch = useDispatch();
   const Books = useSelector((state) => state.books.allbooks);
-  //   console.log(Books);
   const booksToPublish = Books.filter((book) => book.ispublished === false);
   console.log(booksToPublish);
   function handlePublish(data) {

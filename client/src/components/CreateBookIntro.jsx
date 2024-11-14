@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
@@ -10,6 +10,9 @@ import * as useractions from "./../store/actions/bookactions";
 import { notify } from "./../store/utils/notify";
 import { useNavigate } from "react-router";
 import { Createbookloader } from "../store/utils/createbookloader";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "./util/getCroppedImg"; // utility function to get cropped image blob
+
 const CreateBookPage = ({ setIsIntro }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,61 +27,91 @@ const CreateBookPage = ({ setIsIntro }) => {
   const [tags, setTags] = useState(bookDetails?.tags || []);
   const [tagInputValue, setTagInputValue] = useState("");
   const accessToken = useSelector((state) => state.auth.accessToken);
-  // const [coverImage, setCoverImage] = useState(bookDetails?.coverImage || null);
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [uploadResponse, setUploadResponse] = useState(null);
   const [createBookstate, setCreateBookstate] = useState(false);
+  const [isCropping, setIsCropping] = useState(false);
+
+  // Crop states
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Get the selected file
-    setImageFile(file); // Store the file in state
-
-    // For image preview
+    setIsCropping(true);
+    const file = e.target.files[0];
+    setImageFile(file);
     if (file) {
       const preview = URL.createObjectURL(file);
       setPreviewUrl(preview);
     }
   };
+
+  const handleCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleCropImage = useCallback(async () => {
+    try {
+      const croppedImg = await getCroppedImg(
+        previewUrl,
+        croppedAreaPixels,
+        512,
+        1024
+      );
+      setCroppedImage(croppedImg);
+    } catch (e) {
+      console.error("Error cropping image:", e);
+    }
+  }, [previewUrl, croppedAreaPixels]);
+
   const handleInputChange = (e) => {
     setTagInputValue(e.target.value);
   };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       addTag(tagInputValue);
     }
   };
+
   const handleBlur = () => {
     addTag(tagInputValue);
   };
+
   const addTag = (tag) => {
     if (tag.trim() !== "" && !tags.includes(tag.trim())) {
       setTags([...tags, tag.trim()]);
     }
     setTagInputValue("");
   };
+
   const handleTagRemove = (tagToRemove) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  // Update local state when bookDetails changes
+  const clearImageSelection = () => {
+    setIsCropping(false);
+    setImageFile(null);
+    setPreviewUrl(null);
+    setCroppedImage(null);
+  };
+
   useEffect(() => {
     setBookName(bookDetails?.booktitle || "");
     setAuthorName(bookDetails?.author || "");
     setdescription(bookDetails?.description || "");
     setBookTagline(bookDetails?.summary || "");
-    // setCoverImage(bookDetails?.coverImage || null);
   }, [bookDetails]);
 
   const handleSubmit = async () => {
-    // Start the loader when form submission begins
     loader.start("Creating your book...");
 
-    // Basic validation
     if (!bookName.trim() || !authorName.trim() || !description.trim()) {
       alert("Please fill in all the required fields.");
-      loader.stop(); // Stop the loader if validation fails
+      loader.stop();
       return;
     }
     setCreateBookstate(true);
@@ -92,28 +125,26 @@ const CreateBookPage = ({ setIsIntro }) => {
     };
 
     try {
-      const res = await createBook(imageFile, updatedBookDetails, accessToken);
-
+      const res = await createBook(
+        croppedImage,
+        updatedBookDetails,
+        accessToken
+      );
       if (res) {
-        console.log("Book created successfully:", res);
         setCreateBookstate(false);
         navigate(`/updatebook/${res}`);
         dispatch(setBookDetails(updatedBookDetails));
         dispatch(useractions.updateChapter([]));
-        // notify("Book created successfully.");
       } else {
         setCreateBookstate(false);
-        console.log("Error occurred while creating the book.");
         notify("Error while creating the book.");
       }
     } catch (error) {
       setCreateBookstate(false);
-      console.error("Error in book creation:", error);
       notify("An error occurred while creating the book.");
-    } finally {
-      setCreateBookstate(false);
     }
   };
+
   return (
     <>
       {createBookstate ? (
@@ -260,10 +291,59 @@ const CreateBookPage = ({ setIsIntro }) => {
               className="mb-2"
             />
             {previewUrl && (
-              <img src={previewUrl} alt="Preview" width="200" height="200" />
+              <div className="relative">
+                {/* Cross Button */}
+                <button
+                  onClick={clearImageSelection}
+                  className="absolute z-20 -top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
+                  aria-label="Remove selected image"
+                >
+                  ✕
+                </button>
+
+                <div
+                  className="crop-container"
+                  style={{
+                    position: "relative",
+                    height: "300px",
+                    width: "100%",
+                  }}
+                >
+                  <Cropper
+                    image={previewUrl}
+                    crop={crop}
+                    zoom={zoom}
+                    aspect={2 / 1}
+                    onCropChange={setCrop}
+                    onCropComplete={handleCropComplete}
+                    onZoomChange={setZoom}
+                  />
+                </div>
+              </div>
+            )}
+            {isCropping && (
+              <button
+                onClick={handleCropImage}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg mt-4"
+              >
+                Crop Image
+              </button>
             )}
           </div>
 
+          {/* Preview Cropped Image */}
+          {croppedImage && (
+            <div>
+              <h3 className="text-lg font-semibold mb-2">
+                Cropped Image Preview:
+              </h3>
+              <img
+                src={URL.createObjectURL(croppedImage)}
+                alt="Cropped"
+                width="200"
+              />
+            </div>
+          )}
           {/* Submit Button */}
           <div className="flex justify-end">
             <button
