@@ -57,8 +57,8 @@ const CreateBookPage = ({ setIsIntro }) => {
       const croppedImg = await getCroppedImg(
         previewUrl,
         croppedAreaPixels,
-        512,
-        1024
+        1024,
+        512
       );
       setCroppedImage(croppedImg);
     } catch (e) {
