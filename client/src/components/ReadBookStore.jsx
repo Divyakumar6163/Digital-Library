@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import BookCover1 from "../image/BookCover1.png";
+import BookCover1 from "../image/NoImage.jpg";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { MdWorkspacePremium } from "react-icons/md";

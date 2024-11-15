@@ -24,6 +24,7 @@ import * as useractions from "./../store/actions/bookactions";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { notify } from "../store/utils/notify";
+import UpdateBookIntro from "./UpdateIntro";
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
   // const curbook = useSelector((state) => state.createbook);
@@ -42,7 +43,7 @@ const CreateBookStore = ({ bookinfo }) => {
   const [summary, setSummary] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [issave, setissave] = useState(false);
-
+  const [showIntro, setShowIntro] = useState(false);
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
       setExpandedChapters(expandedChapters.filter((i) => i !== index));
@@ -65,6 +66,9 @@ const CreateBookStore = ({ bookinfo }) => {
   };
   const handleBack = () => {
     navigate(-1);
+  };
+  const handleIntro = () => {
+    setShowIntro(true);
   };
   const handleDiscard = async () => {
     try {
@@ -307,7 +311,7 @@ const CreateBookStore = ({ bookinfo }) => {
   console.log(chapters);
   return (
     <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-row">
-      {!showPreview && (
+      {!showPreview && !showIntro && (
         <>
           <div className="sm:w-1/4 bg-white p-4 shadow-md lg:static top-0 left-0 h-full transition-transform duration-300">
             <div className="mb-6">
@@ -384,6 +388,12 @@ const CreateBookStore = ({ bookinfo }) => {
                 onClick={handleBack}
               >
                 Back
+              </button>
+              <button
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg my-1"
+                onClick={handleIntro}
+              >
+                Update Intro
               </button>
               <button
                 className="bg-green-500 text-white py-2 px-4 rounded-lg  my-1"
@@ -502,6 +512,12 @@ const CreateBookStore = ({ bookinfo }) => {
         </div>
       ) : (
         ""
+      )}
+      {showIntro && (
+        <UpdateBookIntro
+          bookIntroDetails={bookinfo}
+          setShowIntro={setShowIntro}
+        />
       )}
     </div>
   );

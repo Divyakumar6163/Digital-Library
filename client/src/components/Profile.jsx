@@ -53,7 +53,6 @@ const UserProfile = () => {
     try {
       const response = await updateProfile(userInfoUpdate, accessToken);
       console.log(response.data.profileImage);
-      // conole4
       const profileInfo = {
         ...userState.userinfo,
         profileImage: response.data.profileImage,

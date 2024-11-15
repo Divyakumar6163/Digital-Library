@@ -73,7 +73,7 @@ export const updateChapters = async (bookID, updatedChapters) => {
   try {
     const response = await axios.patch(
       `${ToLink}/updatebook/${bookID}`,
-      { chapters: updatedChapters }
+      { chapters: updatedChapters, modifiedDate: Date.now() }
       // {
       //     headers: {
       //         'Content-Type': 'application/json',
@@ -92,6 +92,67 @@ export const updateChapters = async (bookID, updatedChapters) => {
   } catch (error) {
     console.error("Error occurred while updating chapters:", error);
     return false;
+  }
+};
+export const updateIntro = async (bookID, updatedIntro, accessToken) => {
+  console.log(updatedIntro.image);
+  if (typeof updatedIntro.image === "object") {
+    try {
+      const formData = new FormData();
+      formData.append("image", updatedIntro.image);
+      const uploadResponse = await axios.post(`${ToLink}/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const image = await uploadResponse.data.fileUrl;
+      updatedIntro.image = image;
+      const response = await axios.patch(
+        `${ToLink}/updateintro/${bookID}`,
+        updatedIntro
+        // {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     }
+        // }
+      );
+
+      if (response.status === 200) {
+        console.log("Intro updated successfully", response.data);
+        return true;
+      } else {
+        console.error("Failed to update Intro:", response.data);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error occurred while updating intro:", error);
+      return false;
+    }
+  } else {
+    try {
+      const response = await axios.patch(
+        `${ToLink}/updateintro/${bookID}`,
+        updatedIntro
+        // {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //     }
+        // }
+      );
+
+      if (response.status === 200) {
+        console.log("Intro updated successfully", response.data);
+        return true;
+      } else {
+        console.error("Failed to update Intro:", response.data);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error occurred while updating intro:", error);
+      return false;
+    }
   }
 };
 export const getbookbyID = async (bookID) => {
@@ -114,6 +175,7 @@ export const getbookbyID = async (bookID) => {
 };
 
 export const createBook = async (imageFile, bookdata, accessToken) => {
+  console.log(bookdata);
   if (!imageFile) {
     bookdata.image =
       "https://res.cloudinary.com/ddgyxhpwx/image/upload/v1731611566/CloudinaryDemo/No%20Image.jpg.jpg";
@@ -130,11 +192,11 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
 
       console.log(createResponse.data.data.books);
       const id = createResponse.data.data.books._id;
-      notify("Book created!");
+      // notify("Book created!");
       return id;
     } catch (error) {
       console.error("There was an error:", error);
-      notify("Error while creating book");
+      // notify("Error while creating book");
       return null;
     }
   } else {
@@ -167,11 +229,11 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
 
       console.log(createResponse.data.data.books);
       const id = createResponse.data.data.books._id;
-      notify("Book created!");
+      // notify("Book created!");
       return id;
     } catch (error) {
       console.error("There was an error:", error);
-      notify("Error while creating book");
+      // notify("Error while creating book");
       return null;
     }
   }

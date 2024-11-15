@@ -14,6 +14,7 @@ router.post(
 router.get("/getalltags", bookcontroller.getalldistincttags);
 router.patch("/publishbook/:bookId", bookcontroller.publishbookuser);
 router.patch("/updatebook/:bookId", bookcontroller.updatebookcontent);
+router.patch("/updateintro/:bookId", bookcontroller.updatebookintro);
 router.delete("/deletebook/:bookId", bookcontroller.deletebook);
 router.get("/book/:bookId", bookcontroller.getbookbyID);
 router.get(

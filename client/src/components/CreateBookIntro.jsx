@@ -11,7 +11,7 @@ import { notify } from "./../store/utils/notify";
 import { useNavigate } from "react-router";
 import { Createbookloader } from "../store/utils/createbookloader";
 import Cropper from "react-easy-crop";
-import getCroppedImg from "./util/getCroppedImg"; // utility function to get cropped image blob
+import getCroppedImg from "./util/getCroppedImg";
 
 const CreateBookPage = ({ setIsIntro }) => {
   const dispatch = useDispatch();
@@ -19,18 +19,35 @@ const CreateBookPage = ({ setIsIntro }) => {
   const loader = useLoader();
   const bookDetails = useSelector((state) => state.createbook);
   const [bookName, setBookName] = useState(bookDetails?.booktitle || "");
-  const [authorName, setAuthorName] = useState(bookDetails?.author || "");
-  const [description, setdescription] = useState(
-    bookDetails?.description || ""
-  );
-  const [bookTagline, setBookTagline] = useState(bookDetails?.summary || "");
-  const [tags, setTags] = useState(bookDetails?.tags || []);
+  // const [authorName, setAuthorName] = useState(bookDetails?.author || "");
+  // const [description, setDescription] = useState(
+  //   bookDetails?.description || ""
+  // );
+  const [summary, setSummary] = useState(bookDetails?.summary || "");
+  const [briefSummary, setBriefSummary] = useState("");
+  const [objectives, setObjectives] = useState("");
+  const [details, setDetails] = useState("");
+  const [version, setVersion] = useState("");
+  const [videoLink, setVideoLink] = useState("");
+  const [targetAudience, setTargetAudience] = useState("BEGINNER");
+  const [license, setLicense] = useState("ALL RIGHTS RESERVED");
+  const [skills, setSkills] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [collaborators, setCollaborators] = useState([]);
+  const [coAuthors, setCoAuthors] = useState([]);
+  const [reviewers, setReviewers] = useState([]);
+  const [skillInputValue, setSkillInputValue] = useState("");
   const [tagInputValue, setTagInputValue] = useState("");
-  const accessToken = useSelector((state) => state.auth.accessToken);
+  const [collaboratorInputValue, setCollaboratorInputValue] = useState("");
+  const [coAuthorInputValue, setCoAuthorInputValue] = useState("");
+  const [reviewerInputValue, setReviewerInputValue] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [createBookstate, setCreateBookstate] = useState(false);
   const [isCropping, setIsCropping] = useState(false);
+  const accessToken = useSelector((state) => state.auth.accessToken);
+  const [attributionTitle, setAttributionTitle] = useState("");
+  const [attributionAuthor, setAttributionAuthor] = useState("");
 
   // Crop states
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -65,63 +82,84 @@ const CreateBookPage = ({ setIsIntro }) => {
       console.error("Error cropping image:", e);
     }
   }, [previewUrl, croppedAreaPixels]);
-
-  const handleInputChange = (e) => {
-    setTagInputValue(e.target.value);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      addTag(tagInputValue);
-    }
-  };
-
-  const handleBlur = () => {
-    addTag(tagInputValue);
-  };
-
-  const addTag = (tag) => {
-    if (tag.trim() !== "" && !tags.includes(tag.trim())) {
-      setTags([...tags, tag.trim()]);
-    }
-    setTagInputValue("");
-  };
-
-  const handleTagRemove = (tagToRemove) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
-  };
-
   const clearImageSelection = () => {
     setIsCropping(false);
     setImageFile(null);
     setPreviewUrl(null);
     setCroppedImage(null);
   };
+  const handleInputChange = (e) => {
+    setTagInputValue(e.target.value);
+  };
 
-  useEffect(() => {
-    setBookName(bookDetails?.booktitle || "");
-    setAuthorName(bookDetails?.author || "");
-    setdescription(bookDetails?.description || "");
-    setBookTagline(bookDetails?.summary || "");
-  }, [bookDetails]);
+  const handleSkillInputChange = (e) => {
+    setSkillInputValue(e.target.value);
+  };
+
+  const handleKeyDown = (e, addItem, inputValue, setInputValue) => {
+    if (e.key === "Enter" && inputValue.trim() !== "") {
+      e.preventDefault();
+      addItem(inputValue.trim());
+      setInputValue("");
+    }
+  };
+
+  const addSkill = (skill) => {
+    if (!skills.includes(skill)) setSkills([...skills, skill]);
+  };
+
+  const addTag = (tag) => {
+    if (!tags.includes(tag)) setTags([...tags, tag]);
+  };
+
+  const addCollaborator = (email) => {
+    if (email && !collaborators.includes(email))
+      setCollaborators([...collaborators, email]);
+  };
+
+  const addCoAuthor = (email) => {
+    if (email && !coAuthors.includes(email))
+      setCoAuthors([...coAuthors, email]);
+  };
+
+  const addReviewer = (email) => {
+    if (email && !reviewers.includes(email))
+      setReviewers([...reviewers, email]);
+  };
+
+  const removeItem = (item, setItems) => {
+    setItems((items) => items.filter((i) => i !== item));
+  };
 
   const handleSubmit = async () => {
     loader.start("Creating your book...");
 
-    if (!bookName.trim() || !authorName.trim() || !description.trim()) {
-      alert("Please fill in all the required fields.");
+    if (!bookName.trim() || !summary.trim()) {
+      notify("Please fill in all the required fields.");
       loader.stop();
       return;
     }
     setCreateBookstate(true);
     const updatedBookDetails = {
       booktitle: bookName,
-      author: authorName,
-      chapters: [],
-      summary: bookTagline,
-      description: description,
-      tags: tags,
+      // author: authorName,
+      summary,
+      briefSummary,
+      // description,
+      objective: objectives,
+      details,
+      version,
+      videoLink,
+      targetAudience,
+      license,
+      attributionTitle,
+      attributionAuthor,
+      image: croppedImage,
+      tags,
+      skills,
+      collaborators,
+      coAuthors,
+      reviewers,
     };
 
     try {
@@ -130,16 +168,21 @@ const CreateBookPage = ({ setIsIntro }) => {
         updatedBookDetails,
         accessToken
       );
+      console.log(res);
       if (res) {
+        console.log(res);
         setCreateBookstate(false);
         navigate(`/updatebook/${res}`);
         dispatch(setBookDetails(updatedBookDetails));
         dispatch(useractions.updateChapter([]));
+        notify("Book Created!");
+        return res;
       } else {
         setCreateBookstate(false);
         notify("Error while creating the book.");
       }
     } catch (error) {
+      console.error("Error creating book:", error);
       setCreateBookstate(false);
       notify("An error occurred while creating the book.");
     }
@@ -153,135 +196,302 @@ const CreateBookPage = ({ setIsIntro }) => {
         <div className="container mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
           <h1 className="text-2xl font-semibold mb-4">Create a New Book</h1>
 
-          {/* Book Name */}
+          {/* Title */}
           <div className="mb-4">
-            <label className="block text-lg mb-2">Book Title</label>
-            <SunEditor
-              setContents={bookName}
-              onChange={(content) => setBookName(content)}
-              placeholder="Enter Book Title"
-              setOptions={{
-                height: 50,
-                buttonList: [
-                  ["font", "fontSize", "bold", "italic", "underline"],
-                  ["align", "list", "undo", "redo"],
-                ],
-              }}
-            />
-          </div>
-
-          {/* Author Name */}
-          <div className="mb-4">
-            <label className="block text-lg mb-2">Author Name</label>
-            <SunEditor
-              setContents={authorName}
-              onChange={(content) => setAuthorName(content)}
-              placeholder="Enter Author Name"
-              setOptions={{
-                height: 50,
-                buttonList: [
-                  ["font", "fontSize", "bold", "italic", "underline"],
-                  ["align", "list", "undo", "redo"],
-                ],
-              }}
-            />
-          </div>
-
-          {/* Book Category */}
-          <div className="mb-4">
-            <label className="block text-lg mb-2">Book Description</label>
-            <SunEditor
-              setContents={description}
-              onChange={(content) => setdescription(content)}
-              placeholder="Enter Book Description"
-              setOptions={{
-                height: 50,
-                buttonList: [
-                  ["font", "fontSize", "bold", "italic", "underline"],
-                  ["align", "list", "undo", "redo"],
-                ],
-              }}
-            />
-          </div>
-
-          {/* Book Tagline */}
-          <div className="mb-4">
-            <label className="block text-lg mb-2">Book Summary</label>
-            <SunEditor
-              setContents={bookTagline}
-              onChange={(content) => setBookTagline(content)}
-              placeholder="Enter Book Summary"
-              setOptions={{
-                height: 50,
-                buttonList: [
-                  ["font", "fontSize", "bold", "italic", "underline"],
-                  ["align", "list", "undo", "redo"],
-                ],
-              }}
-            />
-          </div>
-          <div className="mb-6 max-w-[600px]">
-            <button
-              data-tooltip-target="tooltip-tags"
-              type="button"
-              for="success"
-              className="block mb-1 text-sm font-medium text-black"
-            >
-              Tags (Tags of the Book)
-            </button>
-            <div
-              id="tooltip-tags"
-              role="tooltip"
-              className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-            >
-              eg. Education , Fiction ,Science
-              <div className="tooltip-arrow" data-popper-arrow></div>
-            </div>
+            <label className="block text-lg mb-2">*Book Title</label>
             <input
               type="text"
-              id="success"
-              value={tagInputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              onBlur={handleBlur}
-              className="border border-green-500 text-black  text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 "
-              placeholder="eg. Education , Fiction ,Science"
+              value={bookName}
+              onChange={(e) => setBookName(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Book Title"
             />
-            <div className="mt-2">
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-blue-500 text-white px-2 py-1 rounded-full text-sm flex items-center gap-2"
-                    >
-                      {tag}
-                      <button
-                        onClick={() => handleTagRemove(tag)}
-                        className="bg-blue-700 text-white rounded-full p-1 text-xs flex items-center justify-center"
-                        aria-label={`Remove tag ${tag}`}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-4 h-4"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </span>
-                  ))}
+          </div>
+
+          <div className="mb-4">
+            <input
+              type="text"
+              value={skillInputValue}
+              onChange={(e) => setSkillInputValue(e.target.value)}
+              onKeyDown={(e) =>
+                handleKeyDown(e, addSkill, skillInputValue, setSkillInputValue)
+              }
+              className="border p-2 w-full"
+              placeholder="Type skills and press 'Enter'"
+            />
+            <div className="flex flex-wrap mt-2">
+              {skills.map((skill, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                >
+                  {skill}
+                  <button
+                    onClick={() => removeItem(skill, setSkills)}
+                    className="ml-2 text-xs bg-blue-700 rounded-full p-1"
+                  >
+                    ✕
+                  </button>
                 </div>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* Cover Image Upload */}
+          {/* Tags Input */}
+          <div className="mb-4">
+            <input
+              type="text"
+              value={tagInputValue}
+              onChange={(e) => setTagInputValue(e.target.value)}
+              onKeyDown={(e) =>
+                handleKeyDown(e, addTag, tagInputValue, setTagInputValue)
+              }
+              className="border p-2 w-full"
+              placeholder="Type tags and press 'Enter'"
+            />
+            <div className="flex flex-wrap mt-2">
+              {tags.map((tag, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                >
+                  {tag}
+                  <button
+                    onClick={() => removeItem(tag, setTags)}
+                    className="ml-2 text-xs bg-blue-700 rounded-full p-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Collaborators Input */}
+          <div className="mb-4">
+            <input
+              type="email"
+              value={collaboratorInputValue}
+              onChange={(e) => setCollaboratorInputValue(e.target.value)}
+              onKeyDown={(e) =>
+                handleKeyDown(
+                  e,
+                  addCollaborator,
+                  collaboratorInputValue,
+                  setCollaboratorInputValue
+                )
+              }
+              className="border p-2 w-full"
+              placeholder="Enter collaborator email and press 'Enter'"
+            />
+            <div className="flex flex-wrap mt-2">
+              {collaborators.map((collab, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                >
+                  {collab}
+                  <button
+                    onClick={() => removeItem(collab, setCollaborators)}
+                    className="ml-2 text-xs bg-blue-700 rounded-full p-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Co-Authors Input */}
+          <div className="mb-4">
+            <input
+              type="email"
+              value={coAuthorInputValue}
+              onChange={(e) => setCoAuthorInputValue(e.target.value)}
+              onKeyDown={(e) =>
+                handleKeyDown(
+                  e,
+                  addCoAuthor,
+                  coAuthorInputValue,
+                  setCoAuthorInputValue
+                )
+              }
+              className="border p-2 w-full"
+              placeholder="Enter co-author email and press 'Enter'"
+            />
+            <div className="flex flex-wrap mt-2">
+              {coAuthors.map((coAuthor, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                >
+                  {coAuthor}
+                  <button
+                    onClick={() => removeItem(coAuthor, setCoAuthors)}
+                    className="ml-2 text-xs bg-blue-700 rounded-full p-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Reviewers Input */}
+          <div className="mb-4">
+            <input
+              type="email"
+              value={reviewerInputValue}
+              onChange={(e) => setReviewerInputValue(e.target.value)}
+              onKeyDown={(e) =>
+                handleKeyDown(
+                  e,
+                  addReviewer,
+                  reviewerInputValue,
+                  setReviewerInputValue
+                )
+              }
+              className="border p-2 w-full"
+              placeholder="Enter reviewer email and press 'Enter'"
+            />
+            <div className="flex flex-wrap mt-2">
+              {reviewers.map((reviewer, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                >
+                  {reviewer}
+                  <button
+                    onClick={() => removeItem(reviewer, setReviewers)}
+                    className="ml-2 text-xs bg-blue-700 rounded-full p-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Summary */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">*Summary</label>
+            <textarea
+              value={summary}
+              onChange={(e) => setSummary(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Summary"
+            />
+          </div>
+
+          {/* Brief Summary */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Brief Summary</label>
+            <textarea
+              value={briefSummary}
+              onChange={(e) => setBriefSummary(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Brief Summary"
+            />
+          </div>
+
+          {/* Objectives */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Objectives</label>
+            <textarea
+              value={objectives}
+              onChange={(e) => setObjectives(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Objectives"
+            />
+          </div>
+
+          {/* Details */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Details</label>
+            <textarea
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Details"
+            />
+          </div>
+
+          {/* Version */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Version</label>
+            <input
+              type="text"
+              value={version}
+              onChange={(e) => setVersion(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Version"
+            />
+          </div>
+
+          {/* Video Link */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Video Link</label>
+            <input
+              type="url"
+              value={videoLink}
+              onChange={(e) => setVideoLink(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Video Link"
+            />
+          </div>
+
+          {/* Target Audience Dropdown */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Target Audience</label>
+            <select
+              value={targetAudience}
+              onChange={(e) => setTargetAudience(e.target.value)}
+              className="border p-2 w-full"
+            >
+              <option value="BEGINNER">Beginner</option>
+              <option value="INTERMEDIATE">Intermediate</option>
+              <option value="ADVANCED">Advanced</option>
+            </select>
+          </div>
+
+          {/* License Dropdown */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">License</label>
+            <select
+              value={license}
+              onChange={(e) => setLicense(e.target.value)}
+              className="border p-2 w-full"
+            >
+              <option value="ALL RIGHTS RESERVED">All Rights Reserved</option>
+              <option value="CREATIVE COMMONS">Creative Commons</option>
+              <option value="PUBLIC DOMAIN">Public Domain</option>
+            </select>
+          </div>
+
+          {/* Attribution Author */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Attribution Author</label>
+            <input
+              type="text"
+              value={attributionAuthor}
+              onChange={(e) => setAttributionAuthor(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Attribution Author"
+            />
+          </div>
+
+          {/* Attribution Title */}
+          <div className="mb-4">
+            <label className="block text-lg mb-2">Attribution Title</label>
+            <input
+              type="text"
+              value={attributionTitle}
+              onChange={(e) => setAttributionTitle(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="Enter Attribution Title"
+            />
+          </div>
+
+          {/* Cover Image */}
           <div className="mb-4">
             <label className="block text-lg mb-2">Cover Picture</label>
             <input

@@ -149,9 +149,51 @@ exports.publishbookuser = async (req, res) => {
     });
   }
 };
+exports.updatebookintro = async (req, res) => {
+  const { bookId } = req.params;
+  const data = req.body;
+  try {
+    const book = await Bookschema.findById(bookId);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    book.booktitle = data.booktitle;
+    book.skills = data.skills;
+    book.tags = data.tags;
+    book.collaborators = data.collaborators;
+    book.coAuthors = data.coAuthors;
+    book.reviewers = data.reviewers;
+    book.summary = data.summary;
+    book.briefSummary = data.briefSummary;
+    book.objective = data.objective;
+    book.version = data.version;
+    book.videoLink = data.videoLink;
+    book.details = data.details;
+    book.targetAudience = data.targetAudience;
+    book.license = data.license;
+    book.attributionTitle = data.attributionTitle;
+    book.attributionAuthor = data.attributionAuthor;
+    book.image = data.image;
+    await book.save();
+
+    res.status(200).json({
+      message: "Book Intro updated successfully",
+      data: {
+        book,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating book intro",
+      error: error.message,
+    });
+  }
+};
 exports.updatebookcontent = async (req, res) => {
   const { bookId } = req.params;
-  const { chapters } = req.body;
+  const { chapters, modifiedDate } = req.body;
 
   try {
     const book = await Bookschema.findById(bookId);
@@ -159,6 +201,7 @@ exports.updatebookcontent = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
     book.chapters = chapters;
+    book.modifiedDate = modifiedDate;
     await book.save();
 
     res.status(200).json({

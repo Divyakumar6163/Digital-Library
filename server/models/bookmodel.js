@@ -237,24 +237,77 @@ const BookSchema = new Schema({
     type: Schema.ObjectId,
     ref: "User",
   },
-  description: {
+  // description: {
+  //   type: String,
+  //   default: "",
+  // },
+  objective: {
     type: String,
     default: "",
   },
-  creaters: {
-    type: Array,
-    default: [],
-  },
-  author: {
+  details: {
     type: String,
     default: "",
   },
+  version: {
+    type: String,
+    default: "",
+  },
+  videoLink: {
+    type: String,
+    default: "",
+  },
+  targetAudience: {
+    type: String,
+    enum: ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+  },
+
+  license: {
+    type: String,
+    enum: ["ALL RIGHTS RESERVED", "CREATIVE COMMONS", "PUBLIC DOMAIN"],
+  },
+  attributionTitle: {
+    type: String,
+    default: "",
+  },
+  attributionAuthor: {
+    type: String,
+    default: "",
+  },
+  // creaters: {
+  //   type: Array,
+  //   default: [],
+  // },
+  // author: {
+  //   type: String,
+  //   default: "",
+  // },
   chapters: [ChapterSchema],
   tags: {
     type: Array,
     default: [],
   },
+  skills: {
+    type: Array,
+    default: [],
+  },
+  collaborators: {
+    type: Array,
+    default: [],
+  },
+  coAuthors: {
+    type: Array,
+    default: [],
+  },
+  reviewers: {
+    type: Array,
+    default: [],
+  },
   summary: {
+    type: String,
+    default: "",
+  },
+  briefSummary: {
     type: String,
     default: "",
   },
@@ -265,6 +318,10 @@ const BookSchema = new Schema({
     default: "Normal",
   },
   createdat: {
+    type: Date,
+    default: Date.now,
+  },
+  modifiedDate: {
     type: Date,
     default: Date.now,
   },

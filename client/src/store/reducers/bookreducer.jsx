@@ -53,7 +53,7 @@ const bookreducer = (state = initialState, action) => {
     case bookactions.UPDATE_CHAPTER:
       return {
         ...state,
-        chapters: state.chapters.map((chapter, index) =>
+        chapters: state.chapters?.map((chapter, index) =>
           index === action.index ? action.updatedChapter : chapter
         ),
       };

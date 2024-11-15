@@ -22,6 +22,7 @@ import Updatebook from "./pages/Updatebook.jsx";
 import Readbook from "./pages/Readbook.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import PremiumPage from "./components/PremiumPage.jsx";
+import UpdateIntro from "./components/UpdateIntro.jsx";
 
 // export const ToLink  = process.env.TO_LINK
 export const ToLink = "https://digital-library-cryf.onrender.com";
@@ -48,7 +49,9 @@ function App() {
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />
+          <Route path="/updateBookIntro/:bookId" element={<UpdateIntro />} />
           <Route path="/adminStore" element={<AdminStore />} />
+
           {/* <Route path="/adminBook/:bookID" element={<AdminPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />
