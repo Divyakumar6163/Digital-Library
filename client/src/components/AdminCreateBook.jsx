@@ -83,7 +83,7 @@ const AdminBook = ({ book, setIsBook }) => {
       case "Image":
         return (
           <img
-            src={component.content.url}
+            src={component.content}
             alt={component.content.alt}
             className="max-w-full"
           />

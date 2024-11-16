@@ -28,6 +28,7 @@ const ReadBookStore = ({ heading, books }) => {
       userState.userinfo.ispreminum === false
     ) {
       notify("Please purchase a membership to access this book");
+      navigate("/premium");
       return;
     } else {
       navigate(`/readbook/${data._id}`);

@@ -172,10 +172,21 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
   const removeItem = (item, setItems) => {
     setItems((items) => items.filter((i) => i !== item));
   };
-
+  const handleBack = () => {
+    setShowIntro(false);
+  };
   return (
-    <div className="container mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
-      <h1 className="text-2xl font-semibold mb-4">Update Book Intro</h1>
+    <div className="container my-4 mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
+      <div className="flex flex-col w-full">
+        <button
+          className={`w-28 bg-blue-500 text-white py-2 px-1 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 mt-4"
+            }`}
+          onClick={handleBack}
+        >
+          Back
+        </button>
+        <h1 className="text-2xl font-semibold my-4">Update Book Intro</h1>
+      </div>
 
       {/* Title */}
       <div className="mb-4">
