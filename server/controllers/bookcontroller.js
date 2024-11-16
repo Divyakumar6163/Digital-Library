@@ -330,11 +330,11 @@ exports.deletebook = async (req, res) => {
 };
 
 exports.searchBook = async (req, res) => {
-  const { searchTerm } = req.query;
-
+  const { search } = req.query;
+  console.log(search);
   try {
     const books = await Bookschema.find({
-      $text: { $search: searchTerm },
+      $text: { $search: search },
     });
 
     res.status(200).json({

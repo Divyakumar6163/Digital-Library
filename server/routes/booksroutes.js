@@ -17,6 +17,7 @@ router.patch("/updatebook/:bookId", bookcontroller.updatebookcontent);
 router.patch("/updateintro/:bookId", bookcontroller.updatebookintro);
 router.delete("/deletebook/:bookId", bookcontroller.deletebook);
 router.get("/book/:bookId", bookcontroller.getbookbyID);
+router.get("/search", bookcontroller.searchBook);
 router.get(
   "/mybooks",
   authcontroller.checkvaliduser,
