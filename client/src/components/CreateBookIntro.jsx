@@ -97,6 +97,7 @@ const CreateBookPage = ({ setIsIntro }) => {
   };
 
   const handleKeyDown = (e, addItem, inputValue, setInputValue) => {
+    console.log(e.key);
     if ((e.key === "Enter" || e.keyCode === 13) && inputValue.trim() !== "") {
       e.preventDefault();
       addItem(inputValue.trim());

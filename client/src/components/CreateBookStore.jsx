@@ -9,12 +9,12 @@ import BookCover1 from "../image/BookCover1.png";
 import axios from "axios";
 import { ToLink } from "../App";
 
-import CreateMCQ from "./CreateMCQ";
-import CreateFIB from "./CreateFIB";
-import Heading from "./CreateHeading";
-import Text from "./CreateText";
-import Graph from "./CreateGraph";
-import Equation from "./CreateEquation";
+import CreateMCQ from "./CreateBookComponents/CreateMCQ";
+import CreateFIB from "./CreateBookComponents/CreateFIB";
+import Heading from "./CreateBookComponents/CreateHeading";
+import Text from "./CreateBookComponents/CreateText";
+import Graph from "./CreateBookComponents/CreateGraph";
+import Equation from "./CreateBookComponents/CreateEquation";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";

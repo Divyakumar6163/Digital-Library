@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CreateGraph from "./CreateGraph";
+import CreateGraph from "./CreateBookComponents/CreateGraph";
 import { BlockMath } from "react-katex";
 import { notify } from "../store/utils/notify";
 import * as useractions from "./../store/actions/bookactions";

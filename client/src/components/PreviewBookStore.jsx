@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CreateGraph from "./CreateGraph";
+import CreateGraph from "./CreateBookComponents/CreateGraph";
 import { BlockMath } from "react-katex";
 import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";

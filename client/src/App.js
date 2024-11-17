@@ -5,7 +5,6 @@ import BookStore from "./pages/BookStorePage.jsx";
 import BooksLibrary from "./pages/BooksLibrary.jsx";
 import { useEffect } from "react";
 import CreateBook from "./pages/CreateBook.jsx";
-// import AdminPage from "./pages/AdminPage.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
@@ -24,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PremiumPage from "./components/PremiumPage.jsx";
 import UpdateIntro from "./components/UpdateIntro.jsx";
 import SearchedBooks from "./components/SearchedBooks.jsx";
+import YourBooks from "./components/YourBooks.jsx";
 // export const ToLink  = process.env.TO_LINK
 export const ToLink = "https://digital-library-cryf.onrender.com";
 // export const ToLink = "http://localhost:5000";
@@ -51,10 +51,8 @@ function App() {
           <Route path="/createBook" element={<CreateBook />} />
           <Route path="/updateBookIntro/:bookId" element={<UpdateIntro />} />
           <Route path="/adminStore" element={<AdminStore />} />
-          <Route
-            path="/searchBooks"
-            element={<SearchedBooks title="Search Results" />}
-          />
+          <Route path="/searchBooks" element={<SearchedBooks />} />
+          <Route path="/yourBooks" element={<YourBooks />} />
           {/* <Route path="/adminBook/:bookID" element={<AdminPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />

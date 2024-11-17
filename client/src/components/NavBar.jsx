@@ -85,7 +85,7 @@ export default function NavBar1() {
   }
 
   function handleBooks() {
-    navigate("/bookStore");
+    navigate("/yourBooks");
   }
 
   return (
@@ -109,7 +109,7 @@ export default function NavBar1() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.keyCode === 13) {
+                if (e.key === "Enter") {
                   e.preventDefault(); // Prevent default behavior for Enter/Done
                   handleSearch();
                 }
@@ -175,7 +175,7 @@ export default function NavBar1() {
             </Dropdown.Header>
             <Dropdown.Item onClick={handleProfile}>Profile</Dropdown.Item>
             <Dropdown.Item onClick={handlePremium}>Premium</Dropdown.Item>
-            <Dropdown.Item onClick={handleBooks}>Books</Dropdown.Item>
+            <Dropdown.Item onClick={handleBooks}>Your Books</Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
           </Dropdown>
