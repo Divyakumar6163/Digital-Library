@@ -97,7 +97,7 @@ const CreateBookPage = ({ setIsIntro }) => {
   };
 
   const handleKeyDown = (e, addItem, inputValue, setInputValue) => {
-    if (e.key === "Enter" && inputValue.trim() !== "") {
+    if ((e.key === "Enter" || e.key === "Tab") && inputValue.trim() !== "") {
       e.preventDefault();
       addItem(inputValue.trim());
       setInputValue("");
