@@ -51,7 +51,10 @@ function App() {
           <Route path="/createBook" element={<CreateBook />} />
           <Route path="/updateBookIntro/:bookId" element={<UpdateIntro />} />
           <Route path="/adminStore" element={<AdminStore />} />
-          <Route path="/searchBooks" element={<SearchedBooks />} />
+          <Route
+            path="/searchBooks"
+            element={<SearchedBooks title="Your Search" />}
+          />
           {/* <Route path="/adminBook/:bookID" element={<AdminPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUpPage />} />

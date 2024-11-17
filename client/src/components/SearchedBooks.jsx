@@ -1,8 +1,32 @@
 import React from "react";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
-const BookStore = ({ title, books }) => {
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { notify } from "../store/utils/notify";
+
+const BookStore = ({ title }) => {
+  const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
+  const books = useSelector((state) => state.books.searchBooks);
+  const isuser = useSelector((state) => state.user);
   console.log(books);
+  function handleReadBook(data) {
+    if (!isuser.islogin) {
+      notify("Please login first");
+      return;
+    }
+    if (
+      data.booktype === "Premium" &&
+      userState.userinfo.ispreminum === false
+    ) {
+      notify("Please purchase a membership to access this book");
+      navigate("/premium");
+    } else {
+      navigate(`/readbook/${data._id}`);
+    }
+  }
+
   return (
     <>
       <Navbar />
@@ -18,7 +42,9 @@ const BookStore = ({ title, books }) => {
             books.map((book, index) => (
               <div
                 key={index}
+                onClick={() => handleReadBook(book)}
                 className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                style={{ cursor: "pointer" }}
               >
                 <img
                   src={book.image}
@@ -32,10 +58,9 @@ const BookStore = ({ title, books }) => {
                   />
                   <button
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    //   onClick={() => handlePublish(book)}
                     style={{ cursor: "pointer" }}
                   >
-                    Publish Now
+                    Read More
                   </button>
                 </div>
               </div>

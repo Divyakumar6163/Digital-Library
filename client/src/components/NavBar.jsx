@@ -4,6 +4,7 @@ import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import * as authactions from "./../store/actions/authactions";
 import * as bookactions from "./../store/actions/bookactions";
+import * as bookinfoactions from "./../store/actions/bookinfoactions";
 import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
@@ -65,6 +66,7 @@ export default function NavBar1() {
       });
       navigate("/searchBooks");
       setSearchBooks(res.data.data.books);
+      store.dispatch(bookinfoactions.setSearchBooks(res.data.data.books));
       // setIsSearchPage(true);
       console.log(res.data.data.books); // Log books
     } catch (error) {

@@ -5,7 +5,6 @@ function Filter() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const resultObject = useSelector((state) => state.books.alltags);
   const AllBooks = useSelector((state) => state.books.allbooks);
-  console.log("hii");
   const [categories, setCategories] = useState(resultObject);
   const toggleDropdown = () => {
     setCategories(resultObject);
