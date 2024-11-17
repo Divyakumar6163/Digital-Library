@@ -109,8 +109,8 @@ export default function NavBar1() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === "Tab") {
-                  e.preventDefault();
+                if (e.key === "Enter" || e.keyCode === 13) {
+                  e.preventDefault(); // Prevent default behavior for Enter/Done
                   handleSearch();
                 }
               }}
