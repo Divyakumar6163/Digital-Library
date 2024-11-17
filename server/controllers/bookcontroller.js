@@ -335,6 +335,7 @@ exports.searchBook = async (req, res) => {
   try {
     const books = await Bookschema.find({
       $text: { $search: search },
+      ispublished: true,
     });
 
     res.status(200).json({
