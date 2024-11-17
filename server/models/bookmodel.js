@@ -330,7 +330,17 @@ const BookSchema = new Schema({
     default: null,
   },
 });
-BookSchema.index({ booktitle: "text", summary: "text", tags: "text" });
+BookSchema.index({
+  booktitle: "text",
+  summary: "text",
+  tags: "text",
+  chapters: "text",
+  coAuthors: "text",
+  attributionTitle: "text",
+  attributionAuthor: "text",
+  reviewers: "text",
+  collaborators: "text",
+});
 const Book = mongoose.model("Book", BookSchema);
 
 module.exports = Book;

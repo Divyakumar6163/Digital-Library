@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ToLink } from "../App";
 import axios from "axios";
+
 const adminMail = [
   "divyakumar768800@gmail.com",
   "pushkargupta063@gmail.com",
@@ -32,7 +33,7 @@ export default function NavBar1() {
   const islogin = useSelector((state) => state.user.islogin);
   const username = useSelector((state) => state.user.userinfo.name);
   const profile = useSelector((state) => state.user.userinfo.profileImage);
-  // const [isSearchPage, setIsSearchPage] = useState(false);
+
   // Set isAdmin only when userState.userinfo.emailid changes
   useEffect(() => {
     setIsAdmin(adminMail.includes(userState.userinfo.emailid));
@@ -67,7 +68,6 @@ export default function NavBar1() {
       navigate("/searchBooks");
       setSearchBooks(res.data.data.books);
       store.dispatch(bookinfoactions.setSearchBooks(res.data.data.books));
-      // setIsSearchPage(true);
       console.log(res.data.data.books); // Log books
     } catch (error) {
       console.error(
@@ -114,6 +114,9 @@ export default function NavBar1() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch();
+                }} // Trigger handleSearch on Enter key press
                 className="w-full px-3 py-2 pl-10 text-sm text-white placeholder-gray-500 bg-gray-800 border border-gray-100 rounded-lg focus:outline-none focus:ring focus:ring-white "
                 placeholder="Search..."
               />
@@ -121,7 +124,6 @@ export default function NavBar1() {
                 id={styles.seachIcon}
                 className="absolute w-5 h-5 text-gray-500 left-3 top-2.5"
                 style={{ marginLeft: "8px", cursor: "pointer" }}
-                // onClick={handleSearch}
               />
             </div>
           )}
@@ -133,6 +135,9 @@ export default function NavBar1() {
             <input
               id={styles.seachInput1}
               type="text"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }} // Trigger handleSearch on Enter key press
               className="w-full-[20px] px-3 py-2 pl-10 text-sm text-white placeholder-gray-500 bg-gray-800 border border-gray-100 rounded-lg focus:outline-none focus:ring focus:ring-white "
               placeholder="Search..."
             />
@@ -200,7 +205,6 @@ export default function NavBar1() {
           </Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
-      {/* {isSearchPage && <SearchedBooks title="Your Seach" books={searchBooks} />} */}
     </>
   );
 }

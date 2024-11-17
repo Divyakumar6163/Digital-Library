@@ -53,7 +53,7 @@ function App() {
           <Route path="/adminStore" element={<AdminStore />} />
           <Route
             path="/searchBooks"
-            element={<SearchedBooks title="Your Search" />}
+            element={<SearchedBooks title="Search Result" />}
           />
           {/* <Route path="/adminBook/:bookID" element={<AdminPage />} /> */}
           <Route path="/login" element={<Login />} />
