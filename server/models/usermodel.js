@@ -24,8 +24,12 @@ const userSchema = new Schema({
   },
   password: {
     type: "string",
-    required: true,
     select: false,
+  },
+  issetuppassword: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
   about: {
     type: String,
@@ -54,6 +58,10 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  isvarified: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 userSchema.pre("save", async function (next) {

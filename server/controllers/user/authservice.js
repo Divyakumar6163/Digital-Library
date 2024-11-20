@@ -186,7 +186,7 @@ const signToken = (id) => {
         },
       });
     } catch (error) {
-      console.log('Error verifying token:', error);
+      // console.log('Error verifying token:', error);
       return res.status(403).json({ message: 'Invalid user expired token' });
     }
   };
@@ -216,7 +216,7 @@ const signToken = (id) => {
         accessToken: newAccessToken,
       });
     } catch (error) {
-      console.error('Error refreshing access token:', error);
+      // console.error('Error refreshing access token:', error);
       res.status(403).json({ message: 'Invalid or expired refresh token' });
     }
   };
@@ -242,7 +242,7 @@ const signToken = (id) => {
       req.user = currentUser;
       next();
     } catch (error) {
-      console.log('Error verifying token:', error);
+      // console.log('Error verifying token:', error);
       return res.status(403).json({ message: 'Your session expaired ' });
     }
   };

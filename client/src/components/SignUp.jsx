@@ -34,7 +34,7 @@ function SignUpPage() {
         `${ToLink}/user/signup`,
         data
       );
-      notify("Account created... Please login")
+      notify("verification link sent in your mail")
       navigate("/login");
       setLoading(false);
       console.log(response.data);

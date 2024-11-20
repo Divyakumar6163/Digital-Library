@@ -21,6 +21,9 @@ router.post("/resetpassword", authcontroller.resetpassword);
 
 router.get("/getresettoken", authcontroller.getallresettoken);
 
+
+router.post("/verifyemail", usercontroller.verifyuseremail);
+
 router.post(
   "/user/profile",
   // authcontroller.checkvaliduser,
