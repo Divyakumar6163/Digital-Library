@@ -6,9 +6,9 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { LoaderProvider } from "./store/utils/loaderprovider";
-import { PersistGate } from 'redux-persist/integration/react';
+import { PersistGate } from "redux-persist/integration/react";
 // import { store, persistor } from './store'; // import the store and persistor
-import { store, persistor } from './store/store'
+import { store, persistor } from "./store/store";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <LoaderProvider>

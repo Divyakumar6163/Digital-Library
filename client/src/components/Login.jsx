@@ -8,7 +8,7 @@ import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import * as authactions from "./../store/actions/authactions";
 import { useNavigate } from "react-router-dom";
-import GoogleLoginPage from './Auth/login_signupgoogle'
+import GoogleLoginPage from "./Auth/login_signupgoogle";
 import { ToLink } from "../App";
 // import { ToLink } from "../App";
 import { notify } from "../store/utils/notify";
@@ -19,77 +19,50 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   async function loginuserbycookie() {
-  //     try {
-  //       const response = await axios.post(
-  //         "http://localhost:5000/user/login",
-  //         {},
-  //         {
-  //           withCredentials: true,
-  //         }
-  //       );
-  //       console.log(response.cookie);
-  //       navigate("/");
-  //       store.dispatch(useractions.setuserinfo(response.data.data));
-  //       store.dispatch(useractions.setlogin(true));
-  //       console.log(response.data);
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-
-  // Conditionally run loginuserbycookie if you want to auto-login under specific conditions
-  // loginuserbycookie();
-  // }, [navigate]);
 
   async function loginuser(e) {
     e.preventDefault();
     setLoading(true); // Start loading immediately
 
     try {
-        const data = {
-            emailid: email,
-            password: password,
-        };
+      const data = {
+        emailid: email,
+        password: password,
+      };
 
-        // Check for empty fields
-        if (data.emailid === "" || data.password === "") {
-            notify("Please fill all the fields");
-            setLoading(false); // Stop loading on validation error
-            return;
-        }
+      // Check for empty fields
+      if (data.emailid === "" || data.password === "") {
+        notify("Please fill all the fields");
+        setLoading(false); // Stop loading on validation error
+        return;
+      }
 
-        // Perform login request
-        const response = await axios.post(
-            `${ToLink}/user/login`,
-            data,
-            { withCredentials: true }
-        );
+      // Perform login request
+      const response = await axios.post(`${ToLink}/user/login`, data, {
+        withCredentials: true,
+      });
+      // console.log(response);
+      if (response.data) {
+        store.dispatch(useractions.setuserinfo(response.data.user));
+        store.dispatch(authactions.setAccessToken(response.data.AccessToken));
+        store.dispatch(authactions.setRefreshToken(response.data.RefreshToken));
+        store.dispatch(useractions.setlogin(true));
+        notify("Login successful");
+        navigate("/");
+      }
 
-        if (response.data) {
-  
-            store.dispatch(useractions.setuserinfo(response.data.user));
-            store.dispatch(authactions.setAccessToken(response.data.AccessToken));
-            store.dispatch(authactions.setRefreshToken(response.data.RefreshToken));
-            store.dispatch(useractions.setlogin(true));
-            notify("Login successful");
-            navigate("/");
-        }
-
-        setLoading(false); 
-
+      setLoading(false);
     } catch (e) {
-        setLoading(false);
-        if (e.response && e.response.data) {
-            notify(e.response.data.message); 
-            console.log(e.response.data.message);
-        } else {
-            notify("An unexpected error occurred");
-            console.log(e.message);
-        }
+      setLoading(false);
+      if (e.response && e.response.data) {
+        notify(e.response.data.message);
+        console.log(e.response.data.message);
+      } else {
+        notify("An unexpected error occurred");
+        console.log(e.message);
+      }
     }
-}
+  }
 
   return (
     <>
@@ -157,11 +130,11 @@ function Login() {
                 type="submit"
                 className="w-full flex justify-around text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                {loading? <Spinner/> : "Sign in" }
+                {loading ? <Spinner /> : "Sign in"}
               </button>
-             <div>
-             <GoogleLoginPage />
-             </div>
+              <div>
+                <GoogleLoginPage />
+              </div>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account?{" "}
                 <Link

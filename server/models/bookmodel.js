@@ -28,6 +28,30 @@ const ComponentSchema = new Schema(
   },
   { _id: false, discriminatorKey: "type" }
 );
+const SubsectionSchema = new Schema(
+  {
+    type: {
+      type: { ComponentSchema },
+    },
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
+  { _id: false, discriminatorKey: "type" }
+);
+const SectionSchema = new Schema(
+  {
+    type: {
+      type: { SubsectionSchema },
+    },
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
+  { _id: false, discriminatorKey: "type" }
+);
 
 const HeadingComponent = ComponentSchema.discriminator(
   "Heading",
@@ -221,7 +245,7 @@ const ChapterSchema = new Schema({
     type: String,
     default: "",
   },
-  components: [ComponentSchema],
+  components: [SectionSchema],
 });
 
 const BookSchema = new Schema({

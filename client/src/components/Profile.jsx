@@ -8,7 +8,6 @@ import Navbar from "./NavBar";
 import { store } from "./../store/store";
 import * as useractions from "./../store/actions/userinfoactions";
 import * as authactions from "./../store/actions/authactions";
-import * as bookactions from "./../store/actions/bookactions";
 import { useNavigate } from "react-router";
 
 const UserProfile = () => {
@@ -96,7 +95,6 @@ const UserProfile = () => {
     store.dispatch(useractions.setuserinfo({}));
     store.dispatch(authactions.setAccessToken(null));
     store.dispatch(authactions.setRefreshToken(null));
-    store.dispatch(bookactions.setBookDetails(null));
     navigate("/");
   };
 

@@ -32,7 +32,7 @@ export default function NavBar1() {
   const islogin = useSelector((state) => state.user.islogin);
   const username = useSelector((state) => state.user.userinfo.name);
   const profile = useSelector((state) => state.user.userinfo.profileImage);
-
+  console.log(islogin);
   // Set isAdmin only when userState.userinfo.emailid changes
   useEffect(() => {
     setIsAdmin(adminMail.includes(userState.userinfo.emailid));
@@ -87,7 +87,6 @@ export default function NavBar1() {
   function handleBooks() {
     navigate("/yourBooks");
   }
-
   return (
     <Navbar fluid style={{ backgroundColor: "black" }}>
       <Navbar.Brand href="/">
@@ -190,7 +189,9 @@ export default function NavBar1() {
           <Link to="/bookStore">Read Books</Link>
         </Navbar.Link>
         <Navbar.Link href="/createBook" style={{ color: "white" }}>
-          <NavLink to="/createBook">Create Books</NavLink>
+          <NavLink to={islogin ? "/createBook" : "/login"}>
+            Create Books
+          </NavLink>
         </Navbar.Link>
         {isAdmin && (
           <Navbar.Link style={{ color: "white" }}>
