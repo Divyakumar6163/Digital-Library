@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Subsection from "./Subsection";
+import { notify } from "../../store/utils/notify";
 
 const Section = ({ value, onChange, onDelete, saveChapter }) => {
   const [subsections, setSubsections] = useState(value.subsections || []);
@@ -41,7 +42,7 @@ const Section = ({ value, onChange, onDelete, saveChapter }) => {
       console.log("Section saved:", { ...value, subsections });
       setIsSaving(false); // Reset saving status
     }, 1000);
-    // saveChapter();
+    notify("Section saved successfully");
   };
 
   return (
@@ -76,29 +77,32 @@ const Section = ({ value, onChange, onDelete, saveChapter }) => {
       {/* Add Subsection Button */}
       <button
         onClick={handleAddSubsection}
-        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
+        className="w-full mb-4 bg-gray-200 p-2 rounded-lg"
       >
-        Add Subsection
+        +Add Subsection
       </button>
 
-      {/* Save Section Button */}
-      <button
-        onClick={handleSaveSection}
-        className={`mt-4 ml-2 px-4 py-2 rounded-lg ${
-          isSaving ? "bg-gray-500" : "bg-green-500 text-white"
-        }`}
-        disabled={isSaving} // Disable button while saving
-      >
-        {isSaving ? "Saving..." : "Save Section"}
-      </button>
+      {/* Buttons Container */}
+      <div className="flex justify-between mb-4 space-x-2">
+        {/* Delete Section Button */}
+        <button
+          onClick={onDelete}
+          className="w-1/2 bg-red-500 p-2 rounded-lg text-white"
+        >
+          Delete Section
+        </button>
 
-      {/* Delete Section Button */}
-      <button
-        onClick={onDelete}
-        className="mt-4 ml-2 bg-red-500 text-white px-4 py-2 rounded-lg"
-      >
-        Delete Section
-      </button>
+        {/* Save Section Button */}
+        <button
+          onClick={handleSaveSection}
+          className={`w-1/2 bg-blue-500 p-2 rounded-lg ${
+            isSaving ? "bg-gray-500" : "bg-blue-500 text-white"
+          }`}
+          disabled={isSaving} // Disable button while saving
+        >
+          {isSaving ? "Saving..." : "Save Section"}
+        </button>
+      </div>
     </div>
   );
 };

@@ -5,12 +5,28 @@ import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useSelector } from "react-redux";
+
 const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
+  const [expandedSections, setExpandedSections] = useState([]);
+  const [expandedSubsections, setExpandedSubsections] = useState([]);
   const userState = useSelector((state) => state.user);
+
   const toggleChapterExpansion = (index) => {
     setExpandedChapters((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
+  const toggleSectionExpansion = (index) => {
+    setExpandedSections((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+  const toggleSubsectionExpansion = (sectionIndex, subsecIndex) => {
+    const key = `${sectionIndex}-${subsecIndex}`; // Create a unique key for subsections
+    setExpandedSubsections((prev) =>
+      prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
     );
   };
 
@@ -27,11 +43,16 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
     // Render component based on type if not locked
     switch (component.type) {
       case "Text":
-        return <p dangerouslySetInnerHTML={{ __html: component.content }} />;
+        return (
+          <p
+            className="text-lg"
+            dangerouslySetInnerHTML={{ __html: component.content }}
+          />
+        );
       case "Heading":
         return (
           <h2
-            className="text-2xl font-bold"
+            className="text-xl font-bold my-3"
             dangerouslySetInnerHTML={{ __html: component.content }}
           />
         );
@@ -125,7 +146,11 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
       </div>
     );
   };
-
+  function htmlToPlainText(html) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  }
   return (
     <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-col ">
       {ispre ? (
@@ -141,7 +166,6 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
         </p>
       ) : (
         // Render chapters here
-
         <div className="flex flex-col sm:flex-row">
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300 ">
@@ -172,18 +196,78 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                       ) : (
                         <FaChevronRight className="mr-2" />
                       )}
-                      <span>{chapter?.title || `Chapter ${index + 1}`}</span>
+                      <span>
+                        {htmlToPlainText(chapter?.title) ||
+                          `Chapter ${index + 1}`}
+                      </span>
                     </div>
                   </div>
                   {expandedChapters.includes(index) && (
                     <ul className="pl-6 mt-2">
-                      {chapter.components
-                        .filter((comp) => comp.type === "Heading")
-                        .map((comp) => (
-                          <li key={comp.id}>
-                            {comp.content.replace(/<[^>]+>/g, "")}{" "}
-                          </li>
-                        ))}
+                      {chapter.sections?.map((section, sectionIndex) => (
+                        <li key={section.id}>
+                          <div
+                            className="flex items-center cursor-pointer"
+                            onClick={() => toggleSectionExpansion(sectionIndex)}
+                          >
+                            {expandedSections.includes(sectionIndex) ? (
+                              <FaChevronDown className="mr-2" />
+                            ) : (
+                              <FaChevronRight className="mr-2" />
+                            )}
+                            <span>
+                              {htmlToPlainText(section.title) ||
+                                `Section ${sectionIndex + 1}`}
+                            </span>
+                          </div>
+                          {expandedSections.includes(sectionIndex) && (
+                            <ul className="pl-6 mt-2">
+                              {section.subsections?.map(
+                                (subsec, subsecIndex) => (
+                                  <li key={subsec.id}>
+                                    <div
+                                      className="flex items-center cursor-pointer"
+                                      onClick={() =>
+                                        toggleSubsectionExpansion(
+                                          sectionIndex,
+                                          subsecIndex
+                                        )
+                                      }
+                                    >
+                                      {expandedSubsections.includes(
+                                        `${sectionIndex}-${subsecIndex}`
+                                      ) ? (
+                                        <FaChevronDown className="mr-2" />
+                                      ) : (
+                                        <FaChevronRight className="mr-2" />
+                                      )}
+                                      <span>
+                                        {htmlToPlainText(subsec.heading) ||
+                                          `Subsection ${subsecIndex + 1}`}
+                                      </span>
+                                    </div>
+                                    {expandedSubsections.includes(
+                                      `${sectionIndex}-${subsecIndex}`
+                                    ) && (
+                                      <div className="pl-6 mt-2">
+                                        {subsec.components.map((comp) => (
+                                          <div
+                                            key={comp.id}
+                                            className="text-left"
+                                          >
+                                            {comp.type === "Heading" &&
+                                              htmlToPlainText(comp.content)}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </li>
@@ -199,8 +283,8 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                 className="w-full p-4 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
               >
                 {/* Chapter Title */}
-                <h2
-                  className="text-2xl font-bold mb-4 text-center text-gray-800 border-b pb-2 "
+                <h1
+                  className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2 "
                   dangerouslySetInnerHTML={{ __html: chapter.title }}
                 />
 
@@ -210,14 +294,44 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                   dangerouslySetInnerHTML={{ __html: chapter.summary }}
                 />
 
-                {/* Chapter Components */}
-                <div className="space-y-4">
-                  {chapter.components.map((component) => (
-                    <div key={component.id} className="text-left">
-                      {renderComponent(component)}
+                {/* Sections and Subsections */}
+                {chapter.sections?.map((section, sectionIndex) => (
+                  <div key={section.id} className="mt-4 mx-10">
+                    <h3
+                      className="text-3xl font-bold mb-2 my-5"
+                      style={{ color: "#1C1678" }}
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          section.title ||
+                          `${index + 1}.${sectionIndex + 1}Section`,
+                      }}
+                    />
+                    <div className="space-y-4">
+                      {section.subsections?.map((subsec, subsectionIndex) => (
+                        <div key={subsec.id}>
+                          <h4
+                            className="text-2xl font-semibold my-5"
+                            style={{ color: "#1C1678" }}
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                subsec.heading ||
+                                `${index + 1}.${sectionIndex + 1}.${
+                                  subsectionIndex + 1
+                                } Section`,
+                            }}
+                          />
+                          <div className="space-y-2">
+                            {subsec.components.map((comp) => (
+                              <div key={comp.id} className="text-left">
+                                {renderComponent(comp)}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>

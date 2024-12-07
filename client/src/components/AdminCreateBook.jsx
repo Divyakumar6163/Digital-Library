@@ -17,29 +17,60 @@ const AdminBook = ({ book, setIsBook }) => {
   const [chapters, setChapters] = useState(book.chapters); // Store chapters in state
   console.log(chapters);
   const [expandedChapters, setExpandedChapters] = useState([]);
+  const [expandedSections, setExpandedSections] = useState([]);
+  const [expandedSubsections, setExpandedSubsections] = useState([]);
 
   const toggleChapterExpansion = (index) => {
     setExpandedChapters((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
-
-  const toggleLockComponent = (chapterIndex, componentIndex) => {
+  const toggleSectionExpansion = (index) => {
+    setExpandedSections((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+  const toggleSubsectionExpansion = (sectionIndex, subsecIndex) => {
+    const key = `${sectionIndex}-${subsecIndex}`; // Create a unique key for subsections
+    setExpandedSubsections((prev) =>
+      prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
+    );
+  };
+  const toggleLockComponent = (
+    chapterIndex,
+    sectionIndex,
+    subsectionIndex,
+    componentIndex
+  ) => {
     const updatedChapters = chapters.map((chapter, chIndex) => {
       if (chIndex === chapterIndex) {
-        const updatedComponents = chapter.components.map(
-          (component, compIndex) => {
-            if (compIndex === componentIndex) {
-              return { ...component, locked: !component.locked };
-            }
-            return component;
+        const updatedSections = chapter.sections.map((section, secIndex) => {
+          if (secIndex === sectionIndex) {
+            const updatedSubsections = section.subsections.map(
+              (subsection, subIndex) => {
+                if (subIndex === subsectionIndex) {
+                  const updatedComponents = subsection.components.map(
+                    (component, compIndex) => {
+                      if (compIndex === componentIndex) {
+                        return { ...component, locked: !component.locked };
+                      }
+                      return component;
+                    }
+                  );
+                  return { ...subsection, components: updatedComponents };
+                }
+                return subsection;
+              }
+            );
+            return { ...section, subsections: updatedSubsections };
           }
-        );
-        return { ...chapter, components: updatedComponents };
+          return section;
+        });
+        return { ...chapter, sections: updatedSections };
       }
       return chapter;
     });
-
+    console.log(updatedChapters);
     setChapters(updatedChapters); // Update the chapters state
   };
 
@@ -199,6 +230,7 @@ const AdminBook = ({ book, setIsBook }) => {
   };
 
   const handleSaveChanges = async () => {
+    console.log(chapters);
     try {
       const response = await updateChapters(book._id, chapters); // Use the updated chapters state
       if (response) {
@@ -214,6 +246,11 @@ const AdminBook = ({ book, setIsBook }) => {
       notify("An error occurred while saving the book");
     }
   };
+  function htmlToPlainText(html) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  }
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Admin: Manage Book Content</h1>
@@ -250,8 +287,8 @@ const AdminBook = ({ book, setIsBook }) => {
       ) : (
         <div className="flex">
           {/* Chapter List on the left */}
-          <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
-            <div className="mb-6">
+          <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300 ">
+            <div className="mb-6 flex justify-around flex-col">
               <h2
                 className="text-xl font-bold mb-2 text-center"
                 dangerouslySetInnerHTML={{ __html: book.booktitle }}
@@ -278,18 +315,78 @@ const AdminBook = ({ book, setIsBook }) => {
                       ) : (
                         <FaChevronRight className="mr-2" />
                       )}
-                      <span>{chapter?.title || `Chapter ${index + 1}`}</span>
+                      <span>
+                        {htmlToPlainText(chapter?.title) ||
+                          `Chapter ${index + 1}`}
+                      </span>
                     </div>
                   </div>
                   {expandedChapters.includes(index) && (
                     <ul className="pl-6 mt-2">
-                      {chapter.components
-                        .filter((comp) => comp.type === "Heading")
-                        .map((comp) => (
-                          <li key={comp.id}>
-                            {comp.content.replace(/<[^>]+>/g, "")}{" "}
-                          </li>
-                        ))}
+                      {chapter.sections?.map((section, sectionIndex) => (
+                        <li key={section.id}>
+                          <div
+                            className="flex items-center cursor-pointer"
+                            onClick={() => toggleSectionExpansion(sectionIndex)}
+                          >
+                            {expandedSections.includes(sectionIndex) ? (
+                              <FaChevronDown className="mr-2" />
+                            ) : (
+                              <FaChevronRight className="mr-2" />
+                            )}
+                            <span>
+                              {htmlToPlainText(section.title) ||
+                                `Section ${sectionIndex + 1}`}
+                            </span>
+                          </div>
+                          {expandedSections.includes(sectionIndex) && (
+                            <ul className="pl-6 mt-2">
+                              {section.subsections?.map(
+                                (subsec, subsecIndex) => (
+                                  <li key={subsec.id}>
+                                    <div
+                                      className="flex items-center cursor-pointer"
+                                      onClick={() =>
+                                        toggleSubsectionExpansion(
+                                          sectionIndex,
+                                          subsecIndex
+                                        )
+                                      }
+                                    >
+                                      {expandedSubsections.includes(
+                                        `${sectionIndex}-${subsecIndex}`
+                                      ) ? (
+                                        <FaChevronDown className="mr-2" />
+                                      ) : (
+                                        <FaChevronRight className="mr-2" />
+                                      )}
+                                      <span>
+                                        {htmlToPlainText(subsec.heading) ||
+                                          `Subsection ${subsecIndex + 1}`}
+                                      </span>
+                                    </div>
+                                    {expandedSubsections.includes(
+                                      `${sectionIndex}-${subsecIndex}`
+                                    ) && (
+                                      <div className="pl-6 mt-2">
+                                        {subsec.components.map((comp) => (
+                                          <div
+                                            key={comp.id}
+                                            className="text-left"
+                                          >
+                                            {comp.type === "Heading" &&
+                                              htmlToPlainText(comp.content)}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </li>
@@ -312,28 +409,70 @@ const AdminBook = ({ book, setIsBook }) => {
                   className="mb-4"
                   dangerouslySetInnerHTML={{ __html: chapter.summary }}
                 />
-                <div>
-                  {chapter.components.map((component, componentIndex) => (
-                    <div key={component.id} className="mb-4">
-                      {renderComponent(component, chapterIndex, componentIndex)}
+                {/* Sections and Subsections */}
+                {chapter.sections?.map((section, sectionIndex) => (
+                  <div key={section.id} className="mt-4 mx-10">
+                    <h3
+                      className="text-3xl font-bold mb-2 my-5"
+                      style={{ color: "#1C1678" }}
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          section.title ||
+                          `${chapterIndex + 1}.${sectionIndex + 1}Section`,
+                      }}
+                    />
+                    <div className="space-y-4">
+                      {section.subsections?.map((subsec, subsectionIndex) => (
+                        <div key={subsec.id}>
+                          <h4
+                            className="text-2xl font-semibold my-5"
+                            style={{ color: "#1C1678" }}
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                subsec.heading ||
+                                `${chapterIndex + 1}.${sectionIndex + 1}.${
+                                  subsectionIndex + 1
+                                } Section`,
+                            }}
+                          />
+                          <div>
+                            {subsec.components.map(
+                              (component, componentIndex) => (
+                                <div key={component.id} className="mb-4">
+                                  {renderComponent(
+                                    component,
+                                    chapterIndex,
+                                    componentIndex
+                                  )}
 
-                      {/* Lock/Unlock button */}
-                      {/* Lock/Unlock button */}
-                      <div className="flex justify-end">
-                        {" "}
-                        {/* Ensure the button is on the right side */}
-                        <button
-                          className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
-                          onClick={() =>
-                            toggleLockComponent(chapterIndex, componentIndex)
-                          }
-                        >
-                          {component.locked ? "Unlock" : "Lock"}
-                        </button>
-                      </div>
+                                  {/* Lock/Unlock button */}
+                                  {/* Lock/Unlock button */}
+                                  <div className="flex justify-end">
+                                    {" "}
+                                    {/* Ensure the button is on the right side */}
+                                    <button
+                                      className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
+                                      onClick={() =>
+                                        toggleLockComponent(
+                                          chapterIndex,
+                                          sectionIndex,
+                                          subsectionIndex,
+                                          componentIndex
+                                        )
+                                      }
+                                    >
+                                      {component.locked ? "Unlock" : "Lock"}
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>

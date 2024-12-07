@@ -45,12 +45,35 @@ const CreateBookStore = ({ bookinfo }) => {
   const [sections, setSections] = useState([]);
 
   const [expandedChapters, setExpandedChapters] = useState([]);
+  const [expandedSections, setExpandedSections] = useState([]);
+  const [expandedSubsections, setExpandedSubsections] = useState([]);
 
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
       setExpandedChapters(expandedChapters.filter((i) => i !== index));
     } else {
       setExpandedChapters([...expandedChapters, index]);
+    }
+  };
+  const toggleExpansion = (index, type) => {
+    if (type === "chapter") {
+      setExpandedChapters((prev) =>
+        prev.includes(index)
+          ? prev.filter((i) => i !== index)
+          : [...prev, index]
+      );
+    } else if (type === "section") {
+      setExpandedSections((prev) =>
+        prev.includes(index)
+          ? prev.filter((i) => i !== index)
+          : [...prev, index]
+      );
+    } else if (type === "subsection") {
+      setExpandedSubsections((prev) =>
+        prev.includes(index)
+          ? prev.filter((i) => i !== index)
+          : [...prev, index]
+      );
     }
   };
   const handlePreviewBookStore = () => {
@@ -135,6 +158,7 @@ const CreateBookStore = ({ bookinfo }) => {
       notify("Failed to save chapters");
     } else {
       setChapters(updatedChapters);
+      notify("Chapters saved successfully");
     }
 
     setissave(false);
@@ -245,46 +269,139 @@ const CreateBookStore = ({ bookinfo }) => {
                 className="h-1/2"
               />
             </div>
-            <ul className="mb-6">
-              {chapters?.map((chapter, index) => (
-                <li key={index} className="mb-2 cursor-pointer">
+            <ul>
+              {chapters?.map((chapter, chapterIndex) => (
+                <li key={chapterIndex} className="mb-2">
                   <div className="flex justify-between items-center">
                     <div
                       className="flex items-center cursor-pointer"
-                      onClick={() => toggleChapterExpansion(index)}
+                      onClick={() => toggleExpansion(chapterIndex, "chapter")}
                     >
-                      {expandedChapters.includes(index) ? (
+                      {expandedChapters.includes(chapterIndex) ? (
                         <FaChevronDown className="mr-2" />
                       ) : (
                         <FaChevronRight className="mr-2" />
                       )}
-                      <span>{chapter?.title || `Chapter ${index + 1}`}</span>
+                      <span>
+                        {chapter?.title || `Chapter ${chapterIndex + 1}`}
+                      </span>
                     </div>
                     <div>
                       <button
                         className="text-blue-500 mr-2"
-                        onClick={() => editChapter(index)}
+                        onClick={() => editChapter(chapterIndex)}
                       >
                         <FaEdit />
                       </button>
                       <button
                         className="text-red-600"
-                        onClick={() => deleteChapter(index)}
+                        onClick={() => deleteChapter(chapterIndex)}
                       >
                         <FaTrashAlt />
                       </button>
                     </div>
                   </div>
-                  {expandedChapters.includes(index) && (
-                    <ul className="pl-6 mt-2">
-                      {chapter?.components
-                        ?.filter((comp) => comp.type === "Heading")
-                        .map((comp) => (
-                          <li key={comp.id}>
-                            {comp.content.replace(/<[^>]+>/g, "")}{" "}
-                            {/* Strips HTML tags */}
-                          </li>
-                        ))}
+                  {expandedChapters.includes(chapterIndex) && (
+                    <ul className="pl-6">
+                      {chapter.sections.map((section, sectionIndex) => (
+                        <li key={sectionIndex} className="mb-2">
+                          <div className="flex justify-between items-center">
+                            <div
+                              className="flex items-center cursor-pointer"
+                              onClick={() =>
+                                toggleExpansion(
+                                  `${chapterIndex}-${sectionIndex}`,
+                                  "section"
+                                )
+                              }
+                            >
+                              {expandedSections.includes(
+                                `${chapterIndex}-${sectionIndex}`
+                              ) ? (
+                                <FaChevronDown className="mr-2" />
+                              ) : (
+                                <FaChevronRight className="mr-2" />
+                              )}
+                              <span>
+                                {section.title ||
+                                  `Subsection ${chapterIndex + 1}.${
+                                    sectionIndex + 1
+                                  }`}
+                              </span>
+                            </div>
+                          </div>
+                          {expandedSections.includes(
+                            `${chapterIndex}-${sectionIndex}`
+                          ) && (
+                            <ul className="pl-6">
+                              {section.subsections.map(
+                                (subsection, subsectionIndex) => (
+                                  <li key={subsectionIndex} className="mb-2">
+                                    <div className="flex justify-between items-center">
+                                      <div
+                                        className="flex items-center cursor-pointer"
+                                        onClick={() =>
+                                          toggleExpansion(
+                                            `${chapterIndex}-${sectionIndex}-${subsectionIndex}`,
+                                            "subsection"
+                                          )
+                                        }
+                                      >
+                                        {expandedSubsections.includes(
+                                          `${chapterIndex}-${sectionIndex}-${subsectionIndex}`
+                                        ) ? (
+                                          <FaChevronDown className="mr-2" />
+                                        ) : (
+                                          <FaChevronRight className="mr-2" />
+                                        )}
+                                        <span
+                                          dangerouslySetInnerHTML={{
+                                            __html:
+                                              subsection.heading ||
+                                              `Subsection ${chapterIndex + 1}.${
+                                                sectionIndex + 1
+                                              }.${subsectionIndex + 1}`,
+                                          }}
+                                        ></span>
+                                      </div>
+                                    </div>
+                                    {expandedSubsections.includes(
+                                      `${chapterIndex}-${sectionIndex}-${subsectionIndex}`
+                                    ) && (
+                                      <ul className="pl-6">
+                                        {subsection?.components?.map(
+                                          (comp, idx) => (
+                                            <li
+                                              key={idx}
+                                              className="mb-2 flex justify-between"
+                                            >
+                                              <span>
+                                                {comp.type === "Heading" && (
+                                                  <span
+                                                    dangerouslySetInnerHTML={{
+                                                      __html:
+                                                        comp.content ||
+                                                        `Heading ${
+                                                          chapterIndex + 1
+                                                        }.${sectionIndex + 1}.${
+                                                          subsectionIndex + 1
+                                                        }.${idx + 1}`,
+                                                    }}
+                                                  />
+                                                )}
+                                              </span>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    )}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </li>
@@ -426,7 +543,6 @@ const CreateBookStore = ({ bookinfo }) => {
           </div>
         </>
       )}
-      {/* <div className="flex justify-between mb-6"> */}
 
       {showPreview ? (
         <div className="flex flex-col w-full">
