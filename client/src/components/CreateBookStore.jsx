@@ -31,13 +31,11 @@ const CreateBookStore = ({ bookinfo }) => {
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(null);
   const [showFormOptions, setShowFormOptions] = useState(false);
   const [selectedComponents, setSelectedComponents] = useState([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [issave, setissave] = useState(false);
   const [showIntro, setShowIntro] = useState(false);
-  const [selectedSectionIndex, setSelectedSectionIndex] = useState(null);
   const [chapters, setChapters] = useState(
     bookinfo?.chapters.map((chapter) => ({
       ...chapter,
@@ -45,14 +43,8 @@ const CreateBookStore = ({ bookinfo }) => {
     }))
   );
   const [sections, setSections] = useState([]);
-  const [Subsections, setSubsections] = useState(
-    bookinfo?.chapters?.sections?.Subsections || []
-  );
 
   const [expandedChapters, setExpandedChapters] = useState([]);
-  const [expandedSections, setExpandedSections] = useState([]);
-  const [expandedSubsections, setExpandedSubsections] = useState([]);
-  const [selectedSubsectionIndex, setSelectedSubsectionIndex] = useState(null);
 
   const toggleChapterExpansion = (index) => {
     if (expandedChapters.includes(index)) {
@@ -116,13 +108,13 @@ const CreateBookStore = ({ bookinfo }) => {
   };
 
   const saveChapter = async () => {
-    console.log(chapters);
     setissave(true);
     const newChapter = {
       title,
       summary,
       sections: sections,
     };
+    console.log(newChapter);
 
     let updatedChapters;
 
@@ -135,6 +127,7 @@ const CreateBookStore = ({ bookinfo }) => {
       );
     } else {
       updatedChapters = [...chapters, newChapter];
+      console.log(updatedChapters);
       curbookdispatch(useractions.addChapter(newChapter));
     }
     const res = await updateChapters(book_ID, updatedChapters);
@@ -147,28 +140,6 @@ const CreateBookStore = ({ bookinfo }) => {
     setissave(false);
   };
 
-  const saveSection = (chapterIndex, sectionIndex) => {
-    const updatedSection = {
-      title,
-      summary,
-      Subsections: Subsections,
-    };
-
-    const updatedSections = chapters[chapterIndex].sections.map(
-      (section, idx) => (idx === sectionIndex ? updatedSection : section)
-    );
-
-    const updatedChapters = chapters.map((chap, idx) =>
-      idx === chapterIndex ? { ...chap, sections: updatedSections } : chap
-    );
-
-    setChapters(updatedChapters);
-    setSelectedChapterIndex(null);
-    setTitle("");
-    setSummary("");
-    setSubsections([]);
-  };
-
   const deleteChapter = (index) => {
     const updatedChapters = chapters.filter((_, i) => i !== index);
     setChapters(updatedChapters);
@@ -179,11 +150,8 @@ const CreateBookStore = ({ bookinfo }) => {
     setSelectedChapterIndex(index);
     setTitle(chapter.title);
     setSummary(chapter.summary);
-    setSelectedComponents(chapter.components);
-  };
-
-  const toggleFormOptions = () => {
-    setShowFormOptions(!showFormOptions);
+    // setSelectedComponents(chapter.sections);
+    setSections(chapter.sections);
   };
 
   const handleFormOptionClick = (option) => {
@@ -225,156 +193,15 @@ const CreateBookStore = ({ bookinfo }) => {
     }
   };
 
-  const editSection = (chapterIndex, sectionIndex) => {
-    const section = chapters[chapterIndex].sections[sectionIndex];
-    setSelectedChapterIndex(chapterIndex);
-    setSelectedSectionIndex(sectionIndex);
-    setTitle(section.title);
-    setSummary(section.summary);
-    setSelectedComponents(section.components);
-  };
-  const deleteSection = (chapterIndex, sectionIndex) => {
-    const updatedChapters = chapters.map((chapter, chIdx) =>
-      chIdx === chapterIndex
-        ? {
-            ...chapter,
-            sections: chapter.sections.filter((_, idx) => idx !== sectionIndex),
-          }
-        : chapter
-    );
-    setChapters(updatedChapters);
-  };
-
-  // Function to save section
-
-  // Function to delete section
-  const deleteSubsection = (chapterIndex, sectionIndex, subsectionIndex) => {
-    const updatedChapters = chapters.map((chapter, chIdx) =>
-      chIdx === chapterIndex
-        ? {
-            ...chapter,
-            sections: chapter.sections.map((section, secIdx) =>
-              secIdx === sectionIndex
-                ? {
-                    ...section,
-                    subsections: section.subsections.filter(
-                      (_, subIdx) => subIdx !== subsectionIndex
-                    ),
-                  }
-                : section
-            ),
-          }
-        : chapter
-    );
-    setChapters(updatedChapters);
-  };
-
-  // Function to edit subsection
-  const editSubsection = (chapterIndex, sectionIndex, subsectionIndex) => {
-    const subsection =
-      chapters[chapterIndex].sections[sectionIndex].subsections[
-        subsectionIndex
-      ];
-    setSelectedChapterIndex(chapterIndex);
-    setSelectedSectionIndex(sectionIndex);
-    setSelectedSubsectionIndex(subsectionIndex);
-    setTitle(subsection.title);
-    setSummary(subsection.summary);
-    setSelectedComponents(subsection.components);
-  };
-
-  const toggleExpansion = (list, setList, index) => {
-    if (list.includes(index)) {
-      setList(list.filter((i) => i !== index));
-    } else {
-      setList([...list, index]);
-    }
-  };
-
   const addNewChapter = () => {
     const newChapter = {
       title: `Chapter ${chapters.length + 1}`,
       sections: [],
     };
     setChapters([...chapters, newChapter]);
-  };
-
-  const addNewSection = (chapterIndex) => {
-    const newSection = {
-      title: `Section ${chapters[chapterIndex].sections.length + 1}`,
-      subsections: [],
-    };
-    const updatedChapters = chapters.map((chapter, idx) =>
-      idx === chapterIndex
-        ? { ...chapter, sections: [...chapter.sections, newSection] }
-        : chapter
-    );
-    setChapters(updatedChapters);
-  };
-
-  const addNewSubsection = (chapterIndex, sectionIndex) => {
-    const newSubsection = {
-      title: `Subsection ${
-        chapters[chapterIndex].sections[sectionIndex].subsections.length + 1
-      }`,
-      components: [],
-    };
-    const updatedChapters = chapters.map((chapter, chIdx) =>
-      chIdx === chapterIndex
-        ? {
-            ...chapter,
-            sections: chapter.sections.map((section, secIdx) =>
-              secIdx === sectionIndex
-                ? {
-                    ...section,
-                    subsections: [...section.subsections, newSubsection],
-                  }
-                : section
-            ),
-          }
-        : chapter
-    );
-    setChapters(updatedChapters);
-  };
-
-  const saveSubsection = (chapterIndex, sectionIndex, subsectionIndex) => {
-    const updatedSubsection = {
-      title,
-      summary,
-      components: selectedComponents,
-    };
-
-    const updatedChapters = chapters.map((chapter, chIdx) =>
-      chIdx === chapterIndex
-        ? {
-            ...chapter,
-            sections: chapter.sections.map((section, secIdx) =>
-              secIdx === sectionIndex
-                ? {
-                    ...section,
-                    subsections: section.subsections.map((subsection, subIdx) =>
-                      subIdx === subsectionIndex
-                        ? updatedSubsection
-                        : subsection
-                    ),
-                  }
-                : section
-            ),
-          }
-        : chapter
-    );
-
-    setChapters(updatedChapters);
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setTitle("");
     setSummary("");
-    setSelectedComponents([]);
-    setSelectedChapterIndex(null);
-    setSelectedSectionIndex(null);
-    setSelectedSubsectionIndex(null);
+    setTitle("");
+    setSections([]);
   };
 
   const handleAddSection = () => {
@@ -398,6 +225,7 @@ const CreateBookStore = ({ bookinfo }) => {
   };
 
   console.log(sections);
+  console.log(chapters);
   return (
     <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-row">
       {!showPreview && !showIntro && (
@@ -417,111 +245,49 @@ const CreateBookStore = ({ bookinfo }) => {
                 className="h-1/2"
               />
             </div>
-            <ul>
-              {chapters?.map((chapter, chapterIndex) => (
-                <div key={chapterIndex}>
-                  <div>
-                    <h3
-                      onClick={() =>
-                        toggleExpansion(
-                          expandedChapters,
-                          setExpandedChapters,
-                          chapterIndex
-                        )
-                      }
+            <ul className="mb-6">
+              {chapters?.map((chapter, index) => (
+                <li key={index} className="mb-2 cursor-pointer">
+                  <div className="flex justify-between items-center">
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() => toggleChapterExpansion(index)}
                     >
-                      {chapter.title}
-                      <button onClick={() => editChapter(chapterIndex)}>
+                      {expandedChapters.includes(index) ? (
+                        <FaChevronDown className="mr-2" />
+                      ) : (
+                        <FaChevronRight className="mr-2" />
+                      )}
+                      <span>{chapter?.title || `Chapter ${index + 1}`}</span>
+                    </div>
+                    <div>
+                      <button
+                        className="text-blue-500 mr-2"
+                        onClick={() => editChapter(index)}
+                      >
                         <FaEdit />
                       </button>
-                      <button onClick={() => deleteChapter(chapterIndex)}>
+                      <button
+                        className="text-red-600"
+                        onClick={() => deleteChapter(index)}
+                      >
                         <FaTrashAlt />
                       </button>
-                    </h3>
-                  </div>
-
-                  {expandedChapters?.includes(chapterIndex) && (
-                    <div>
-                      {chapter.sections.map((section, sectionIndex) => (
-                        <div key={sectionIndex}>
-                          <h4
-                            onClick={() =>
-                              toggleExpansion(
-                                expandedSections,
-                                setExpandedSections,
-                                `${chapterIndex}-${sectionIndex}`
-                              )
-                            }
-                          >
-                            {section.title}
-                            <button
-                              onClick={() =>
-                                editSection(chapterIndex, sectionIndex)
-                              }
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              onClick={() =>
-                                deleteSection(chapterIndex, sectionIndex)
-                              }
-                            >
-                              <FaTrashAlt />
-                            </button>
-                          </h4>
-
-                          {expandedSections.includes(
-                            `${chapterIndex}-${sectionIndex}`
-                          ) && (
-                            <div>
-                              {section.subsections.map(
-                                (subsection, subsectionIndex) => (
-                                  <div key={subsectionIndex}>
-                                    <h5>
-                                      {subsection.title}
-                                      <button
-                                        onClick={() =>
-                                          editSubsection(
-                                            chapterIndex,
-                                            sectionIndex,
-                                            subsectionIndex
-                                          )
-                                        }
-                                      >
-                                        <FaEdit />
-                                      </button>
-                                      <button
-                                        onClick={() =>
-                                          deleteSubsection(
-                                            chapterIndex,
-                                            sectionIndex,
-                                            subsectionIndex
-                                          )
-                                        }
-                                      >
-                                        <FaTrashAlt />
-                                      </button>
-                                    </h5>
-                                  </div>
-                                )
-                              )}
-                              <button
-                                onClick={() =>
-                                  addNewSubsection(chapterIndex, sectionIndex)
-                                }
-                              >
-                                + Add Subsection
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      <button onClick={() => addNewSection(chapterIndex)}>
-                        + Add Section
-                      </button>
                     </div>
+                  </div>
+                  {expandedChapters.includes(index) && (
+                    <ul className="pl-6 mt-2">
+                      {chapter?.components
+                        ?.filter((comp) => comp.type === "Heading")
+                        .map((comp) => (
+                          <li key={comp.id}>
+                            {comp.content.replace(/<[^>]+>/g, "")}{" "}
+                            {/* Strips HTML tags */}
+                          </li>
+                        ))}
+                    </ul>
                   )}
-                </div>
+                </li>
               ))}
             </ul>
 
@@ -620,6 +386,7 @@ const CreateBookStore = ({ bookinfo }) => {
                     handleUpdateSection(section.id, updatedSection)
                   }
                   onDelete={() => handleDeleteSection(section.id)}
+                  saveChapter={saveChapter}
                 />
               </div>
             ))}
@@ -679,18 +446,6 @@ const CreateBookStore = ({ bookinfo }) => {
       ) : (
         ""
       )}
-
-      {/* {sections.map((section) => (
-        <div key={section.id}>
-          <Section
-            value={section}
-            onChange={(updatedSection) =>
-              handleUpdateSection(section.id, updatedSection)
-            }
-            onDelete={() => handleDeleteSection(section.id)}
-          />
-        </div>
-      ))} */}
 
       {showIntro && (
         <UpdateBookIntro

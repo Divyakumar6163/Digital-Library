@@ -194,7 +194,7 @@ exports.updatebookintro = async (req, res) => {
 exports.updatebookcontent = async (req, res) => {
   const { bookId } = req.params;
   const { chapters, modifiedDate } = req.body;
-
+  console.log(chapters);
   try {
     const book = await Bookschema.findById(bookId);
     if (!book) {

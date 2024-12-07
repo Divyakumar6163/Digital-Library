@@ -25,32 +25,48 @@ const ComponentSchema = new Schema(
       type: Number,
       required: true,
     },
+    locked: {
+      type: Boolean,
+      default: false,
+    },
   },
   { _id: false, discriminatorKey: "type" }
 );
+
 const SubsectionSchema = new Schema(
   {
-    type: {
-      type: { ComponentSchema },
-    },
     id: {
       type: Number,
       required: true,
     },
+    heading: {
+      type: String,
+      default: "",
+    },
+    components: {
+      type: [ComponentSchema],
+      default: [],
+    },
   },
-  { _id: false, discriminatorKey: "type" }
+  { _id: false }
 );
+
 const SectionSchema = new Schema(
   {
-    type: {
-      type: { SubsectionSchema },
-    },
     id: {
       type: Number,
       required: true,
     },
+    title: {
+      type: String,
+      default: "",
+    },
+    subsections: {
+      type: [SubsectionSchema],
+      default: [],
+    },
   },
-  { _id: false, discriminatorKey: "type" }
+  { _id: false }
 );
 
 const HeadingComponent = ComponentSchema.discriminator(
@@ -245,7 +261,7 @@ const ChapterSchema = new Schema({
     type: String,
     default: "",
   },
-  components: [SectionSchema],
+  sections: [SectionSchema],
 });
 
 const BookSchema = new Schema({
