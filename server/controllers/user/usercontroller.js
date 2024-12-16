@@ -226,7 +226,7 @@ exports.userlogin = async (req, res) => {
 
 exports.googleLoginSignup = catchAsync(async (req, res, next) => {
   const { token } = req.body;
-
+  
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
