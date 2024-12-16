@@ -48,13 +48,27 @@ const Subsection = ({ value, onChange }) => {
     setComponents(updatedComponents);
     onChange({ ...value, components: updatedComponents });
   };
-
+  const handleTitleChange = (title) => {
+    onChange({ ...value, heading: title });
+  };
+  const handleSummaryChange = (summary) => {
+    onChange({ ...value, subsectionsummary: summary });
+  };
   return (
     <div className="mb-4 p-4 border rounded-lg bg-gray-50">
       {/* Heading Component */}
-      <Heading
+      <input
+        type="text"
         value={value.heading || ""}
-        onChange={(heading) => onChange({ ...value, heading })}
+        onChange={(e) => handleTitleChange(e.target.value)}
+        placeholder="Enter Subsection Title"
+        className="text-xl font-bold mb-4 p-2 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
+      />
+      <textarea
+        value={value.subsectionsummary || ""}
+        onChange={(e) => handleSummaryChange(e.target.value)}
+        placeholder="Enter Subsection Summary"
+        className="mt-2 p-2 w-full border rounded-lg focus:outline-none focus:border-blue-500"
       />
 
       {/* Render components dynamically */}

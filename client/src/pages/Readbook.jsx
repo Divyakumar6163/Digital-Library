@@ -5,6 +5,8 @@ import { getbookbyID } from "../API/createbook";
 import { useParams, useNavigate } from "react-router-dom";
 import { notify } from "../store/utils/notify";
 import Pageloader from "../store/utils/pageloader";
+import Pagination from "../components/Pagination";
+import Footer from "../components/Footer";
 export default function Readbook() {
   const navigate = useNavigate();
   const { bookID } = useParams();
@@ -34,6 +36,8 @@ export default function Readbook() {
           <Pageloader />
         </div>
       )}
+      {/* <Pagination book={book} /> */}
+      <Footer />
     </>
   );
 }

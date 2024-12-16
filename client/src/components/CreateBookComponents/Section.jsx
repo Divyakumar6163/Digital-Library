@@ -34,7 +34,9 @@ const Section = ({ value, onChange, onDelete, saveChapter }) => {
   const handleTitleChange = (title) => {
     onChange({ ...value, title });
   };
-
+  const handleSummaryChange = (summary) => {
+    onChange({ ...value, sectionsummary: summary });
+  };
   const handleSaveSection = () => {
     setIsSaving(true); // Show saving status
     // Simulate save operation (e.g., API call)
@@ -55,7 +57,12 @@ const Section = ({ value, onChange, onDelete, saveChapter }) => {
         placeholder="Enter Section Title"
         className="text-xl font-bold mb-4 p-2 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
       />
-
+      <textarea
+        value={value.sectionsummary || ""}
+        onChange={(e) => handleSummaryChange(e.target.value)}
+        placeholder="Enter Section Summary"
+        className="text-md mb-4 p-2 w-full border rounded-lg focus:outline-none focus:border-blue-500"
+      />
       {/* Render Subsections */}
       {subsections.map((subsec) => (
         <div key={subsec.id} className="mb-4">

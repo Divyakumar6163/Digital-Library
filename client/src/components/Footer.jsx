@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "../image/Logo.png";
 function Footer() {
   return (
-    <footer className="bg-white dark:bg-gray-900">
+    <footer className="bg-white dark:bg-gray-900 mt-10">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
@@ -32,9 +32,7 @@ function Footer() {
                   <a
                     href="https://tailwindcss.com/"
                     className="hover:underline"
-                  >
-                    
-                  </a>
+                  ></a>
                 </li>
               </ul>
             </div>
@@ -68,15 +66,17 @@ function Footer() {
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
                   <a
-                  //  href="/" 
-                  className="hover:underline">
+                    //  href="/"
+                    className="hover:underline"
+                  >
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a 
-                  // href="/"
-                   className="hover:underline">
+                  <a
+                    // href="/"
+                    className="hover:underline"
+                  >
                     Terms & Conditions
                   </a>
                 </li>

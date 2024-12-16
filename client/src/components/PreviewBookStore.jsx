@@ -1,16 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CreateGraph from "./CreateBookComponents/CreateGraph";
 import { BlockMath } from "react-katex";
 import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useSelector } from "react-redux";
-
 const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
   const userState = useSelector((state) => state.user);
+  const chapterRefs = useRef([]);
+  const sectionRefs = useRef({});
+  const subsectionRefs = useRef({});
+  const headingRefs = useRef({});
+
+  const scrollToChapter = (index) => {
+    chapterRefs.current[`chapter-${index}`]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+  const scrollToSection = (key) => {
+    sectionRefs.current[key]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+  const scrollToSubsection = (key) => {
+    subsectionRefs.current[key]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+  const scrollToHeading = (key) => {
+    headingRefs.current[key]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const toggleChapterExpansion = (index) => {
     setExpandedChapters((prev) =>
@@ -23,13 +51,13 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
+
   const toggleSubsectionExpansion = (sectionIndex, subsecIndex) => {
     const key = `${sectionIndex}-${subsecIndex}`; // Create a unique key for subsections
     setExpandedSubsections((prev) =>
       prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
     );
   };
-
   const renderComponent = (component) => {
     // Check if the content is locked
     if (component.locked && userState.userinfo.ispreminum !== true) {
@@ -45,7 +73,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
       case "Text":
         return (
           <p
-            className="text-lg"
+            className="text-sm"
             dangerouslySetInnerHTML={{ __html: component.content }}
           />
         );
@@ -196,7 +224,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                       ) : (
                         <FaChevronRight className="mr-2" />
                       )}
-                      <span>
+                      <span onClick={() => scrollToChapter(index)}>
                         {htmlToPlainText(chapter?.title) ||
                           `Chapter ${index + 1}`}
                       </span>
@@ -215,7 +243,13 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                             ) : (
                               <FaChevronRight className="mr-2" />
                             )}
-                            <span>
+                            <span
+                              onClick={() =>
+                                scrollToSection(
+                                  `section-${index}-${sectionIndex}`
+                                )
+                              }
+                            >
                               {htmlToPlainText(section.title) ||
                                 `Section ${sectionIndex + 1}`}
                             </span>
@@ -241,7 +275,13 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                                       ) : (
                                         <FaChevronRight className="mr-2" />
                                       )}
-                                      <span>
+                                      <span
+                                        onClick={() =>
+                                          scrollToSubsection(
+                                            `subsection-${index}-${sectionIndex}-${subsecIndex}`
+                                          )
+                                        }
+                                      >
                                         {htmlToPlainText(subsec.heading) ||
                                           `Subsection ${subsecIndex + 1}`}
                                       </span>
@@ -250,15 +290,22 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                                       `${sectionIndex}-${subsecIndex}`
                                     ) && (
                                       <div className="pl-6 mt-2">
-                                        {subsec.components.map((comp) => (
-                                          <div
-                                            key={comp.id}
-                                            className="text-left"
-                                          >
-                                            {comp.type === "Heading" &&
-                                              htmlToPlainText(comp.content)}
-                                          </div>
-                                        ))}
+                                        {subsec.components.map(
+                                          (comp, compIndex) => (
+                                            <div
+                                              key={comp.id}
+                                              className="text-left"
+                                              onClick={() =>
+                                                scrollToHeading(
+                                                  `heading-${index}-${sectionIndex}-${subsecIndex}-${compIndex}`
+                                                )
+                                              }
+                                            >
+                                              {comp.type === "Heading" &&
+                                                htmlToPlainText(comp.content)}
+                                            </div>
+                                          )
+                                        )}
                                       </div>
                                     )}
                                   </li>
@@ -280,6 +327,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
             {chapters.map((chapter, index) => (
               <div
                 key={index}
+                ref={(el) => (chapterRefs.current[`chapter-${index}`] = el)}
                 className="w-full p-4 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
               >
                 {/* Chapter Title */}
@@ -296,7 +344,14 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
 
                 {/* Sections and Subsections */}
                 {chapter.sections?.map((section, sectionIndex) => (
-                  <div key={section.id} className="mt-4 mx-10">
+                  <div
+                    key={section.id}
+                    className="mt-4 mx-10"
+                    ref={(el) =>
+                      (sectionRefs.current[`section-${index}-${sectionIndex}`] =
+                        el)
+                    }
+                  >
                     <h3
                       className="text-3xl font-bold mb-2 my-5"
                       style={{ color: "#1C1678" }}
@@ -308,7 +363,14 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                     />
                     <div className="space-y-4">
                       {section.subsections?.map((subsec, subsectionIndex) => (
-                        <div key={subsec.id}>
+                        <div
+                          key={subsec.id}
+                          ref={(el) =>
+                            (subsectionRefs.current[
+                              `subsection-${index}-${sectionIndex}-${subsectionIndex}`
+                            ] = el)
+                          }
+                        >
                           <h4
                             className="text-2xl font-semibold my-5"
                             style={{ color: "#1C1678" }}
@@ -321,8 +383,16 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                             }}
                           />
                           <div className="space-y-2">
-                            {subsec.components.map((comp) => (
-                              <div key={comp.id} className="text-left">
+                            {subsec.components.map((comp, compIndex) => (
+                              <div
+                                key={comp.id}
+                                className="text-left"
+                                ref={(el) =>
+                                  (headingRefs.current[
+                                    `heading-${index}-${sectionIndex}-${subsectionIndex}-${compIndex}`
+                                  ] = el)
+                                }
+                              >
                                 {renderComponent(comp)}
                               </div>
                             ))}

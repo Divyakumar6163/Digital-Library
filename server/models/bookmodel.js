@@ -43,6 +43,10 @@ const SubsectionSchema = new Schema(
       type: String,
       default: "",
     },
+    subsectionsummary: {
+      type: String,
+      default: "",
+    },
     components: {
       type: [ComponentSchema],
       default: [],
@@ -58,6 +62,10 @@ const SectionSchema = new Schema(
       required: true,
     },
     title: {
+      type: String,
+      default: "",
+    },
+    sectionsummary: {
       type: String,
       default: "",
     },
@@ -219,16 +227,6 @@ const FillInTheBlanksComponent = ComponentSchema.discriminator(
     { _id: false }
   )
 );
-// const FillInTheBlanksComponent = ComponentSchema.discriminator('FillInTheBlanks', new Schema({
-//     content: {
-//         type: String,
-//         required: true
-//     },
-//     answers: {
-//         type: [String],
-//         required: true
-//     }
-// }, { _id: false }));
 
 const MCQsComponent = ComponentSchema.discriminator(
   "MCQs",
