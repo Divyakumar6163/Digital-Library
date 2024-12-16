@@ -61,6 +61,11 @@ const userSchema = new Schema({
   isvarified: {
     type: Boolean,
     default: false,
+  },
+  userType: {
+    type: String,
+    enum: ["Normal" ,"Admin"],
+    default: "Normal",
   }
 });
 
