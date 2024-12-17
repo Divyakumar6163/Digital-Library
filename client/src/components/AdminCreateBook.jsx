@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CreateGraph from "./CreateBookComponents/CreateGraph";
 import { BlockMath } from "react-katex";
 import { notify } from "../store/utils/notify";
@@ -19,7 +19,35 @@ const AdminBook = ({ book, setIsBook }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
+  const chapterRefs = useRef([]);
+  const sectionRefs = useRef({});
+  const subsectionRefs = useRef({});
+  const headingRefs = useRef({});
 
+  const scrollToChapter = (index) => {
+    chapterRefs.current[`chapter-${index}`]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+  const scrollToSection = (key) => {
+    sectionRefs.current[key]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+  const scrollToSubsection = (key) => {
+    subsectionRefs.current[key]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+  const scrollToHeading = (key) => {
+    headingRefs.current[key]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
   const toggleChapterExpansion = (index) => {
     setExpandedChapters((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -85,7 +113,12 @@ const AdminBook = ({ book, setIsBook }) => {
 
     switch (component.type) {
       case "Text":
-        return <p dangerouslySetInnerHTML={{ __html: component.content }} />;
+        return (
+          <p
+            className="custom-content"
+            dangerouslySetInnerHTML={{ __html: component.content }}
+          />
+        );
       case "Heading":
         return (
           <h2
@@ -257,7 +290,7 @@ const AdminBook = ({ book, setIsBook }) => {
       <div className="flex justify-between mb-6">
         <button
           onClick={handleBack}
-          className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-400"
+          className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded c"
         >
           Back
         </button>
@@ -315,7 +348,7 @@ const AdminBook = ({ book, setIsBook }) => {
                       ) : (
                         <FaChevronRight className="mr-2" />
                       )}
-                      <span>
+                      <span onClick={() => scrollToChapter(index)}>
                         {htmlToPlainText(chapter?.title) ||
                           `Chapter ${index + 1}`}
                       </span>
@@ -334,7 +367,13 @@ const AdminBook = ({ book, setIsBook }) => {
                             ) : (
                               <FaChevronRight className="mr-2" />
                             )}
-                            <span>
+                            <span
+                              onClick={() =>
+                                scrollToSection(
+                                  `section-${index}-${sectionIndex}`
+                                )
+                              }
+                            >
                               {htmlToPlainText(section.title) ||
                                 `Section ${sectionIndex + 1}`}
                             </span>
@@ -360,7 +399,13 @@ const AdminBook = ({ book, setIsBook }) => {
                                       ) : (
                                         <FaChevronRight className="mr-2" />
                                       )}
-                                      <span>
+                                      <span
+                                        onClick={() =>
+                                          scrollToSection(
+                                            `section-${index}-${sectionIndex}`
+                                          )
+                                        }
+                                      >
                                         {htmlToPlainText(subsec.heading) ||
                                           `Subsection ${subsecIndex + 1}`}
                                       </span>
@@ -369,15 +414,22 @@ const AdminBook = ({ book, setIsBook }) => {
                                       `${sectionIndex}-${subsecIndex}`
                                     ) && (
                                       <div className="pl-6 mt-2">
-                                        {subsec.components.map((comp) => (
-                                          <div
-                                            key={comp.id}
-                                            className="text-left"
-                                          >
-                                            {comp.type === "Heading" &&
-                                              htmlToPlainText(comp.content)}
-                                          </div>
-                                        ))}
+                                        {subsec.components.map(
+                                          (comp, compIndex) => (
+                                            <div
+                                              key={comp.id}
+                                              className="text-left"
+                                              onClick={() =>
+                                                scrollToHeading(
+                                                  `heading-${index}-${sectionIndex}-${subsecIndex}-${compIndex}`
+                                                )
+                                              }
+                                            >
+                                              {comp.type === "Heading" &&
+                                                htmlToPlainText(comp.content)}
+                                            </div>
+                                          )
+                                        )}
                                       </div>
                                     )}
                                   </li>
@@ -400,18 +452,29 @@ const AdminBook = ({ book, setIsBook }) => {
               <div
                 key={chapterIndex}
                 className="mb-8 p-4 bg-white shadow-md rounded-lg"
+                ref={(el) =>
+                  (chapterRefs.current[`chapter-${chapterIndex}`] = el)
+                }
               >
                 <h2
-                  className="text-xl font-bold mb-2"
+                  className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2 "
                   dangerouslySetInnerHTML={{ __html: chapter.title }}
                 />
                 <p
-                  className="mb-4"
+                  className="text-base text-gray-600 mb-4 text-center leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: chapter.summary }}
                 />
                 {/* Sections and Subsections */}
                 {chapter.sections?.map((section, sectionIndex) => (
-                  <div key={section.id} className="mt-4 mx-10">
+                  <div
+                    key={section.id}
+                    className="mt-4 mx-10"
+                    ref={(el) =>
+                      (sectionRefs.current[
+                        `section-${chapterIndex}-${sectionIndex}`
+                      ] = el)
+                    }
+                  >
                     <h3
                       className="text-3xl font-bold mb-2 my-5"
                       style={{ color: "#1C1678" }}
@@ -421,9 +484,22 @@ const AdminBook = ({ book, setIsBook }) => {
                           `${chapterIndex + 1}.${sectionIndex + 1}Section`,
                       }}
                     />
+                    <p
+                      className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: section.sectionsummary,
+                      }}
+                    />
                     <div className="space-y-4">
                       {section.subsections?.map((subsec, subsectionIndex) => (
-                        <div key={subsec.id}>
+                        <div
+                          key={subsec.id}
+                          ref={(el) =>
+                            (subsectionRefs.current[
+                              `subsection-${chapterIndex}-${sectionIndex}-${subsectionIndex}`
+                            ] = el)
+                          }
+                        >
                           <h4
                             className="text-2xl font-semibold my-5"
                             style={{ color: "#1C1678" }}
@@ -432,13 +508,27 @@ const AdminBook = ({ book, setIsBook }) => {
                                 subsec.heading ||
                                 `${chapterIndex + 1}.${sectionIndex + 1}.${
                                   subsectionIndex + 1
-                                } Section`,
+                                } Subsection`,
+                            }}
+                          />
+                          <p
+                            className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
+                            dangerouslySetInnerHTML={{
+                              __html: subsec.subsectionsummary,
                             }}
                           />
                           <div>
                             {subsec.components.map(
                               (component, componentIndex) => (
-                                <div key={component.id} className="mb-4">
+                                <div
+                                  key={component.id}
+                                  className="mb-4"
+                                  ref={(el) =>
+                                    (headingRefs.current[
+                                      `heading-${chapterIndex}-${sectionIndex}-${subsectionIndex}-${componentIndex}`
+                                    ] = el)
+                                  }
+                                >
                                   {renderComponent(
                                     component,
                                     chapterIndex,

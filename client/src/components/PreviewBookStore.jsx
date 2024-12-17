@@ -5,6 +5,8 @@ import BookCover1 from "../image/BookCover1.png";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useSelector } from "react-redux";
+import sanitizeHtml from "sanitize-html";
+
 const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
@@ -73,10 +75,11 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
       case "Text":
         return (
           <p
-            className="text-sm"
+            className="text-sm custom-content"
             dangerouslySetInnerHTML={{ __html: component.content }}
           />
         );
+
       case "Heading":
         return (
           <h2
@@ -323,7 +326,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
           </div>
 
           {/* Chapter Content on the right */}
-          <div className="sm:w-3/4 bg-gray-50 flex flex-col items-start justify-start space-y-6">
+          <div className="lg:w-3/4 bg-gray-50 space-y-6">
             {chapters.map((chapter, index) => (
               <div
                 key={index}
@@ -359,6 +362,12 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                         __html:
                           section.title ||
                           `${index + 1}.${sectionIndex + 1}Section`,
+                      }}
+                    />
+                    <p
+                      className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: section.sectionsummary,
                       }}
                     />
                     <div className="space-y-4">

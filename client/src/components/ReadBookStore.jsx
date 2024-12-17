@@ -56,7 +56,7 @@ const ReadBookStore = ({ heading, books }) => {
         {heading}
       </h4>
       <div className="flex overflow-x-auto space-x-4 p-4">
-        {Object.keys(Filteredbooks).length <= 0 && (
+        {Object.keys(Filteredbooks)?.length <= 0 && (
           <p className="text-center text-gray-500 font-semibold my-4">
             No Book Available
           </p>
@@ -68,13 +68,13 @@ const ReadBookStore = ({ heading, books }) => {
               <div
                 key={idx}
                 id={styles.cardReadDiv}
-                className="min-w-[290px] max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                className="min-w-[290px] max-w-10 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
               >
                 <div
                   className="h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center "
                   id={styles.cardReadImg}
                   onMouseEnter={() =>
-                    data.booktype === "Premium" &&
+                    data?.booktype === "Premium" &&
                     !userState.userinfo.ispreminum &&
                     setHoveredBook(idx)
                   }
@@ -83,21 +83,21 @@ const ReadBookStore = ({ heading, books }) => {
                   <a className="block h-full w-full">
                     <img
                       className={`object-cover w-full h-full rounded-t-lg ${
-                        data.booktype === "Premium" &&
+                        data?.booktype === "Premium" &&
                         !userState.userinfo.ispreminum
                           ? "cursor-not-allowed"
                           : ""
                       }`}
                       src={
                         hoveredBook === idx &&
-                        data.booktype === "Premium" &&
+                        data?.booktype === "Premium" &&
                         !userState.userinfo.ispreminum
                           ? PremiumImage
-                          : data.image
-                          ? data.image
+                          : data?.image
+                          ? data?.image
                           : BookCover1
                       }
-                      alt={data.booktitle}
+                      alt={data?.booktitle}
                     />
                   </a>
                 </div>

@@ -14,30 +14,17 @@ import { useSelector } from "react-redux";
 import { ToLink } from "../App";
 import axios from "axios";
 import { notify } from "../store/utils/notify";
-
-// const adminMail = [
-//   "divyakumar768800@gmail.com",
-//   "pushkargupta063@gmail.com",
-//   "22me02037@iitbbs.ac.in",
-// ];
-
 export default function NavBar1() {
   const navigate = useNavigate();
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [isSearch, setIsSearch] = useState(false);
   const [search, setSearch] = useState("");
-  // const [isAdmin, setIsAdmin] = useState(false);
-  const isAdmin =  useSelector((state) => state.user.userinfo.userType) === "Admin";
-  // const [searchBooks, setSearchBooks] = useState([]);
+  const isAdmin =
+    useSelector((state) => state.user.userinfo.userType) === "Admin";
   const userState = useSelector((state) => state.user);
   const islogin = useSelector((state) => state.user.islogin);
   const username = useSelector((state) => state.user.userinfo.name);
   const profile = useSelector((state) => state.user.userinfo.profileImage);
-  console.log(islogin);
-  // Set isAdmin only when userState.userinfo.emailid changes
-  // useEffect(() => {
-  //   setIsAdmin(adminMail.includes(userState.userinfo.emailid));
-  // }, [userState.userinfo.emailid]);
 
   const handleIsSearch = () => {
     setIsSearch(!isSearch);

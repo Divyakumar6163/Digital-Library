@@ -47,14 +47,6 @@ const CreateBookStore = ({ bookinfo }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
-
-  const toggleChapterExpansion = (index) => {
-    if (expandedChapters.includes(index)) {
-      setExpandedChapters(expandedChapters.filter((i) => i !== index));
-    } else {
-      setExpandedChapters([...expandedChapters, index]);
-    }
-  };
   const toggleExpansion = (index, type) => {
     if (type === "chapter") {
       setExpandedChapters((prev) =>
@@ -172,10 +164,10 @@ const CreateBookStore = ({ bookinfo }) => {
   const editChapter = (index) => {
     const chapter = chapters[index];
     setSelectedChapterIndex(index);
-    setTitle(chapter.title);
-    setSummary(chapter.summary);
+    setTitle(chapter?.title || `Chapter ${index + 1}`);
+    setSummary(chapter?.summary || `Summary of Chapter ${index + 1}`);
     // setSelectedComponents(chapter.sections);
-    setSections(chapter.sections);
+    setSections(chapter?.sections);
   };
 
   const handleFormOptionClick = (option) => {
@@ -226,15 +218,20 @@ const CreateBookStore = ({ bookinfo }) => {
     setSummary("");
     setTitle("");
     setSections([]);
+    editChapter(chapters.length);
   };
 
   const handleAddSection = () => {
     const newSection = {
       id: Date.now(),
-      title: `Section ${sections.length + 1}`,
+      title: `Section ${sections?.length + 1}`,
       subsections: [],
     };
-    setSections((prev) => [...prev, newSection]);
+    if (sections?.length) {
+      setSections((prev) => [...prev, newSection]);
+    } else {
+      setSections([newSection]);
+    }
   };
 
   const handleUpdateSection = (id, updatedSection) => {
@@ -301,9 +298,9 @@ const CreateBookStore = ({ bookinfo }) => {
                       </button>
                     </div>
                   </div>
-                  {expandedChapters.includes(chapterIndex) && (
+                  {expandedChapters?.includes(chapterIndex) && (
                     <ul className="pl-6">
-                      {chapter.sections.map((section, sectionIndex) => (
+                      {chapter?.sections?.map((section, sectionIndex) => (
                         <li key={sectionIndex} className="mb-2">
                           <div className="flex justify-between items-center">
                             <div
@@ -315,7 +312,7 @@ const CreateBookStore = ({ bookinfo }) => {
                                 )
                               }
                             >
-                              {expandedSections.includes(
+                              {expandedSections?.includes(
                                 `${chapterIndex}-${sectionIndex}`
                               ) ? (
                                 <FaChevronDown className="mr-2" />
@@ -463,21 +460,11 @@ const CreateBookStore = ({ bookinfo }) => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
-              <SunEditor
-                lang="en"
-                placeholder="Add Summary"
-                setOptions={{
-                  height: 150,
-                  buttonList: [
-                    ["font", "fontSize", "formatBlock"],
-                    ["bold", "italic", "underline", "strike"],
-                    ["align", "list", "table"],
-                    ["undo", "redo"],
-                    ["codeView"],
-                  ],
-                }}
-                setContents={summary}
-                onChange={setSummary}
+              <textarea
+                className="mt-2 p-2 w-full border rounded-lg focus:outline-none focus:border-blue-500"
+                placeholder="Add Chapter Summary"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
               />
             </div>
 
@@ -495,7 +482,7 @@ const CreateBookStore = ({ bookinfo }) => {
               </div>
             ))}
 
-            {sections.map((section) => (
+            {sections?.map((section) => (
               <div key={section.id}>
                 <Section
                   value={section}
@@ -528,7 +515,7 @@ const CreateBookStore = ({ bookinfo }) => {
                     "Quiz",
                     "Video",
                     "FillInTheBlanks",
-                  ].map((option, index) => (
+                  ]?.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleFormOptionClick(option)}
@@ -547,7 +534,7 @@ const CreateBookStore = ({ bookinfo }) => {
       {showPreview ? (
         <div className="flex flex-col w-full">
           <button
-            className={`w-48 bg-blue-500 text-white py-4 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 ${
+            className={`mx-5 w-40 text-gray-700 font-semibold px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition duration-200 ${
               showPreview ? "mt-4" : ""
             }`}
             onClick={handlePreviewBookStore}

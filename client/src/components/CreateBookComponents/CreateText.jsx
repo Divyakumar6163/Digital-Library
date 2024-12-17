@@ -77,7 +77,10 @@ const TextEditorWithPreview = ({ value, onChange }) => {
       ) : (
         <>
           <div className="p-2 border rounded-lg bg-gray-100">
-            <div dangerouslySetInnerHTML={{ __html: text }} />
+            <div
+              dangerouslySetInnerHTML={{ __html: text }}
+              className="custom-content"
+            />
           </div>
           <div className="flex justify-end mt-2 space-x-2">
             <button
