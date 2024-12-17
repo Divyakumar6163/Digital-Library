@@ -59,8 +59,6 @@ export const checktoken = async (accessToken, refreshToken) => {
             Authorization: `Bearer ${newAccessToken}`,
           },
         });
-
-        // return retryResponse;
         console.log(retryResponse.data);
       } else {
         store.dispatch(authactions.setAccessToken(null));
@@ -82,7 +80,6 @@ export const getuserbook = async (accessToken) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    // console.error('An error occurred while fetching user books:', error);
   }
 };
 export const updateProfile = async (userInfo, accessToken) => {

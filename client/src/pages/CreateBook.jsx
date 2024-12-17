@@ -11,6 +11,9 @@ import PageNumber from "../components/Pagination";
 const CreateBook = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [book, setBook] = useState([]);
+  const [coAuthorBook, setcoAuthorBook] = useState([]);
+  const [collaboratorBook, setcollaboratorBook] = useState([]);
+  const [reviewerBook, setrevieweBook] = useState([]);
   const [createbook, setcreatebook] = useState(false);
 
   useEffect(() => {
@@ -18,7 +21,11 @@ const CreateBook = () => {
       try {
         const res = await getuserbook(accessToken);
         console.log(res.books);
+        console.log(res.coAuthorBooks);
         setBook(res.books);
+        setcoAuthorBook(res.coAuthorBooks);
+        setcollaboratorBook(res.collaboratorBooks);
+        setrevieweBook(res.reviewerBooks);
       } catch (error) {
         console.error("Error fetching books:", error);
       }
@@ -56,7 +63,12 @@ const CreateBook = () => {
         books={unpublishedBooks}
       />
       <ReadBookStore heading="Your Published Books" books={publishedBooks} />
-
+      <ReadBookStore
+        heading="Your Collaborative Books"
+        books={collaboratorBook}
+      />
+      <ReadBookStore heading="Your Co-Author Books" books={coAuthorBook} />
+      <ReadBookStore heading="Your Reviewer Books" books={reviewerBook} />
       <Footer />
     </>
   );

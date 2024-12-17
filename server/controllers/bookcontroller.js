@@ -377,13 +377,27 @@ exports.getBookByAuthor = async (req, res) => {
 };
 exports.getBookByUser = async (req, res) => {
   const userId = req.user._id;
-
+  const userEmail = req.user.emailid;
   try {
-    console.log(userId);
+    // console.log(req.user.emailid);
     const books = await Bookschema.find({ createdby: userId });
-
+    const coAuthor = await Bookschema.find({
+      coAuthors: userEmail, // Match the emailid inside coAuthors
+    });
+    const collaborator = await Bookschema.find({
+      collaborators: userEmail, // Match the email directly in the array
+    });
+    const reviewer = await Bookschema.find({
+      reviewers: userEmail, // Match the email directly in the array
+    });
+    console.log(coAuthor);
+    console.log(collaborator);
+    console.log(reviewer);
     res.status(200).json({
       books,
+      coAuthorBooks: coAuthor,
+      collaboratorBooks: collaborator,
+      reviewerBooks: reviewer,
       message: "Books created by user",
     });
   } catch (error) {
