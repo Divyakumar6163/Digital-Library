@@ -56,13 +56,13 @@ const ReadBookStore = ({ heading, books }) => {
         {heading}
       </h4>
       <div className="flex overflow-x-auto space-x-4 p-4">
-        {Object.keys(Filteredbooks)?.length <= 0 && (
+        {Object?.keys(Filteredbooks)?.length <= 0 && (
           <p className="text-center text-gray-500 font-semibold my-4">
             No Book Available
           </p>
         )}
-        {Object.keys(Filteredbooks).length > 0 &&
-          Object.values(Filteredbooks)
+        {Object?.keys(Filteredbooks)?.length > 0 &&
+          Object?.values(Filteredbooks)
             .slice(0, visibleBooks)
             .map((data, idx) => (
               <div
