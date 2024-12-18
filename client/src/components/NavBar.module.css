@@ -1,52 +1,48 @@
 #seachBar1,
 #seachBar {
-    margin-right: 3vw;
+  margin-right: 3vw;
 }
 
 @media screen and (min-width: 1201px) {
-    #seachBar1 {
-        display: none;
-    }
+  #seachBar1 {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 1200px) {
-
-    #searchIconOutter,
-    #crossIcon,
-    #seachBar {
-        display: none;
-    }
+  #searchIconOutter,
+  #crossIcon,
+  #seachBar {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 768px) and (max-width: 950px) {
-    #seachInput1 {
+  #seachInput1 {
+    width: 100px;
+  }
 
-        width: 100px;
-    }
-
-    #seachBar1 {
-        margin-right: -7rem;
-    }
+  #seachBar1 {
+    margin-right: -7rem;
+  }
 }
 
 @media screen and (max-width: 500px) {
-    #seachInput1 {
+  #seachInput1 {
+    width: 100px;
+  }
 
-        width: 100px;
-    }
-
-    #seachBar1 {
-        margin-right: -7rem;
-    }
+  #seachBar1 {
+    margin-right: -7rem;
+  }
 }
 
-@media screen and (max-width: 370px) {
-    #seachInput1 {
-
-        width: 90px;
-    }
-
-    #seachBar1 {
-        margin-right: -8rem;
-    }
+@media screen and (max-width: 500px) {
+  #seachDiv {
+    width: 90px;
+    margin-right: 4rem;
+  }
+  #searchBar1 {
+    margin-right: 2rem;
+  }
 }

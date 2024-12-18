@@ -84,7 +84,7 @@ export default function NavBar1() {
           Digi Library
         </span>
       </Navbar.Brand>
-      <div className="flex md:order-2 z-50" id="seachDiv">
+      <div className="flex md:order-2 z-50" id={styles.seachDiv}>
         {isSearch && (
           <div
             className="relative w-56"
@@ -106,9 +106,9 @@ export default function NavBar1() {
               placeholder="Search..."
             />
             <FaSearch
-              id={styles.seachIcon}
-              className="absolute w-5 h-5 text-gray-500 left-3 top-2.5"
               style={{ marginLeft: "8px", cursor: "pointer" }}
+              className="absolute w-5 h-5 text-gray-500 left-3 top-2.5"
+              id={styles.seachIcon}
             />
           </div>
         )}
