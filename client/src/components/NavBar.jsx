@@ -36,6 +36,7 @@ export default function NavBar1() {
     store.dispatch(authactions.setAccessToken(null));
     store.dispatch(authactions.setRefreshToken(null));
     store.dispatch(bookactions.setBookDetails(null));
+    navigate("/");
   };
 
   const handleSearch = async () => {
