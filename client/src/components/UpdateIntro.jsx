@@ -175,6 +175,13 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
   const handleBack = () => {
     setShowIntro(false);
   };
+  const handleremoveCollaborator = (collab) => {
+    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    if (confirmDelete) {
+      removeItem(collab, setCollaborators);
+    }
+  };
+  
   return (
     <div className="container my-4 mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
       <div className="flex flex-col w-full">
@@ -283,7 +290,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
             >
               {collab}
               <button
-                onClick={() => removeItem(collab, setCollaborators)}
+                onClick={() => handleremoveCollaborator(collab)}
                 className="ml-2 text-xs bg-blue-700 rounded-full p-1"
               >
                 ✕

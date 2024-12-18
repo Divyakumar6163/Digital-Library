@@ -1,7 +1,10 @@
 const Bookschema = require("./../models/bookmodel");
 const dotenv = require("dotenv");
+const userSchema = require('./../models/usermodel');
+const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
-
+const { promisify } = require("util");
+const addcollaboratoremail = require("./../utils/mails/addcollaboratoremail")
 exports.getallbook = async (req, res) => {
   try {
     const books = await Bookschema.find();
@@ -160,9 +163,9 @@ exports.updatebookintro = async (req, res) => {
     book.booktitle = data.booktitle;
     book.skills = data.skills;
     book.tags = data.tags;
-    book.collaborators = data.collaborators;
-    book.coAuthors = data.coAuthors;
-    book.reviewers = data.reviewers;
+    // book.collaborators = data.collaborators;
+    // book.coAuthors = data.coAuthors;
+    // book.reviewers = data.reviewers;
     book.summary = data.summary;
     book.briefSummary = data.briefSummary;
     book.objective = data.objective;
@@ -175,7 +178,6 @@ exports.updatebookintro = async (req, res) => {
     book.attributionAuthor = data.attributionAuthor;
     book.image = data.image;
     await book.save();
-
     res.status(200).json({
       message: "Book Intro updated successfully",
       data: {
@@ -191,6 +193,108 @@ exports.updatebookintro = async (req, res) => {
     });
   }
 };
+
+exports.sendcollaboratorrequest = async (req, res) => {
+  try {
+    // console.log("hii")
+    const emailarr = req.body.emails; 
+    const user = req.user; 
+    const book = await Bookschema.findById(req.body.bookid);
+    const currcollab = book.collaborators
+    const filteredEmails = emailarr.filter(email => !currcollab.includes(email));
+    const totalemails = filteredEmails.length; 
+    for (let i = 0; i < totalemails; i++) {
+      const InviteLink = JWT.sign({ bookid: req.body.bookid ,
+        userId: filteredEmails[i]
+      }, process.env.ACCESS_JWT_SECRET, {
+        expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
+      });
+      const link = `${process.env.FRONT_END_LINK}/addcollaborator/${InviteLink}`
+      console.log(link)
+      await addcollaboratoremail({
+        email: filteredEmails[i],
+        subject: "Invitation for Collaboration",
+        name: user.name,
+        inviteLink: link
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Invitations sent successfully!",
+    });
+  } 
+  catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Error while sending invitations",
+      error: err.message,
+    });
+  }
+};
+
+exports.acceptcollabInvitation = async (req, res) => {
+  try {
+    const decoded = await promisify(JWT.verify)(
+      req.body.InviteLink,
+      process.env.ACCESS_JWT_SECRET
+    );
+    console.log(decoded);
+    const book = await Bookschema.findById(decoded.bookid);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    const usermail = decoded.userId;
+    if(book.collaborators.includes(usermail)){
+      return res.status(400).json({ message: "User already collaborating with the book" });
+    }
+    book.collaborators.push(usermail);
+    await book.save();
+    res.status(200).json({
+      status: "success",
+      message: "Invitation accepted",
+    });
+  } 
+  catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Error while accepting invitation",
+      error: err.message,
+    });
+  }
+}
+
+exports.removecollab = async (req, res) => {
+  try {
+    const mail = req.body.mailId; 
+    const bookId = req.body.bookid;
+
+    const book = await Bookschema.findById(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    if (!book.collaborators.includes(mail)) {
+      return res.status(404).json({ message: "Collaborator not found in this book" });
+    }
+
+    book.collaborators = book.collaborators.filter(collab => collab !== mail);
+    await book.save();
+
+    return res.status(200).json({
+      message: "Collaborator removed successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Error while removing collaborator",
+      error: err.message,
+    });
+  }
+};
+
 exports.updatebookcontent = async (req, res) => {
   const { bookId } = req.params;
   const { chapters, modifiedDate } = req.body;

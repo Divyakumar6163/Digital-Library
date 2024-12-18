@@ -24,10 +24,11 @@ import PremiumPage from "./components/PremiumPage.jsx";
 import UpdateIntro from "./components/UpdateIntro.jsx";
 import SearchedBooks from "./components/SearchedBooks.jsx";
 import YourBooks from "./components/YourBooks.jsx";
+import InvitationPage from './components/Addcollaborator.jsx'
 import VerifyEamil from "./components/emailverify.jsx";
 // export const ToLink  = process.env.TO_LINK
-export const ToLink = "https://digital-library-cryf.onrender.com";
-// export const ToLink = "http://localhost:5000";
+// export const ToLink = "https://digital-library-cryf.onrender.com";
+export const ToLink = "http://localhost:5000";
 //
 function App() {
   const access_token = useSelector((state) => state.auth.accessToken);
@@ -62,6 +63,7 @@ function App() {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/:token/:userId" element={<SetNewPassword />} />
           <Route path="/verifyemail/:token" element={<VerifyEamil />} />
+          <Route path="/addcollaborator/:Addcollabtoken" element={<InvitationPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer draggable />
