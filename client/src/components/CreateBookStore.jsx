@@ -9,7 +9,6 @@ import BookCover1 from "../image/NoImage.jpg";
 import axios from "axios";
 import { ToLink } from "../App";
 import renderComponent from "./functions/renderComponent";
-import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import PreviewBook from "./PreviewBookStore";
 import { updatePublish, updateChapters, deleteBook } from "../API/createbook";
