@@ -5,7 +5,7 @@ import {
   FaChevronDown,
   FaChevronRight,
 } from "react-icons/fa";
-import BookCover1 from "../image/BookCover1.png";
+import BookCover1 from "../image/NoImage.jpg";
 import axios from "axios";
 import { ToLink } from "../App";
 import renderComponent from "./functions/renderComponent";
