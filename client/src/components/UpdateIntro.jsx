@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./util/getCroppedImg";
-import { updateIntro } from "../API/createbook";
+import { updateIntro,removecollab } from "../API/createbook";
 import { notify } from "./../store/utils/notify";
 import { useNavigate } from "react-router";
 const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
@@ -175,10 +175,20 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
   const handleBack = () => {
     setShowIntro(false);
   };
-  const handleremoveCollaborator = (collab) => {
+  const handleremoveCollaborator = async (collab) => {
     const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const payload = {
+      bookid: bookIntroDetails._id,
+      mailId: collab,
+    }
     if (confirmDelete) {
-      removeItem(collab, setCollaborators);
+      const result = await removecollab(payload, accessToken);
+      if (result) {
+        console.log("Collaborator removed successfully!");
+        removeItem(collab, setCollaborators);
+      } else {
+        console.log("Failed to remove collaborator.");
+      }
     }
   };
   

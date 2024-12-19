@@ -314,3 +314,34 @@ export const acceptcollab = async (invitelink, accessToken) => {
     return false;
   }
 };
+
+export const removecollab = async (payload, accessToken) => {
+  try {
+    if (!payload || !payload.mailId || !payload.bookid) {
+      console.error("Invalid payload: Missing required fields");
+      return false;
+    }
+
+    const response = await axios.post(
+      `${ToLink}/removecollab`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      console.log("Collaborator removed successfully:", response.data.message);
+      return true;
+    } else {
+      console.error("Failed to remove collaborator:", response.data.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error occurred while removing collaborator:", error.message);
+    return false;
+  }
+};
+
