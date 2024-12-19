@@ -25,7 +25,8 @@ export const deleteBook = async (bookId) => {
     if (response.status === 200) {
       console.log("success", "Book deleted successfully");
       return true;
-    } else {
+    } 
+    else {
       console.log("error", "Failed to delete book");
       return false;
     }
@@ -95,8 +96,9 @@ export const updateChapters = async (bookID, updatedChapters) => {
   }
 };
 export const updateIntro = async (bookID, updatedIntro, accessToken) => {
+  const { collaborators, coAuthors, reviewers, ...filteredBookDetails } = updatedIntro;
   console.log(updatedIntro.image);
-  if (typeof updatedIntro.image === "object") {
+  if (updatedIntro.image){
     try {
       const formData = new FormData();
       formData.append("image", updatedIntro.image);
@@ -117,7 +119,19 @@ export const updateIntro = async (bookID, updatedIntro, accessToken) => {
         //     }
         // }
       );
-
+      const payload = {
+        emails: updatedIntro.collaborators,
+        bookid: bookID
+      };
+      const sendinviteResponse = await axios.post(
+        `${ToLink}/invitecollaborators`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       if (response.status === 200) {
         console.log("Intro updated successfully", response.data);
         return true;
@@ -141,7 +155,19 @@ export const updateIntro = async (bookID, updatedIntro, accessToken) => {
         //     }
         // }
       );
-
+      const payload = {
+        emails: updatedIntro.collaborators,
+        bookid: bookID
+      };
+      const sendinviteResponse = await axios.post(
+        `${ToLink}/invitecollaborators`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       if (response.status === 200) {
         console.log("Intro updated successfully", response.data);
         return true;
@@ -176,20 +202,33 @@ export const getbookbyID = async (bookID) => {
 
 export const createBook = async (imageFile, bookdata, accessToken) => {
   console.log(bookdata);
+  const { collaborators, coAuthors, reviewers, ...filteredBookDetails } = bookdata;
   if (!imageFile) {
     bookdata.image =
       "https://res.cloudinary.com/ddgyxhpwx/image/upload/v1731611566/CloudinaryDemo/No%20Image.jpg.jpg";
     try {
       const createResponse = await axios.post(
         `${ToLink}/createbook`,
-        bookdata,
+        filteredBookDetails,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-
+      const payload = {
+        emails: bookdata.collaborators,
+        bookid: createResponse.data.data.books._id
+      };
+      const sendinviteResponse = await axios.post(
+        `${ToLink}/invitecollaborators`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       console.log(createResponse.data.data.books);
       const id = createResponse.data.data.books._id;
       // notify("Book created!");
@@ -212,7 +251,7 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
         },
       });
       const bookinfo = {
-        ...bookdata,
+        ...filteredBookDetails,
         image: uploadResponse.data.fileUrl,
       };
       console.log(bookinfo);
@@ -226,7 +265,19 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
           },
         }
       );
-
+      const payload = {
+        emails: bookdata.collaborators,
+        bookid: createResponse.data.data.books._id
+      };
+      const sendinviteResponse = await axios.post(
+        `${ToLink}/invitecollaborators`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       console.log(createResponse.data.data.books);
       const id = createResponse.data.data.books._id;
       // notify("Book created!");
@@ -238,3 +289,59 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
     }
   }
 };
+
+
+export const acceptcollab = async (invitelink, accessToken) => {
+  try {
+    const response = await axios.post(
+      `${ToLink}/acceptcollab`,
+      { InviteLink : invitelink},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, 
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      console.log("Collaboration accepted successfully:", response.data);
+      return true; 
+    } else {
+      console.error("Failed to accept collaboration:", response.data);
+      return false; 
+    }
+  } catch (error) {
+    console.error("Error occurred while accepting invite:", error.message);
+    return false;
+  }
+};
+
+export const removecollab = async (payload, accessToken) => {
+  try {
+    if (!payload || !payload.mailId || !payload.bookid) {
+      console.error("Invalid payload: Missing required fields");
+      return false;
+    }
+
+    const response = await axios.post(
+      `${ToLink}/removecollab`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      console.log("Collaborator removed successfully:", response.data.message);
+      return true;
+    } else {
+      console.error("Failed to remove collaborator:", response.data.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error occurred while removing collaborator:", error.message);
+    return false;
+  }
+};
+

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./util/getCroppedImg";
-import { updateIntro } from "../API/createbook";
+import { updateIntro,removecollab } from "../API/createbook";
 import { notify } from "./../store/utils/notify";
 import { useNavigate } from "react-router";
 const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
@@ -175,6 +175,23 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
   const handleBack = () => {
     setShowIntro(false);
   };
+  const handleremoveCollaborator = async (collab) => {
+    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const payload = {
+      bookid: bookIntroDetails._id,
+      mailId: collab,
+    }
+    if (confirmDelete) {
+      const result = await removecollab(payload, accessToken);
+      if (result) {
+        console.log("Collaborator removed successfully!");
+        removeItem(collab, setCollaborators);
+      } else {
+        console.log("Failed to remove collaborator.");
+      }
+    }
+  };
+  
   return (
     <div className="container my-4 mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
       <div className="flex flex-col w-full">
@@ -283,7 +300,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
             >
               {collab}
               <button
-                onClick={() => removeItem(collab, setCollaborators)}
+                onClick={() => handleremoveCollaborator(collab)}
                 className="ml-2 text-xs bg-blue-700 rounded-full p-1"
               >
                 ✕

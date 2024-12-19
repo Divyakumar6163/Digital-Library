@@ -23,5 +23,8 @@ router.get(
   authcontroller.checkvaliduser,
   bookcontroller.getBookByUser
 );
+router.post("/invitecollaborators", authcontroller.checkvaliduser,bookcontroller.sendcollaboratorrequest)
+router.post("/acceptcollab", authcontroller.checkvaliduser,bookcontroller.acceptcollabInvitation)
+router.post("/removecollab", authcontroller.checkvaliduser,bookcontroller.removecollab)
 
 module.exports = router;
