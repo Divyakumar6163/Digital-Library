@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import CreateGraph from "./CreateBookComponents/CreateGraph";
 import { BlockMath } from "react-katex";
-import BookCover1 from "../image/NoImage.png";
+import BookCover1 from "../image/NoImage.jpg";
 import "katex/dist/katex.min.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
 import { useSelector } from "react-redux";
