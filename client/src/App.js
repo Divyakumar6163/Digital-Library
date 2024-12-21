@@ -24,7 +24,9 @@ import PremiumPage from "./components/PremiumPage.jsx";
 import UpdateIntro from "./components/UpdateIntro.jsx";
 import SearchedBooks from "./components/SearchedBooks.jsx";
 import YourBooks from "./components/YourBooks.jsx";
-import InvitationPage from './components/Addcollaborator.jsx'
+import CollabinvitationPage from './components/Addcollaborator.jsx'
+import CoAuthorInvitationPage from "./components/Addcoauthor.jsx";
+import ReviewerInvitationPage from "./components/Addreviewer.jsx";
 import VerifyEamil from "./components/emailverify.jsx";
 // export const ToLink  = process.env.TO_LINK
 export const ToLink = "https://digital-library-cryf.onrender.com";
@@ -63,7 +65,9 @@ function App() {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/:token/:userId" element={<SetNewPassword />} />
           <Route path="/verifyemail/:token" element={<VerifyEamil />} />
-          <Route path="/addcollaborator/:Addcollabtoken" element={<InvitationPage />} />
+          <Route path="/addcollaborator/:Addcollabtoken" element={<CollabinvitationPage />} />
+          <Route path="/addcoauthor/:AddCoAuthorToken" element={<CoAuthorInvitationPage />} />
+          <Route path="/addreviewer/:AddReviewerToken" element={<ReviewerInvitationPage />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer draggable />

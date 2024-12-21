@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./util/getCroppedImg";
-import { updateIntro,removecollab } from "../API/createbook";
+import { updateIntro,remove} from "../API/createbook";
 import { notify } from "./../store/utils/notify";
 import { useNavigate } from "react-router";
 const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
@@ -182,12 +182,44 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
       mailId: collab,
     }
     if (confirmDelete) {
-      const result = await removecollab(payload, accessToken);
+      const result = await remove(payload, accessToken,"removecollab");
       if (result) {
         console.log("Collaborator removed successfully!");
         removeItem(collab, setCollaborators);
       } else {
         console.log("Failed to remove collaborator.");
+      }
+    }
+  };
+  const handleremoveCoauthor = async (coauthor) => {
+    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const payload = {
+      bookid: bookIntroDetails._id,
+      mailId: coauthor,
+    }
+    if (confirmDelete) {
+      const result = await remove(payload, accessToken,"removecoauthor");
+      if (result) {
+        console.log("Collaborator removed successfully!");
+        removeItem(coauthor, setCoAuthors);
+      } else {
+        console.log("Failed to remove collaborator.");
+      }
+    }
+  };
+  const handleremovereviewer = async (reviewer) => {
+    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const payload = {
+      bookid: bookIntroDetails._id,
+      mailId: reviewer,
+    }
+    if (confirmDelete) {
+      const result = await remove(payload, accessToken,"removereviewer");
+      if (result) {
+        console.log("Reviewer removed successfully!");
+        removeItem(reviewer, setReviewers);
+      } else {
+        console.log("Failed to remove Reviewer.");
       }
     }
   };
@@ -335,7 +367,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
             >
               {coAuthor}
               <button
-                onClick={() => removeItem(coAuthor, setCoAuthors)}
+                onClick={() => handleremoveCoauthor(coAuthor)}
                 className="ml-2 text-xs bg-blue-700 rounded-full p-1"
               >
                 ✕
@@ -370,7 +402,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
             >
               {reviewer}
               <button
-                onClick={() => removeItem(reviewer, setReviewers)}
+                onClick={() => handleremovereviewer(reviewer)}
                 className="ml-2 text-xs bg-blue-700 rounded-full p-1"
               >
                 ✕
