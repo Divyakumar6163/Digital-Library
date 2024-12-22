@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "./NavBar";
 import { acceptcollab } from "./../API/createbook";
 import { notify } from "./../store/utils/notify";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-const InvitationPage = () => {
+const CollabinvitationPage = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [bookTitle, setBookTitle] = useState("Book Title");
   const { Addcollabtoken } = useParams();
   const navigate = useNavigate();
+  const [Booktitle, setBooktitle] = useState("");
+
+  useEffect(() => {
+    const fetchBookInfo = async () => {
+      try {
+        const bookInfo = await getbookinfo(Addcollabtoken);
+        setBooktitle(bookInfo);
+        console.log(bookInfo);
+      } catch (error) {
+        console.error("Error fetching book information:", error);
+      }
+    };
+
+    fetchBookInfo();
+  }, []);
+
   const handleAccept = async () => {
-    const result = await acceptcollab(Addcollabtoken, accessToken);
+    console.log("Accepting invite");
+    const result = await accept(Addcollabtoken, accessToken, "acceptcollab");
     console.log(result);
     setBookTitle(result.booktitle);
     navigate("/createBook");
@@ -36,7 +53,7 @@ const InvitationPage = () => {
           </h1>
           <p className="text-gray-600 text-center mb-6">
             You have been invited to collaborate on the book{" "}
-            <span className="font-semibold text-gray-800">{bookTitle}</span>.
+            <span className="font-semibold text-gray-800">"Book Title"</span>.
           </p>
 
           <div className="flex space-x-4 justify-center">
@@ -56,4 +73,4 @@ const InvitationPage = () => {
   );
 };
 
-export default InvitationPage;
+export default CollabinvitationPage;

@@ -123,7 +123,7 @@ export const updateIntro = async (bookID, updatedIntro, accessToken) => {
         emails: updatedIntro.collaborators,
         bookid: bookID,
       };
-      const sendinviteResponse = await axios.post(
+      const sendcollabinviteResponse = await axios.post(
         `${ToLink}/invitecollaborators`,
         payload,
         {
@@ -291,8 +291,10 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
   }
 };
 
-export const acceptcollab = async (invitelink, accessToken) => {
+export const accept = async (invitelink, accessToken, route) => {
   try {
+    console.log(`${ToLink}/${route}`);
+    console.log(invitelink);
     const response = await axios.post(
       `${ToLink}/acceptcollab`,
       { InviteLink: invitelink },
@@ -315,7 +317,7 @@ export const acceptcollab = async (invitelink, accessToken) => {
   }
 };
 
-export const removecollab = async (payload, accessToken) => {
+export const remove = async (payload, accessToken, route) => {
   try {
     if (!payload || !payload.mailId || !payload.bookid) {
       console.error("Invalid payload: Missing required fields");
