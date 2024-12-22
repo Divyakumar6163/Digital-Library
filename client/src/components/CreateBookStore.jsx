@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { notify } from "../store/utils/notify";
 import UpdateBookIntro from "./UpdateIntro";
+import styles from "./CreateBookStore.module.css";
 import Section from "./CreateBookComponents/Section";
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
@@ -248,10 +249,10 @@ const CreateBookStore = ({ bookinfo }) => {
   console.log(sections);
   console.log(chapters);
   return (
-    <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-row">
+    <div className={styles.container}>
       {!showPreview && !showIntro && (
         <>
-          <div className="sm:w-1/4 bg-white p-4 shadow-md lg:static top-0 left-0 h-full transition-transform duration-300">
+          <div className={styles.sidebar}>
             <div className="mb-6">
               <h2
                 className="text-2xl font-bold mb-2 text-center"
@@ -413,7 +414,7 @@ const CreateBookStore = ({ bookinfo }) => {
             </button>
           </div>
 
-          <div className=" w-full sm:w-3/4 p-2 sm:p-6">
+          <div className={styles.mainContent}>
             <div className="flex  flex-col justify-around mb-6 sm:flex-row">
               <button
                 className="bg-gray-500 text-white py-2 px-4 rounded-lg my-1"

@@ -182,244 +182,222 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
     return tempDiv.textContent || tempDiv.innerText || "";
   }
   return (
-    <div className="flex justify-center bg-gray-100 relative flex-col sm:flex-col ">
-      {ispre ? (
-        <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-600">
-          Preview Book
-        </h1>
-      ) : (
-        ""
-      )}
-      {chapters.length === 0 ? (
-        <p className="text-lg text-gray-500 italic text-center">
-          No chapters available.
-        </p>
-      ) : (
-        // Render chapters here
-        <div className="flex flex-col sm:flex-row">
-          {/* Chapter List on the left */}
-          <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300 ">
-            <div className="mb-6 flex justify-around flex-col">
-              <h2
-                className="text-xl font-bold mb-2 text-center"
-                dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }}
-              />
-              <p
-                dangerouslySetInnerHTML={{ __html: bookinfo.description }}
-                className="text-center"
-              />
-              <img
-                src={bookinfo.image ? bookinfo.image : BookCover1}
-                className="h-1/2 items-center"
-              />
-            </div>
-            <ul className="mb-6">
-              {chapters?.map((chapter, index) => (
-                <li key={index} className="mb-2 cursor-pointer">
-                  <div className="flex justify-between items-center">
-                    <div
-                      className="flex items-center cursor-pointer"
-                      onClick={() => toggleChapterExpansion(index)}
-                    >
-                      {expandedChapters.includes(index) ? (
-                        <FaChevronDown className="mr-2" />
-                      ) : (
-                        <FaChevronRight className="mr-2" />
-                      )}
-                      <span onClick={() => scrollToChapter(index)}>
-                        {htmlToPlainText(chapter?.title) ||
-                          `Chapter ${index + 1}`}
-                      </span>
-                    </div>
-                  </div>
-                  {expandedChapters.includes(index) && (
-                    <ul className="pl-6 mt-2">
-                      {chapter.sections?.map((section, sectionIndex) => (
-                        <li key={section.id}>
-                          <div
-                            className="flex items-center cursor-pointer"
-                            onClick={() => toggleSectionExpansion(sectionIndex)}
-                          >
-                            {expandedSections.includes(sectionIndex) ? (
-                              <FaChevronDown className="mr-2" />
-                            ) : (
-                              <FaChevronRight className="mr-2" />
-                            )}
-                            <span
-                              onClick={() =>
-                                scrollToSection(
-                                  `section-${index}-${sectionIndex}`
-                                )
-                              }
-                            >
-                              {htmlToPlainText(section.title) ||
-                                `Section ${sectionIndex + 1}`}
-                            </span>
-                          </div>
-                          {expandedSections.includes(sectionIndex) && (
-                            <ul className="pl-6 mt-2">
-                              {section.subsections?.map(
-                                (subsec, subsecIndex) => (
-                                  <li key={subsec.id}>
+    <div className="flex flex-col lg:flex-row lg:space-x-4 bg-gray-100 relative">
+      {/* Sidebar */}
+      <div className="w-full lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300">
+        {/* Sidebar Content */}
+        <div className="mb-6 flex justify-around flex-col">
+          <h2
+            className="text-xl font-bold mb-2 text-center"
+            dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }}
+          />
+          <p
+            dangerouslySetInnerHTML={{ __html: bookinfo.description }}
+            className="text-center"
+          />
+          <img
+            src={bookinfo.image ? bookinfo.image : BookCover1}
+            className="items-center"
+            style={{ width: "40%" }}
+          />
+        </div>
+        <ul className="mb-6">
+          {chapters?.map((chapter, index) => (
+            <li key={index} className="mb-2 cursor-pointer">
+              <div className="flex justify-between items-center">
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={() => toggleChapterExpansion(index)}
+                >
+                  {expandedChapters.includes(index) ? (
+                    <FaChevronDown className="mr-2" />
+                  ) : (
+                    <FaChevronRight className="mr-2" />
+                  )}
+                  <span onClick={() => scrollToChapter(index)}>
+                    {htmlToPlainText(chapter?.title) || `Chapter ${index + 1}`}
+                  </span>
+                </div>
+              </div>
+              {expandedChapters.includes(index) && (
+                <ul className="pl-6 mt-2">
+                  {chapter.sections?.map((section, sectionIndex) => (
+                    <li key={section.id}>
+                      <div
+                        className="flex items-center cursor-pointer"
+                        onClick={() => toggleSectionExpansion(sectionIndex)}
+                      >
+                        {expandedSections.includes(sectionIndex) ? (
+                          <FaChevronDown className="mr-2" />
+                        ) : (
+                          <FaChevronRight className="mr-2" />
+                        )}
+                        <span
+                          onClick={() =>
+                            scrollToSection(`section-${index}-${sectionIndex}`)
+                          }
+                        >
+                          {htmlToPlainText(section.title) ||
+                            `Section ${sectionIndex + 1}`}
+                        </span>
+                      </div>
+                      {expandedSections.includes(sectionIndex) && (
+                        <ul className="pl-6 mt-2">
+                          {section.subsections?.map((subsec, subsecIndex) => (
+                            <li key={subsec.id}>
+                              <div
+                                className="flex items-center cursor-pointer"
+                                onClick={() =>
+                                  toggleSubsectionExpansion(
+                                    sectionIndex,
+                                    subsecIndex
+                                  )
+                                }
+                              >
+                                {expandedSubsections.includes(
+                                  `${sectionIndex}-${subsecIndex}`
+                                ) ? (
+                                  <FaChevronDown className="mr-2" />
+                                ) : (
+                                  <FaChevronRight className="mr-2" />
+                                )}
+                                <span
+                                  onClick={() =>
+                                    scrollToSubsection(
+                                      `subsection-${index}-${sectionIndex}-${subsecIndex}`
+                                    )
+                                  }
+                                >
+                                  {htmlToPlainText(subsec.heading) ||
+                                    `Subsection ${subsecIndex + 1}`}
+                                </span>
+                              </div>
+                              {expandedSubsections.includes(
+                                `${sectionIndex}-${subsecIndex}`
+                              ) && (
+                                <div className="pl-6 mt-2">
+                                  {subsec.components.map((comp, compIndex) => (
                                     <div
-                                      className="flex items-center cursor-pointer"
+                                      key={comp.id}
+                                      className="text-left"
                                       onClick={() =>
-                                        toggleSubsectionExpansion(
-                                          sectionIndex,
-                                          subsecIndex
+                                        scrollToHeading(
+                                          `heading-${index}-${sectionIndex}-${subsecIndex}-${compIndex}`
                                         )
                                       }
                                     >
-                                      {expandedSubsections.includes(
-                                        `${sectionIndex}-${subsecIndex}`
-                                      ) ? (
-                                        <FaChevronDown className="mr-2" />
-                                      ) : (
-                                        <FaChevronRight className="mr-2" />
-                                      )}
-                                      <span
-                                        onClick={() =>
-                                          scrollToSubsection(
-                                            `subsection-${index}-${sectionIndex}-${subsecIndex}`
-                                          )
-                                        }
-                                      >
-                                        {htmlToPlainText(subsec.heading) ||
-                                          `Subsection ${subsecIndex + 1}`}
-                                      </span>
+                                      {comp.type === "Heading" &&
+                                        htmlToPlainText(comp.content)}
                                     </div>
-                                    {expandedSubsections.includes(
-                                      `${sectionIndex}-${subsecIndex}`
-                                    ) && (
-                                      <div className="pl-6 mt-2">
-                                        {subsec.components.map(
-                                          (comp, compIndex) => (
-                                            <div
-                                              key={comp.id}
-                                              className="text-left"
-                                              onClick={() =>
-                                                scrollToHeading(
-                                                  `heading-${index}-${sectionIndex}-${subsecIndex}-${compIndex}`
-                                                )
-                                              }
-                                            >
-                                              {comp.type === "Heading" &&
-                                                htmlToPlainText(comp.content)}
-                                            </div>
-                                          )
-                                        )}
-                                      </div>
-                                    )}
-                                  </li>
-                                )
+                                  ))}
+                                </div>
                               )}
-                            </ul>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-          {/* Chapter Content on the right */}
-          <div className="lg:w-3/4 bg-gray-50 space-y-6">
-            {chapters.map((chapter, index) => (
+      {/* Main Content */}
+      <div className="w-full lg:w-3/4 bg-gray-50 p-4 lg:p-6 space-y-6">
+        {chapters.map((chapter, index) => (
+          <div
+            key={index}
+            ref={(el) => (chapterRefs.current[`chapter-${index}`] = el)}
+            className="w-full bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
+          >
+            {/* Chapter Title */}
+            <h1
+              className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2"
+              dangerouslySetInnerHTML={{ __html: chapter.title }}
+            />
+
+            {/* Chapter Summary */}
+            <p
+              className="text-base text-gray-600 mb-4 text-center leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: chapter.summary }}
+            />
+
+            {/* Sections and Subsections */}
+            {chapter.sections?.map((section, sectionIndex) => (
               <div
-                key={index}
-                ref={(el) => (chapterRefs.current[`chapter-${index}`] = el)}
-                className="w-full p-4 bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
+                key={section.id}
+                className="mt-4 mx-10"
+                ref={(el) =>
+                  (sectionRefs.current[`section-${index}-${sectionIndex}`] = el)
+                }
               >
-                {/* Chapter Title */}
-                <h1
-                  className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2 "
-                  dangerouslySetInnerHTML={{ __html: chapter.title }}
+                <h3
+                  className="text-3xl font-bold mb-2 my-5"
+                  style={{ color: "#1C1678" }}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      section.title ||
+                      `${index + 1}.${sectionIndex + 1} Section`,
+                  }}
                 />
-
-                {/* Chapter Summary */}
                 <p
-                  className="text-base text-gray-600 mb-4 text-center leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: chapter.summary }}
+                  className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: section.sectionsummary,
+                  }}
                 />
-
-                {/* Sections and Subsections */}
-                {chapter.sections?.map((section, sectionIndex) => (
-                  <div
-                    key={section.id}
-                    className="mt-4 mx-10"
-                    ref={(el) =>
-                      (sectionRefs.current[`section-${index}-${sectionIndex}`] =
-                        el)
-                    }
-                  >
-                    <h3
-                      className="text-3xl font-bold mb-2 my-5"
-                      style={{ color: "#1C1678" }}
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          section.title ||
-                          `${index + 1}.${sectionIndex + 1}Section`,
-                      }}
-                    />
-                    <p
-                      className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: section.sectionsummary,
-                      }}
-                    />
-                    <div className="space-y-4">
-                      {section.components.map((comp) => (
-                        <div key={comp.id} className="text-left">
-                          {renderComponent(comp)}
-                        </div>
-                      ))}
-                      {section.subsections?.map((subsec, subsectionIndex) => (
-                        <div
-                          key={subsec.id}
-                          ref={(el) =>
-                            (subsectionRefs.current[
-                              `subsection-${index}-${sectionIndex}-${subsectionIndex}`
-                            ] = el)
-                          }
-                        >
-                          <h4
-                            className="text-2xl font-semibold my-5"
-                            style={{ color: "#1C1678" }}
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                subsec.heading ||
-                                `${index + 1}.${sectionIndex + 1}.${
-                                  subsectionIndex + 1
-                                } Section`,
-                            }}
-                          />
-                          <div className="space-y-2">
-                            {subsec.components.map((comp, compIndex) => (
-                              <div
-                                key={comp.id}
-                                className="text-left"
-                                ref={(el) =>
-                                  (headingRefs.current[
-                                    `heading-${index}-${sectionIndex}-${subsectionIndex}-${compIndex}`
-                                  ] = el)
-                                }
-                              >
-                                {renderComponent(comp)}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                <div className="space-y-4">
+                  {section.components.map((comp) => (
+                    <div key={comp.id} className="text-left">
+                      {renderComponent(comp)}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                  {section.subsections?.map((subsec, subsectionIndex) => (
+                    <div
+                      key={subsec.id}
+                      ref={(el) =>
+                        (subsectionRefs.current[
+                          `subsection-${index}-${sectionIndex}-${subsectionIndex}`
+                        ] = el)
+                      }
+                    >
+                      <h4
+                        className="text-2xl font-semibold my-5"
+                        style={{ color: "#1C1678" }}
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            subsec.heading ||
+                            `${index + 1}.${sectionIndex + 1}.${
+                              subsectionIndex + 1
+                            } Section`,
+                        }}
+                      />
+                      <div className="space-y-2">
+                        {subsec.components.map((comp, compIndex) => (
+                          <div
+                            key={comp.id}
+                            className="text-left"
+                            ref={(el) =>
+                              (headingRefs.current[
+                                `heading-${index}-${sectionIndex}-${subsectionIndex}-${compIndex}`
+                              ] = el)
+                            }
+                          >
+                            {renderComponent(comp)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 };

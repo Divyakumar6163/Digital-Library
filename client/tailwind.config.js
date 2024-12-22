@@ -7,7 +7,11 @@ module.exports = {
     flowbite.content(),
   ],
   theme: {
-    extend: {},
+    extend: {
+      screen: {
+        // flexRow: "640px",
+      },
+    },
   },
   plugins: [require("flowbite/plugin"), flowbite.plugin()],
 };

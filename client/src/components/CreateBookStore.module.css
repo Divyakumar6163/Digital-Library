@@ -1,0 +1,35 @@
+.sidebar {
+  flex: 1;
+  max-width: 25%; /* Sidebar takes 25% of the container width */
+  background-color: #f4f4f4; /* Example background for visibility */
+  padding: 1rem; /* Add some padding for content */
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  transition: all 0.3s ease; /* Smooth transitions for layout changes */
+}
+
+.container {
+  display: flex;
+  flex-direction: row; /* Default to row layout */
+  gap: 1rem;
+}
+
+.mainContent {
+  width: 100%; /* Full width for smaller screens */
+  padding: 0.5rem; /* Padding for smaller screens */
+  flex: 3;
+}
+
+@media (max-width: 800px) {
+  .container {
+    flex-direction: column; /* Switch to column layout for smaller screens */
+  }
+
+  .sidebar {
+    max-width: 100%; /* Sidebar takes full width */
+    margin-bottom: 1rem; /* Add spacing below the sidebar in column layout */
+  }
+
+  .mainContent {
+    max-width: 100%; /* Main content takes full width */
+  }
+}

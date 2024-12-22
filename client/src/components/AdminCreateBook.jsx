@@ -339,38 +339,39 @@ const AdminBook = ({ book, setIsBook }) => {
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Admin: Manage Book Content</h1>
-      <div className="flex justify-between mb-6">
+      <div className="flex flex-col sm:flex-row justify-between mb-6">
         <button
           onClick={handleBack}
-          className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded c"
+          className="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded mb-2 sm:mb-0"
         >
           Back
         </button>
-        <div>
+        <div className="flex flex-col sm:flex-row sm:space-x-4">
           <button
             onClick={handleSaveChanges}
-            className="mr-4 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600"
+            className="mb-2 sm:mb-0 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600"
           >
             Save Changes
           </button>
           <button
             onClick={handlePublish}
-            className="mr-4 px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600"
+            className="mb-2 sm:mb-0 px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600"
           >
             Publish
           </button>
           <button
             onClick={handleDiscard}
-            className="mr-4 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600"
+            className="mb-2 sm:mb-0 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600"
           >
             Delete Book
           </button>
         </div>
       </div>
+
       {chapters.length === 0 ? (
         <p>No chapters available.</p>
       ) : (
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row">
           {/* Chapter List on the left */}
           <div className="lg:w-1/4 bg-white p-4 shadow-md h-full transition-transform duration-300 ">
             <div className="mb-6 flex justify-around flex-col">
@@ -384,7 +385,8 @@ const AdminBook = ({ book, setIsBook }) => {
               />
               <img
                 src={book.image ? book.image : BookCover1}
-                className="h-1/2 items-center"
+                className="w-1/2 items-center"
+                style={{ maxWidth: "150px" }}
               />
             </div>
             <ul className="mb-6">
@@ -547,7 +549,6 @@ const AdminBook = ({ book, setIsBook }) => {
                         <div key={comp.id} className="text-left">
                           {renderComponent(comp)}
                           <div className="flex justify-end">
-                            {" "}
                             {/* Ensure the button is on the right side */}
                             <button
                               className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
@@ -610,9 +611,7 @@ const AdminBook = ({ book, setIsBook }) => {
                                   )}
 
                                   {/* Lock/Unlock button */}
-                                  {/* Lock/Unlock button */}
                                   <div className="flex justify-end">
-                                    {" "}
                                     {/* Ensure the button is on the right side */}
                                     <button
                                       className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
