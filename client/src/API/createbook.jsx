@@ -344,21 +344,44 @@ export const remove = async (payload, accessToken, route) => {
 };
 export const getbookinfo = async (InviteLink) => {
   try {
-    if(!InviteLink){
+    if (!InviteLink) {
       console.error("Invalid payload: Missing required fields");
       return false;
     }
-    const response = await axios.post(
-      `${ToLink}/getbookinfoytoken`,
-      { InviteLink : InviteLink}
-    );
+    const response = await axios.post(`${ToLink}/getbookinfoytoken`, {
+      InviteLink: InviteLink,
+    });
     if (response.status === 200) {
       return response.data.booktitle;
     } else {
       return false;
     }
-  } 
-  catch (error) {
+  } catch (error) {
     return false;
   }
-}
+};
+export const decline = async (payload, accessToken, route) => {
+  console.log("dsf");
+  try {
+    if (!payload || !payload.InviteLink) {
+      console.error("Invalid payload: Missing required fields");
+      return false;
+    }
+
+    const response = await axios.post(`${ToLink}/${route}`, payload, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (response.status === 200) {
+      console.log("Invitation declined successfully:", response.data.message);
+      return true;
+    } else {
+      console.error("Failed to decline invitation:", response.data.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error occurred while declining invitation:", error.message);
+    return false;
+  }
+};
