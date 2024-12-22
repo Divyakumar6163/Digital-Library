@@ -342,3 +342,23 @@ export const remove = async (payload, accessToken, route) => {
     return false;
   }
 };
+export const getbookinfo = async (InviteLink) => {
+  try {
+    if(!InviteLink){
+      console.error("Invalid payload: Missing required fields");
+      return false;
+    }
+    const response = await axios.post(
+      `${ToLink}/getbookinfoytoken`,
+      { InviteLink : InviteLink}
+    );
+    if (response.status === 200) {
+      return response.data.booktitle;
+    } else {
+      return false;
+    }
+  } 
+  catch (error) {
+    return false;
+  }
+}

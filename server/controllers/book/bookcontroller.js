@@ -1,10 +1,10 @@
-const Bookschema = require("./../models/bookmodel");
+const Bookschema = require("../../models/bookmodel");
 const dotenv = require("dotenv");
-const userSchema = require("./../models/usermodel");
+const userSchema = require("../../models/usermodel");
 const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
 const { promisify } = require("util");
-const addcollaboratoremail = require("./../utils/mails/addcollaboratoremail");
+const addcollaboratoremail = require("../../utils/mails/addcollaboratoremail");
 exports.getallbook = async (req, res) => {
   try {
     const books = await Bookschema.find();
@@ -522,3 +522,27 @@ exports.getBookByUser = async (req, res) => {
     });
   }
 };
+exports.getbookinfo = async (req, res) => {
+  try {
+    const decoded = await promisify(JWT.verify)(
+      req.body.InviteLink,
+      process.env.ACCESS_JWT_SECRET
+    );
+    console.log(decoded);
+    const book = await Bookschema.findById(decoded.bookid);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    console.log(book.booktitle);
+    res.status(200).json({
+      booktitle: book.booktitle,
+      status: "success",
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Error while sending reviewer invitations",
+      error: err.message,
+    });
+  }
+}
