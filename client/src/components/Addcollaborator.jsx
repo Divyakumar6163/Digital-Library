@@ -86,4 +86,5 @@ const CollabinvitationPage = () => {
   );
 };
 
+
 export default CollabinvitationPage;

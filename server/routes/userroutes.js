@@ -1,7 +1,7 @@
 const express = require("express");
 const usercontroller = require("./../controllers/user/usercontroller");
 const authcontroller = require("./../controllers/user/authservice");
-
+const contactUscontroller = require("./../controllers/contactUs/contactUs")
 const userbookcontroller = require("./../controllers/user/userbookcontroller");
 
 const router = express.Router();
@@ -41,5 +41,7 @@ router.post("/auth/google", usercontroller.googleLoginSignup);
 router.get("/authcheck", authcontroller.checkaccesstoken);
 
 router.post("/authcheck/refresh", authcontroller.refreshAccessToken);
+
+router.post("/contactus", contactUscontroller.contactUs)
 
 module.exports = router;

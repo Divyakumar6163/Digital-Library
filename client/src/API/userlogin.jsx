@@ -113,3 +113,20 @@ export const updateProfile = async (userInfo, accessToken) => {
     console.error("An error occurred while updating the profile:", error);
   }
 };
+
+export const submitContactUs = async (payload) => {
+  try {
+    const response = await axios.post(`${ToLink}/contactus`, payload);
+    if (response.status === 200) {
+      // notify("Message submitted successfully!");
+      return response.data;
+    } else {
+      // notify("Failed to submit the message. Please try again.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error submitting contact form:", error);
+    // notify("An error occurred while submitting the message.");
+    return null;
+  }
+};
