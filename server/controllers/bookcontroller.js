@@ -1,10 +1,10 @@
 const Bookschema = require("./../models/bookmodel");
 const dotenv = require("dotenv");
-const userSchema = require('./../models/usermodel');
+const userSchema = require("./../models/usermodel");
 const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
 const { promisify } = require("util");
-const addcollaboratoremail = require("./../utils/mails/addcollaboratoremail")
+const addcollaboratoremail = require("./../utils/mails/addcollaboratoremail");
 exports.getallbook = async (req, res) => {
   try {
     const books = await Bookschema.find();
@@ -197,34 +197,40 @@ exports.updatebookintro = async (req, res) => {
 exports.sendcollaboratorrequest = async (req, res) => {
   try {
     // console.log("hii")
-    const emailarr = req.body.emails; 
-    const user = req.user; 
+    const emailarr = req.body.emails;
+    const user = req.user;
     const book = await Bookschema.findById(req.body.bookid);
-    const currcollab = book.collaborators
-    const filteredEmails = emailarr.filter(email => !currcollab.includes(email));
-    const totalemails = filteredEmails.length; 
+    const currcollab = book.collaborators;
+    const filteredEmails = emailarr.filter(
+      (email) => !currcollab.includes(email)
+    );
+    const totalemails = filteredEmails.length;
     for (let i = 0; i < totalemails; i++) {
-      const InviteLink = JWT.sign({ bookid: req.body.bookid ,
-        userId: filteredEmails[i]
-      }, process.env.ACCESS_JWT_SECRET, {
-        expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
-      });
-      const link = `${process.env.FRONT_END_LINK}/addcollaborator/${InviteLink}`
-      console.log(link)
+      const InviteLink = JWT.sign(
+        { bookid: req.body.bookid, userId: filteredEmails[i] },
+        process.env.ACCESS_JWT_SECRET,
+        {
+          expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
+        }
+      );
+      const link = `${process.env.FRONT_END_LINK}/addcollaborator/${InviteLink}`;
+      console.log(link);
       await addcollaboratoremail({
         email: filteredEmails[i],
         subject: "Invitation for Collaboration",
         name: user.name,
-        inviteLink: link
+        inviteLink: link,
       });
     }
 
     res.status(200).json({
       status: "success",
       message: "Invitations sent successfully!",
+      data: {
+        booktitle: book.booktitle,
+      },
     });
-  } 
-  catch (err) {
+  } catch (err) {
     res.status(500).json({
       status: "error",
       message: "Error while sending invitations",
@@ -245,8 +251,10 @@ exports.acceptcollabInvitation = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
     const usermail = decoded.userId;
-    if(book.collaborators.includes(usermail)){
-      return res.status(400).json({ message: "User already collaborating with the book" });
+    if (book.collaborators.includes(usermail)) {
+      return res
+        .status(400)
+        .json({ message: "User already collaborating with the book" });
     }
     book.collaborators.push(usermail);
     await book.save();
@@ -254,19 +262,18 @@ exports.acceptcollabInvitation = async (req, res) => {
       status: "success",
       message: "Invitation accepted",
     });
-  } 
-  catch (err) {
+  } catch (err) {
     res.status(500).json({
       status: "error",
       message: "Error while accepting invitation",
       error: err.message,
     });
   }
-}
+};
 
 exports.removecollab = async (req, res) => {
   try {
-    const mail = req.body.mailId; 
+    const mail = req.body.mailId;
     const bookId = req.body.bookid;
 
     const book = await Bookschema.findById(bookId);
@@ -276,10 +283,12 @@ exports.removecollab = async (req, res) => {
     }
 
     if (!book.collaborators.includes(mail)) {
-      return res.status(404).json({ message: "Collaborator not found in this book" });
+      return res
+        .status(404)
+        .json({ message: "Collaborator not found in this book" });
     }
 
-    book.collaborators = book.collaborators.filter(collab => collab !== mail);
+    book.collaborators = book.collaborators.filter((collab) => collab !== mail);
     await book.save();
 
     return res.status(200).json({
