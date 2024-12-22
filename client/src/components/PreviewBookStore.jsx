@@ -370,6 +370,11 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                       }}
                     />
                     <div className="space-y-4">
+                      {section.components.map((comp) => (
+                        <div key={comp.id} className="text-left">
+                          {renderComponent(comp)}
+                        </div>
+                      ))}
                       {section.subsections?.map((subsec, subsectionIndex) => (
                         <div
                           key={subsec.id}

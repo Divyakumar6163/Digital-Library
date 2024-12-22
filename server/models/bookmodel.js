@@ -69,6 +69,10 @@ const SectionSchema = new Schema(
       type: String,
       default: "",
     },
+    components: {
+      type: [ComponentSchema],
+      default: [],
+    },
     subsections: {
       type: [SubsectionSchema],
       default: [],
@@ -312,14 +316,6 @@ const BookSchema = new Schema({
     type: String,
     default: "",
   },
-  // creaters: {
-  //   type: Array,
-  //   default: [],
-  // },
-  // author: {
-  //   type: String,
-  //   default: "",
-  // },
   chapters: [ChapterSchema],
   tags: {
     type: Array,

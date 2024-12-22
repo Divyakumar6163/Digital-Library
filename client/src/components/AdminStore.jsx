@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import img from "../image/NoImage.jpg";
 import AdminCreateBook from "./AdminCreateBook";
 const BookStore = () => {
   const [isBook, setIsBook] = React.useState(false);
@@ -31,7 +31,7 @@ const BookStore = () => {
                   className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   <img
-                    src={book.image}
+                    src={book.image ? book.image : img}
                     alt={book.booktitle}
                     className="w-full h-48 object-cover"
                   />

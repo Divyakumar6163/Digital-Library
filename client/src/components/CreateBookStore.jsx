@@ -225,6 +225,7 @@ const CreateBookStore = ({ bookinfo }) => {
       id: Date.now(),
       title: `Section ${sections?.length + 1}`,
       subsections: [],
+      components: [],
     };
     if (sections?.length) {
       setSections((prev) => [...prev, newSection]);

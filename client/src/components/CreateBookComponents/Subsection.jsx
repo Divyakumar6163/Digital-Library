@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Heading from "./CreateHeading";
 import renderComponent from "../functions/renderComponent";
 import axios from "axios";
 import { ToLink } from "../../App";
@@ -51,9 +50,9 @@ const Subsection = ({ value, onChange }) => {
   const handleTitleChange = (title) => {
     onChange({ ...value, heading: title });
   };
-  const handleSummaryChange = (summary) => {
-    onChange({ ...value, subsectionsummary: summary });
-  };
+  // const handleSummaryChange = (summary) => {
+  //   onChange({ ...value, subsectionsummary: summary });
+  // };
   return (
     <div className="mb-4 p-4 border rounded-lg bg-gray-50">
       {/* Heading Component */}
@@ -64,12 +63,12 @@ const Subsection = ({ value, onChange }) => {
         placeholder="Enter Subsection Title"
         className="text-xl font-bold mb-4 p-2 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
       />
-      <textarea
+      {/* <textarea
         value={value.subsectionsummary || ""}
         onChange={(e) => handleSummaryChange(e.target.value)}
         placeholder="Enter Subsection Summary"
         className="mt-2 p-2 w-full border rounded-lg focus:outline-none focus:border-blue-500"
-      />
+      /> */}
 
       {/* Render components dynamically */}
       <div className="p-2 mt-4 border rounded-lg bg-white">
@@ -98,12 +97,12 @@ const Subsection = ({ value, onChange }) => {
             className="mr-2 p-2 border rounded-lg"
           >
             <option value="Text">Text</option>
-            <option value="Heading">Heading</option>
+            {/* <option value="Heading">Heading</option> */}
             <option value="Graph">Graph</option>
             <option value="Equation">Equation</option>
             <option value="Quiz">Multiple Choice Quiz</option>
             <option value="FillInTheBlanks">Fill in the Blanks</option>
-            <option value="Video">Video</option>
+            {/* <option value="Video">Video</option> */}
             <option value="Image">Image</option>
           </select>
           <button

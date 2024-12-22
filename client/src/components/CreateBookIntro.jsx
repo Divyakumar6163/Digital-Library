@@ -12,7 +12,6 @@ import { useNavigate } from "react-router";
 import { Createbookloader } from "../store/utils/createbookloader";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./util/getCroppedImg";
-
 const CreateBookPage = ({ setIsIntro }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

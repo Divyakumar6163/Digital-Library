@@ -102,6 +102,58 @@ const AdminBook = ({ book, setIsBook }) => {
     setChapters(updatedChapters); // Update the chapters state
   };
 
+  const toggleSectionComponentLock = (
+    chapterIndex,
+    sectionIndex,
+    componentIndex
+  ) => {
+    const updatedChapters = chapters.map((chapter, chIndex) => {
+      if (chIndex === chapterIndex) {
+        const updatedSections = chapter.sections.map((section, secIndex) => {
+          if (secIndex === sectionIndex) {
+            const subsectionIndex = null;
+            if (subsectionIndex === null) {
+              // Lock/Unlock components directly in the section
+              const updatedComponents = section.components.map(
+                (component, compIndex) => {
+                  if (compIndex === componentIndex) {
+                    return { ...component, locked: !component.locked };
+                  }
+                  return component;
+                }
+              );
+              return { ...section, components: updatedComponents };
+            } else {
+              // Lock/Unlock components in the subsection
+              const updatedSubsections = section.subsections.map(
+                (subsection, subIndex) => {
+                  if (subIndex === subsectionIndex) {
+                    const updatedComponents = subsection.components.map(
+                      (component, compIndex) => {
+                        if (compIndex === componentIndex) {
+                          return { ...component, locked: !component.locked };
+                        }
+                        return component;
+                      }
+                    );
+                    return { ...subsection, components: updatedComponents };
+                  }
+                  return subsection;
+                }
+              );
+              return { ...section, subsections: updatedSubsections };
+            }
+          }
+          return section;
+        });
+        return { ...chapter, sections: updatedSections };
+      }
+      return chapter;
+    });
+
+    setChapters(updatedChapters); // Update the chapters state
+  };
+
   const renderComponent = (component, chapterIndex, componentIndex) => {
     if (component.locked) {
       return (
@@ -491,6 +543,28 @@ const AdminBook = ({ book, setIsBook }) => {
                       }}
                     />
                     <div className="space-y-4">
+                      {section.components.map((comp, componentIndex) => (
+                        <div key={comp.id} className="text-left">
+                          {renderComponent(comp)}
+                          <div className="flex justify-end">
+                            {" "}
+                            {/* Ensure the button is on the right side */}
+                            <button
+                              className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
+                              onClick={() =>
+                                toggleSectionComponentLock(
+                                  chapterIndex,
+                                  sectionIndex,
+                                  componentIndex
+                                )
+                              }
+                            >
+                              {comp.locked ? "Unlock" : "Lock"}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
                       {section.subsections?.map((subsec, subsectionIndex) => (
                         <div
                           key={subsec.id}
