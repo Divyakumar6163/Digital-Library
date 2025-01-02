@@ -3,11 +3,13 @@ import CreateGraph from "./CreateBookComponents/CreateGraph";
 import { BlockMath } from "react-katex";
 import BookCover1 from "../image/NoImage.jpg";
 import "katex/dist/katex.min.css";
-import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
+import { FaChevronRight, FaChevronDown, FaChevronLeft } from "react-icons/fa"; // Import icons
 import { useSelector } from "react-redux";
+import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 
 const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
   const userState = useSelector((state) => state.user);
@@ -17,10 +19,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const headingRefs = useRef({});
 
   const scrollToChapter = (index) => {
-    chapterRefs.current[`chapter-${index}`]?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    setCurrentChapterIndex(index);
   };
   const scrollToSection = (key) => {
     sectionRefs.current[key]?.scrollIntoView({
@@ -68,8 +67,6 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
         </div>
       );
     }
-
-    // Render component based on type if not locked
     switch (component.type) {
       case "Text":
         return (
@@ -181,6 +178,18 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
     tempDiv.innerHTML = html;
     return tempDiv.textContent || tempDiv.innerText || "";
   }
+  const handleNextChapter = () => {
+    if (currentChapterIndex < chapters.length - 1) {
+      setCurrentChapterIndex(currentChapterIndex + 1);
+    }
+  };
+
+  const handlePreviousChapter = () => {
+    if (currentChapterIndex > 0) {
+      setCurrentChapterIndex(currentChapterIndex - 1);
+    }
+  };
+  const currentChapter = chapters[currentChapterIndex];
   return (
     <div className="flex flex-col lg:flex-row lg:space-x-4 bg-gray-100 relative">
       {/* Sidebar */}
@@ -234,7 +243,9 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                         )}
                         <span
                           onClick={() =>
-                            scrollToSection(`section-${index}-${sectionIndex}`)
+                            scrollToSection(
+                              `section-${currentChapterIndex}-${sectionIndex}`
+                            )
                           }
                         >
                           {htmlToPlainText(section.title) ||
@@ -264,7 +275,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                                 <span
                                   onClick={() =>
                                     scrollToSubsection(
-                                      `subsection-${index}-${sectionIndex}-${subsecIndex}`
+                                      `subsection-${currentChapterIndex}-${sectionIndex}-${subsecIndex}`
                                     )
                                   }
                                 >
@@ -282,7 +293,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                                       className="text-left"
                                       onClick={() =>
                                         scrollToHeading(
-                                          `heading-${index}-${sectionIndex}-${subsecIndex}-${compIndex}`
+                                          `heading-${currentChapterIndex}-${sectionIndex}-${subsecIndex}-${compIndex}`
                                         )
                                       }
                                     >
@@ -307,41 +318,34 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
 
       {/* Main Content */}
       <div className="w-full lg:w-3/4 bg-gray-50 p-4 lg:p-6 space-y-6">
-        {chapters.map((chapter, index) => (
-          <div
-            key={index}
-            ref={(el) => (chapterRefs.current[`chapter-${index}`] = el)}
-            className="w-full bg-white shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
-          >
+        {currentChapter && (
+          <div className="w-full bg-white shadow-lg rounded-lg p-6">
             {/* Chapter Title */}
             <h1
               className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2"
-              dangerouslySetInnerHTML={{ __html: chapter.title }}
+              dangerouslySetInnerHTML={{ __html: currentChapter.title }}
             />
-
             {/* Chapter Summary */}
             <p
               className="text-base text-gray-600 mb-4 text-center leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: chapter.summary }}
+              dangerouslySetInnerHTML={{ __html: currentChapter.summary }}
             />
 
             {/* Sections and Subsections */}
-            {chapter.sections?.map((section, sectionIndex) => (
+            {currentChapter.sections?.map((section, sectionIndex) => (
               <div
                 key={section.id}
                 className="mt-4 mx-10"
                 ref={(el) =>
-                  (sectionRefs.current[`section-${index}-${sectionIndex}`] = el)
+                  (sectionRefs.current[
+                    `section-${currentChapterIndex}-${sectionIndex}`
+                  ] = el)
                 }
               >
                 <h3
-                  className="text-3xl font-bold mb-2 my-5"
+                  className="text-3xl font-bold mb-2"
                   style={{ color: "#1C1678" }}
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      section.title ||
-                      `${index + 1}.${sectionIndex + 1} Section`,
-                  }}
+                  dangerouslySetInnerHTML={{ __html: section.title }}
                 />
                 <p
                   className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
@@ -360,7 +364,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                       key={subsec.id}
                       ref={(el) =>
                         (subsectionRefs.current[
-                          `subsection-${index}-${sectionIndex}-${subsectionIndex}`
+                          `subsection-${currentChapterIndex}-${sectionIndex}-${subsectionIndex}`
                         ] = el)
                       }
                     >
@@ -370,7 +374,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                         dangerouslySetInnerHTML={{
                           __html:
                             subsec.heading ||
-                            `${index + 1}.${sectionIndex + 1}.${
+                            `${currentChapterIndex + 1}.${sectionIndex + 1}.${
                               subsectionIndex + 1
                             } Section`,
                         }}
@@ -382,7 +386,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
                             className="text-left"
                             ref={(el) =>
                               (headingRefs.current[
-                                `heading-${index}-${sectionIndex}-${subsectionIndex}-${compIndex}`
+                                `heading-${currentChapterIndex}-${sectionIndex}-${subsectionIndex}-${compIndex}`
                               ] = el)
                             }
                           >
@@ -396,7 +400,30 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
               </div>
             ))}
           </div>
-        ))}
+        )}
+        <div className="flex justify-between items-center p-4 bg-white shadow-md">
+          {/* Previous Chapter Button */}
+          {currentChapterIndex !== 0 ? (
+            <button
+              onClick={handlePreviousChapter}
+              className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+            >
+              <FaArrowCircleLeft className="text-4xl ml-4" />
+            </button>
+          ) : (
+            <div className="flex-grow" />
+          )}
+
+          {/* Next Chapter Button */}
+          {currentChapterIndex !== chapters.length - 1 && (
+            <button
+              onClick={handleNextChapter}
+              className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+            >
+              <FaArrowCircleRight className="text-4xl mr-4" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

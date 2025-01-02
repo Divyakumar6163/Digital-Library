@@ -6,13 +6,16 @@ import * as useractions from "./../store/actions/bookactions";
 import BookCover1 from "../image/NoImage.jpg";
 import { updatePublish, deleteBook, updateChapters } from "../API/createbook";
 import "katex/dist/katex.min.css";
-import { FaChevronRight, FaChevronDown } from "react-icons/fa"; // Import icons
+import { FaChevronRight, FaChevronDown, FaChevronLeft } from "react-icons/fa"; // Import icons
 import { useDispatch, useSelector } from "react-redux";
 import * as bookactions from "./../store/actions/bookactions";
+import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 const AdminBook = ({ book, setIsBook }) => {
   const dispatch = useDispatch();
   const reduxBook = useSelector((state) => state.books.allbooks);
   const bookIndex = reduxBook.find((b) => b._id === book._id);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+
   console.log(bookIndex);
   const [chapters, setChapters] = useState(book.chapters); // Store chapters in state
   console.log(chapters);
@@ -25,10 +28,11 @@ const AdminBook = ({ book, setIsBook }) => {
   const headingRefs = useRef({});
 
   const scrollToChapter = (index) => {
-    chapterRefs.current[`chapter-${index}`]?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    setCurrentChapterIndex(index);
+    // chapterRefs.current[`chapter-${index}`]?.scrollIntoView({
+    //   behavior: "smooth",
+    //   block: "start",
+    // });
   };
   const scrollToSection = (key) => {
     sectionRefs.current[key]?.scrollIntoView({
@@ -336,6 +340,18 @@ const AdminBook = ({ book, setIsBook }) => {
     tempDiv.innerHTML = html;
     return tempDiv.textContent || tempDiv.innerText || "";
   }
+  const handleNextChapter = () => {
+    if (currentChapterIndex < chapters.length - 1) {
+      setCurrentChapterIndex(currentChapterIndex + 1);
+    }
+  };
+
+  const handlePreviousChapter = () => {
+    if (currentChapterIndex > 0) {
+      setCurrentChapterIndex(currentChapterIndex - 1);
+    }
+  };
+  const currentChapter = chapters[currentChapterIndex];
   return (
     <div className="container mx-auto p-4 min-h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Admin: Manage Book Content</h1>
@@ -424,7 +440,7 @@ const AdminBook = ({ book, setIsBook }) => {
                             <span
                               onClick={() =>
                                 scrollToSection(
-                                  `section-${index}-${sectionIndex}`
+                                  `section-${currentChapterIndex}-${sectionIndex}`
                                 )
                               }
                             >
@@ -456,7 +472,7 @@ const AdminBook = ({ book, setIsBook }) => {
                                       <span
                                         onClick={() =>
                                           scrollToSection(
-                                            `section-${index}-${sectionIndex}`
+                                            `section-${currentChapterIndex}-${sectionIndex}`
                                           )
                                         }
                                       >
@@ -475,7 +491,7 @@ const AdminBook = ({ book, setIsBook }) => {
                                               className="text-left"
                                               onClick={() =>
                                                 scrollToHeading(
-                                                  `heading-${index}-${sectionIndex}-${subsecIndex}-${compIndex}`
+                                                  `heading-${currentChapterIndex}-${sectionIndex}-${subsecIndex}-${compIndex}`
                                                 )
                                               }
                                             >
@@ -502,41 +518,34 @@ const AdminBook = ({ book, setIsBook }) => {
 
           {/* Chapter Content on the right */}
           <div className="lg:w-3/4 p-4 bg-gray-100">
-            {chapters.map((chapter, chapterIndex) => (
-              <div
-                key={chapterIndex}
-                className="mb-8 p-4 bg-white shadow-md rounded-lg"
-                ref={(el) =>
-                  (chapterRefs.current[`chapter-${chapterIndex}`] = el)
-                }
-              >
-                <h2
-                  className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2 "
-                  dangerouslySetInnerHTML={{ __html: chapter.title }}
+            {currentChapter && (
+              <div className="w-full bg-white shadow-lg rounded-lg p-6">
+                {/* Chapter Title */}
+                <h1
+                  className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2"
+                  dangerouslySetInnerHTML={{ __html: currentChapter.title }}
                 />
+                {/* Chapter Summary */}
                 <p
                   className="text-base text-gray-600 mb-4 text-center leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: chapter.summary }}
+                  dangerouslySetInnerHTML={{ __html: currentChapter.summary }}
                 />
+
                 {/* Sections and Subsections */}
-                {chapter.sections?.map((section, sectionIndex) => (
+                {currentChapter.sections?.map((section, sectionIndex) => (
                   <div
                     key={section.id}
                     className="mt-4 mx-10"
                     ref={(el) =>
                       (sectionRefs.current[
-                        `section-${chapterIndex}-${sectionIndex}`
+                        `section-${currentChapterIndex}-${sectionIndex}`
                       ] = el)
                     }
                   >
                     <h3
-                      className="text-3xl font-bold mb-2 my-5"
+                      className="text-3xl font-bold mb-2"
                       style={{ color: "#1C1678" }}
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          section.title ||
-                          `${chapterIndex + 1}.${sectionIndex + 1}Section`,
-                      }}
+                      dangerouslySetInnerHTML={{ __html: section.title }}
                     />
                     <p
                       className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
@@ -545,33 +554,17 @@ const AdminBook = ({ book, setIsBook }) => {
                       }}
                     />
                     <div className="space-y-4">
-                      {section.components.map((comp, componentIndex) => (
+                      {section.components.map((comp) => (
                         <div key={comp.id} className="text-left">
                           {renderComponent(comp)}
-                          <div className="flex justify-end">
-                            {/* Ensure the button is on the right side */}
-                            <button
-                              className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
-                              onClick={() =>
-                                toggleSectionComponentLock(
-                                  chapterIndex,
-                                  sectionIndex,
-                                  componentIndex
-                                )
-                              }
-                            >
-                              {comp.locked ? "Unlock" : "Lock"}
-                            </button>
-                          </div>
                         </div>
                       ))}
-
                       {section.subsections?.map((subsec, subsectionIndex) => (
                         <div
                           key={subsec.id}
                           ref={(el) =>
                             (subsectionRefs.current[
-                              `subsection-${chapterIndex}-${sectionIndex}-${subsectionIndex}`
+                              `subsection-${currentChapterIndex}-${sectionIndex}-${subsectionIndex}`
                             ] = el)
                           }
                         >
@@ -581,55 +574,25 @@ const AdminBook = ({ book, setIsBook }) => {
                             dangerouslySetInnerHTML={{
                               __html:
                                 subsec.heading ||
-                                `${chapterIndex + 1}.${sectionIndex + 1}.${
-                                  subsectionIndex + 1
-                                } Subsection`,
+                                `${currentChapterIndex + 1}.${
+                                  sectionIndex + 1
+                                }.${subsectionIndex + 1} Section`,
                             }}
                           />
-                          <p
-                            className="text-base text-gray-600 mb-4 text-justify leading-relaxed"
-                            dangerouslySetInnerHTML={{
-                              __html: subsec.subsectionsummary,
-                            }}
-                          />
-                          <div>
-                            {subsec.components.map(
-                              (component, componentIndex) => (
-                                <div
-                                  key={component.id}
-                                  className="mb-4"
-                                  ref={(el) =>
-                                    (headingRefs.current[
-                                      `heading-${chapterIndex}-${sectionIndex}-${subsectionIndex}-${componentIndex}`
-                                    ] = el)
-                                  }
-                                >
-                                  {renderComponent(
-                                    component,
-                                    chapterIndex,
-                                    componentIndex
-                                  )}
-
-                                  {/* Lock/Unlock button */}
-                                  <div className="flex justify-end">
-                                    {/* Ensure the button is on the right side */}
-                                    <button
-                                      className={`ml-2 px-3 py-1 text-sm rounded bg-blue-500 text-white`}
-                                      onClick={() =>
-                                        toggleLockComponent(
-                                          chapterIndex,
-                                          sectionIndex,
-                                          subsectionIndex,
-                                          componentIndex
-                                        )
-                                      }
-                                    >
-                                      {component.locked ? "Unlock" : "Lock"}
-                                    </button>
-                                  </div>
-                                </div>
-                              )
-                            )}
+                          <div className="space-y-2">
+                            {subsec.components.map((comp, compIndex) => (
+                              <div
+                                key={comp.id}
+                                className="text-left"
+                                ref={(el) =>
+                                  (headingRefs.current[
+                                    `heading-${currentChapterIndex}-${sectionIndex}-${subsectionIndex}-${compIndex}`
+                                  ] = el)
+                                }
+                              >
+                                {renderComponent(comp)}
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ))}
@@ -637,7 +600,30 @@ const AdminBook = ({ book, setIsBook }) => {
                   </div>
                 ))}
               </div>
-            ))}
+            )}
+            <div className="flex justify-between items-center p-4 bg-white shadow-md">
+              {/* Previous Chapter Button */}
+              {currentChapterIndex !== 0 ? (
+                <button
+                  onClick={handlePreviousChapter}
+                  className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+                >
+                  <FaArrowCircleLeft className="text-4xl ml-4" />
+                </button>
+              ) : (
+                <div className="flex-grow" /> // Spacer to maintain alignment
+              )}
+
+              {/* Next Chapter Button */}
+              {currentChapterIndex !== chapters.length - 1 && (
+                <button
+                  onClick={handleNextChapter}
+                  className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+                >
+                  <FaArrowCircleRight className="text-4xl mr-4" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
