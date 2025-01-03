@@ -9,11 +9,10 @@ import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 
 const PreviewBook = ({ bookinfo, chapters, ispre }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
-  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(-1);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
   const userState = useSelector((state) => state.user);
-  const chapterRefs = useRef([]);
   const sectionRefs = useRef({});
   const subsectionRefs = useRef({});
   const headingRefs = useRef({});
@@ -190,6 +189,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
     }
   };
   const currentChapter = chapters[currentChapterIndex];
+  console.log(bookinfo);
   return (
     <div className="flex flex-col lg:flex-row lg:space-x-4 bg-gray-100 relative">
       {/* Sidebar */}
@@ -210,6 +210,7 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
             style={{ width: "40%" }}
           />
         </div>
+
         <ul className="mb-6">
           {chapters?.map((chapter, index) => (
             <li key={index} className="mb-2 cursor-pointer">
@@ -318,6 +319,19 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
 
       {/* Main Content */}
       <div className="w-full lg:w-3/4 bg-gray-50 p-4 lg:p-6 space-y-6">
+        {currentChapterIndex === -1 && (
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center border border-gray-200">
+            <h2 className="text-3xl font-extrabold text-indigo-700 mb-4">
+              {bookinfo.booktitle}
+            </h2>
+            <p className="text-base text-gray-500 italic mb-4">
+              {bookinfo.summary}
+            </p>
+            <p className="text-lg font-semibold text-gray-800">
+              Please Select a Chapter to Read
+            </p>
+          </div>
+        )}
         {currentChapter && (
           <div className="w-full bg-white shadow-lg rounded-lg p-6">
             {/* Chapter Title */}
@@ -401,29 +415,31 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
             ))}
           </div>
         )}
-        <div className="flex justify-between items-center p-4 bg-white shadow-md">
-          {/* Previous Chapter Button */}
-          {currentChapterIndex !== 0 ? (
-            <button
-              onClick={handlePreviousChapter}
-              className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
-            >
-              <FaArrowCircleLeft className="text-4xl ml-4" />
-            </button>
-          ) : (
-            <div className="flex-grow" />
-          )}
+        {currentChapterIndex !== -1 && (
+          <div className="flex justify-between items-center p-4 bg-white shadow-md">
+            {/* Previous Chapter Button */}
+            {currentChapterIndex !== 0 ? (
+              <button
+                onClick={handlePreviousChapter}
+                className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+              >
+                <FaArrowCircleLeft className="text-4xl ml-4" />
+              </button>
+            ) : (
+              <div className="flex-grow" />
+            )}
 
-          {/* Next Chapter Button */}
-          {currentChapterIndex !== chapters.length - 1 && (
-            <button
-              onClick={handleNextChapter}
-              className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
-            >
-              <FaArrowCircleRight className="text-4xl mr-4" />
-            </button>
-          )}
-        </div>
+            {/* Next Chapter Button */}
+            {currentChapterIndex !== chapters.length - 1 && (
+              <button
+                onClick={handleNextChapter}
+                className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+              >
+                <FaArrowCircleRight className="text-4xl mr-4" />
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

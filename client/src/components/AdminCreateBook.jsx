@@ -14,7 +14,7 @@ const AdminBook = ({ book, setIsBook }) => {
   const dispatch = useDispatch();
   const reduxBook = useSelector((state) => state.books.allbooks);
   const bookIndex = reduxBook.find((b) => b._id === book._id);
-  const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(-1);
 
   console.log(bookIndex);
   const [chapters, setChapters] = useState(book.chapters); // Store chapters in state
@@ -22,7 +22,6 @@ const AdminBook = ({ book, setIsBook }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
-  const chapterRefs = useRef([]);
   const sectionRefs = useRef({});
   const subsectionRefs = useRef({});
   const headingRefs = useRef({});
@@ -518,8 +517,21 @@ const AdminBook = ({ book, setIsBook }) => {
 
           {/* Chapter Content on the right */}
           <div className="lg:w-3/4 p-4 bg-gray-100">
+            {currentChapterIndex === -1 && (
+              <div className="bg-white rounded-lg shadow-lg p-6 text-center border border-gray-200">
+                <h2 className="text-3xl font-extrabold text-indigo-700 mb-4">
+                  {book.booktitle}
+                </h2>
+                <p className="text-base text-gray-500 italic mb-4">
+                  {book.summary}
+                </p>
+                <p className="text-lg font-semibold text-gray-800">
+                  Please Select a Chapter to Review
+                </p>
+              </div>
+            )}
             {currentChapter && (
-              <div className="w-full bg-white shadow-lg rounded-lg p-6">
+              <div className="w-full bg-white shadow-lg   p-6">
                 {/* Chapter Title */}
                 <h1
                   className="text-4xl font-bold mb-4 text-center text-gray-800 border-b pb-2"
@@ -601,29 +613,31 @@ const AdminBook = ({ book, setIsBook }) => {
                 ))}
               </div>
             )}
-            <div className="flex justify-between items-center p-4 bg-white shadow-md">
-              {/* Previous Chapter Button */}
-              {currentChapterIndex !== 0 ? (
-                <button
-                  onClick={handlePreviousChapter}
-                  className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
-                >
-                  <FaArrowCircleLeft className="text-4xl ml-4" />
-                </button>
-              ) : (
-                <div className="flex-grow" /> // Spacer to maintain alignment
-              )}
+            {currentChapterIndex !== -1 && (
+              <div className="flex justify-between items-center p-4 bg-white shadow-md">
+                {/* Previous Chapter Button */}
+                {currentChapterIndex !== 0 ? (
+                  <button
+                    onClick={handlePreviousChapter}
+                    className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+                  >
+                    <FaArrowCircleLeft className="text-4xl ml-4" />
+                  </button>
+                ) : (
+                  <div className="flex-grow" /> // Spacer to maintain alignment
+                )}
 
-              {/* Next Chapter Button */}
-              {currentChapterIndex !== chapters.length - 1 && (
-                <button
-                  onClick={handleNextChapter}
-                  className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
-                >
-                  <FaArrowCircleRight className="text-4xl mr-4" />
-                </button>
-              )}
-            </div>
+                {/* Next Chapter Button */}
+                {currentChapterIndex !== chapters.length - 1 && (
+                  <button
+                    onClick={handleNextChapter}
+                    className="flex items-center text-blue-500 hover:underline disabled:opacity-50"
+                  >
+                    <FaArrowCircleRight className="text-4xl mr-4" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
