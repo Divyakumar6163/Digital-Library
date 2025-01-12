@@ -6,8 +6,6 @@ const adminroutes = require("./routes/adminroute")
 const paymentroute = require("./routes/payment_route");
 const cookieParser = require("cookie-parser");
 const { storage } = require('./storage/storage');
-
-
 const multer = require('multer');
 const cron = require("node-cron");
 const upload = multer({ storage });

@@ -73,15 +73,16 @@ exports.createbook = async (req, res) => {
 exports.getbookbyID = async (req, res) => {
   try {
     const bookId = req.params.bookId;
-    const cachedBook = await client.get(`book:${bookId}`);
-    if (cachedBook) {
-      return res.status(200).json({
-        data: {
-          book: JSON.parse(cachedBook),
-        },
-        messege: "book found (from cache)",
-      });
-    }
+    // await client.connect()
+    // const cachedBook = await client.get(`book:${bookId}`);
+    // if (cachedBook) {
+    //   return res.status(200).json({
+    //     data: {
+    //       book: JSON.parse(cachedBook),
+    //     },
+    //     messege: "book found (from cache)",
+    //   });
+    // }
     const book = await Bookschema.findById(bookId);
     if (!book) {
       return res.status(404).json({
@@ -89,12 +90,12 @@ exports.getbookbyID = async (req, res) => {
         message: "book not found",
       });
     }
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     res.status(200).json({
       data: {
         book: book,
@@ -154,12 +155,12 @@ exports.publishbookuser = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
     book.ispublished = ispublished;
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
 
     res.status(200).json({
@@ -202,12 +203,12 @@ exports.updatebookintro = async (req, res) => {
     book.attributionTitle = data.attributionTitle;
     book.attributionAuthor = data.attributionAuthor;
     book.image = data.image;
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
     res.status(200).json({
       message: "Book Intro updated successfully",
@@ -288,12 +289,12 @@ exports.acceptcollabInvitation = async (req, res) => {
         .json({ message: "User already collaborating with the book" });
     }
     book.collaborators.push(usermail);
-    await client.set(
-      `book:${decoded.bookid}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${decoded.bookid}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
     res.status(200).json({
       status: "success",
@@ -326,12 +327,12 @@ exports.removecollab = async (req, res) => {
     }
 
     book.collaborators = book.collaborators.filter((collab) => collab !== mail);
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
 
     return res.status(200).json({
@@ -358,12 +359,12 @@ exports.updatebookcontent = async (req, res) => {
     }
     book.chapters = chapters;
     book.modifiedDate = modifiedDate;
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
 
     res.status(200).json({
@@ -392,12 +393,12 @@ exports.updatebooktype = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
     book.booktype = booktype;
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
 
     res.status(200).json({
@@ -426,12 +427,12 @@ exports.updatebookimg = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
     book.image = imageUrl;
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
 
     res.status(200).json({
@@ -460,12 +461,12 @@ exports.updatebooktags = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
     book.tags = tags;
-    await client.set(
-      `book:${bookId}`,
-      JSON.stringify(book),
-      "EX",
-      3600 
-    );
+    // await client.set(
+    //   `book:${bookId}`,
+    //   JSON.stringify(book),
+    //   "EX",
+    //   3600 
+    // );
     await book.save();
 
     res.status(200).json({

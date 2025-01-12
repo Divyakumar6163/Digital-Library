@@ -6,7 +6,7 @@ const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
 const { promisify } = require("util");
 const addcollaboratoremail = require("../../utils/mails/addcollaboratoremail")
-const client = require('./../../redis');
+// const client = require('./../../redis');
 
 exports.sendcollaboratorrequest = async (req, res) => {
     try {
@@ -147,12 +147,12 @@ exports.sendcollaboratorrequest = async (req, res) => {
         return res.status(400).json({ message: "User already collaborating with the book" });
       }
       book.collaborators.push(usermail);
-      await client.set(
-        `book:${decoded.bookid}`,
-        JSON.stringify(book),
-        "EX",
-        3600 
-      );
+      // await client.set(
+      //   `book:${decoded.bookid}`,
+      //   JSON.stringify(book),
+      //   "EX",
+      //   3600 
+      // );
       await book.save();
       res.status(200).json({
         status: "success",
@@ -223,12 +223,12 @@ exports.sendcollaboratorrequest = async (req, res) => {
       }
   
       book.collaborators = book.collaborators.filter(collab => collab !== mail);
-      await client.set(
-        `book:${bookId}`,
-        JSON.stringify(book),
-        "EX",
-        3600 
-      );
+      // await client.set(
+      //   `book:${bookId}`,
+      //   JSON.stringify(book),
+      //   "EX",
+      //   3600 
+      // );
       await book.save();
   
       return res.status(200).json({
