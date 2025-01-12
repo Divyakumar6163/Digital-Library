@@ -5,7 +5,11 @@ import About from "../components/About";
 import Footer from "../components/Footer";
 import ContactForm from "../components/ContactUs";
 import styles from "./HeroPage.module.css";
+import { useEffect } from "react";
 export default function HeroPage() {
+  useEffect(()=>{
+    console.log("Reloading...")
+  },[])
   return (
     <>
       <NavBar />

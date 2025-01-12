@@ -6,7 +6,7 @@ const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
 const { promisify } = require("util");
 const addReviewerEmail = require("../../utils/mails/addreviewersemail");
-
+const client = require('./../../redis');
 exports.sendReviewerRequest = async (req, res) => {
   try {
     console.log("Starting to send reviewer invitations...");
@@ -85,6 +85,12 @@ exports.acceptReviewerInvitation = async (req, res) => {
       return res.status(400).json({ message: "User already a reviewer of the book" });
     }
     book.reviewers.push(usermail);
+    await client.set(
+      `book:${decoded.bookid}`,
+      JSON.stringify(book),
+      "EX",
+      3600 
+    );
     await book.save();
     res.status(200).json({
       status: "success",
@@ -156,6 +162,12 @@ exports.removeReviewer = async (req, res) => {
     }
 
     book.reviewers = book.reviewers.filter(reviewer => reviewer !== mail);
+    await client.set(
+      `book:${bookId}`,
+      JSON.stringify(book),
+      "EX",
+      3600 
+    );
     await book.save();
 
     return res.status(200).json({

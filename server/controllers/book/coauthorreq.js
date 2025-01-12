@@ -6,7 +6,7 @@ const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
 const { promisify } = require("util");
 const addCoAuthorEmail = require("../../utils/mails/addcoauthoremial")
-
+const client = require('./../../redis');
 exports.sendCoAuthorRequest = async (req, res) => {
     try {
       console.log("Starting to send co-author invitations...");
@@ -83,6 +83,12 @@ exports.sendCoAuthorRequest = async (req, res) => {
         return res.status(400).json({ message: "User already a co-author of the book" });
       }
       book.coAuthors.push(usermail);
+      await client.set(
+        `book:${decoded.bookid}`,
+        JSON.stringify(book),
+        "EX",
+        3600 
+      );
       await book.save();
       res.status(200).json({
         status: "success",
@@ -154,6 +160,12 @@ exports.sendCoAuthorRequest = async (req, res) => {
       }
   
       book.coAuthors = book.coAuthors.filter(coAuthor => coAuthor !== mail);
+      await client.set(
+        `book:${bookId}`,
+        JSON.stringify(book),
+        "EX",
+        3600 
+      );
       await book.save();
   
       return res.status(200).json({

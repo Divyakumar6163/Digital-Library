@@ -20,7 +20,7 @@ import { getallbooks, getalltags } from "./API/filteringbook.jsx";
 import Updatebook from "./pages/Updatebook.jsx";
 import Readbook from "./pages/Readbook.jsx";
 import "react-toastify/dist/ReactToastify.css";
-import PremiumPage from "./components/PremiumPage.jsx";
+import Premiumpage from "./pages/Premiumpage.jsx";
 import UpdateIntro from "./components/UpdateIntro.jsx";
 import SearchedBooks from "./components/SearchedBooks.jsx";
 import YourBooks from "./components/YourBooks.jsx";
@@ -46,8 +46,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HeroPage />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/premium" element={<PremiumPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/premium" element={<Premiumpage />} />
+          {/* <Route path="/payment" element={<PaymentPage />} /> */}
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

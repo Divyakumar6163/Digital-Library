@@ -321,12 +321,8 @@ const PreviewBook = ({ bookinfo, chapters, ispre }) => {
       <div className="w-full lg:w-3/4 bg-gray-50 p-4 lg:p-6 space-y-6">
         {currentChapterIndex === -1 && (
           <div className="bg-white rounded-lg shadow-lg p-6 text-center border border-gray-200">
-            <h2 className="text-3xl font-extrabold text-indigo-700 mb-4">
-              {bookinfo.booktitle}
-            </h2>
-            <p className="text-base text-gray-500 italic mb-4">
-              {bookinfo.summary}
-            </p>
+            <h2 className="text-3xl font-extrabold text-indigo-700 mb-4" dangerouslySetInnerHTML={{ __html: bookinfo.booktitle }} />
+            <p className="text-base text-gray-500 italic mb-4" dangerouslySetInnerHTML={{ __html: bookinfo.summary }}/>
             <p className="text-lg font-semibold text-gray-800">
               Please Select a Chapter to Read
             </p>
