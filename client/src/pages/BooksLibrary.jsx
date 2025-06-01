@@ -1,7 +1,7 @@
 import NavBar from "../components/NavBar";
 import Pagination from "../components/Pagination";
 import Footer from "../components/Footer";
-import BookCategory from "../components/BookCategory";
+// import BookCategory from "../components/BookCategory";
 import { useState } from "react";
 function BooksLibrary() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,7 +13,7 @@ function BooksLibrary() {
   return (
     <div>
       <NavBar />
-      <BookCategory />
+      {/* <BookCategory /> */}
       <div
         style={{
           display: "flex",
