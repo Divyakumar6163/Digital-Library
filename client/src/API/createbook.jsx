@@ -94,11 +94,17 @@ export const updateChapters = async (bookID, updatedChapters) => {
     return false;
   }
 };
-export const updateIntro = async (bookID, updatedIntro, accessToken) => {
+export const updateIntro = async (
+  bookID,
+  oldImage,
+  updatedIntro,
+  accessToken
+) => {
   const { collaborators, coAuthors, reviewers, ...filteredBookDetails } =
     updatedIntro;
-  console.log(updatedIntro.image);
-  if (updatedIntro.image) {
+  console.log(oldImage);
+  console.log(updatedIntro);
+  if (updatedIntro.image !== oldImage) {
     try {
       const formData = new FormData();
       formData.append("image", updatedIntro.image);
@@ -132,6 +138,7 @@ export const updateIntro = async (bookID, updatedIntro, accessToken) => {
           },
         }
       );
+
       if (response.status === 200) {
         console.log("Intro updated successfully", response.data);
         return true;
@@ -156,9 +163,10 @@ export const updateIntro = async (bookID, updatedIntro, accessToken) => {
         // }
       );
       const payload = {
-        emails: updatedIntro.collaborators,
+        emails: collaborators,
         bookid: bookID,
       };
+      console.log(collaborators);
       const sendinviteResponse = await axios.post(
         `${ToLink}/invitecollaborators`,
         payload,

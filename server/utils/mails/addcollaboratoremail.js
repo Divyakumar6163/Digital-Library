@@ -1,10 +1,10 @@
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
 
-dotenv.config({ path: './../config.env' });
+dotenv.config({ path: "./../config.env" });
 
 const sendCollaboratorInvite = async (options) => {
-    const htmlTemplate = `
+  const htmlTemplate = `
    <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,22 +30,23 @@ const sendCollaboratorInvite = async (options) => {
 </html>
 `;
 
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.EMAIL_AUTH
-        }
-    });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_ID,
+      pass: process.env.EMAIL_AUTH,
+    },
+  });
 
-    const mailoptions = {
-        from: process.env.EMAIL_ID,
-        to: options.email,
-        subject: options.subject || `Invitation to Collaborate on "${options.bookTitle}"`,
-        html: htmlTemplate
-    };
+  const mailoptions = {
+    from: process.env.EMAIL_ID,
+    to: options.email,
+    subject:
+      options.subject || `Invitation to Collaborate on "${options.bookTitle}"`,
+    html: htmlTemplate,
+  };
 
-    await transporter.sendMail(mailoptions);
+  await transporter.sendMail(mailoptions);
 };
 
 module.exports = sendCollaboratorInvite;

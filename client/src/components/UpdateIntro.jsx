@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./util/getCroppedImg";
-import { updateIntro,remove} from "../API/createbook";
+import { updateIntro, remove } from "../API/createbook";
 import { notify } from "./../store/utils/notify";
 import { useNavigate } from "react-router";
 const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
@@ -125,6 +125,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
     try {
       const response = await updateIntro(
         bookIntroDetails._id,
+        bookIntroDetails?.image,
         updatedIntroDetails,
         accessToken
       );
@@ -176,13 +177,15 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
     setShowIntro(false);
   };
   const handleremoveCollaborator = async (collab) => {
-    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const confirmDelete = window.confirm(
+      "Do you want to remove as a collaborator?"
+    );
     const payload = {
       bookid: bookIntroDetails._id,
       mailId: collab,
-    }
+    };
     if (confirmDelete) {
-      const result = await remove(payload, accessToken,"removecollab");
+      const result = await remove(payload, accessToken, "removecollab");
       if (result) {
         console.log("Collaborator removed successfully!");
         removeItem(collab, setCollaborators);
@@ -192,13 +195,15 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
     }
   };
   const handleremoveCoauthor = async (coauthor) => {
-    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const confirmDelete = window.confirm(
+      "Do you want to remove as a collaborator?"
+    );
     const payload = {
       bookid: bookIntroDetails._id,
       mailId: coauthor,
-    }
+    };
     if (confirmDelete) {
-      const result = await remove(payload, accessToken,"removecoauthor");
+      const result = await remove(payload, accessToken, "removecoauthor");
       if (result) {
         console.log("Collaborator removed successfully!");
         removeItem(coauthor, setCoAuthors);
@@ -208,13 +213,15 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
     }
   };
   const handleremovereviewer = async (reviewer) => {
-    const confirmDelete = window.confirm("Do you want to remove as a collaborator?");
+    const confirmDelete = window.confirm(
+      "Do you want to remove as a collaborator?"
+    );
     const payload = {
       bookid: bookIntroDetails._id,
       mailId: reviewer,
-    }
+    };
     if (confirmDelete) {
-      const result = await remove(payload, accessToken,"removereviewer");
+      const result = await remove(payload, accessToken, "removereviewer");
       if (result) {
         console.log("Reviewer removed successfully!");
         removeItem(reviewer, setReviewers);
@@ -223,7 +230,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
       }
     }
   };
-  
+
   return (
     <div className="container my-4 mx-auto mt-10 p-6 rounded-lg shadow-lg max-w-2xl">
       <div className="flex flex-col w-full">
