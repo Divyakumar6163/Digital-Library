@@ -110,6 +110,7 @@ const AdminBook = ({ book, setIsBook }) => {
     sectionIndex,
     componentIndex
   ) => {
+    console.log("heelo", sectionIndex);
     const updatedChapters = chapters.map((chapter, chIndex) => {
       if (chIndex === chapterIndex) {
         const updatedSections = chapter.sections.map((section, secIndex) => {
@@ -156,68 +157,170 @@ const AdminBook = ({ book, setIsBook }) => {
 
     setChapters(updatedChapters); // Update the chapters state
   };
+  const renderComponent = (
+    component,
+    chapterIndex,
+    sectionIndex,
+    subsectionIndex,
+    componentIndex
+  ) => {
+    return (
+      <div className="relative mb-4 p-2 border border-gray-200 rounded-lg bg-white shadow-sm">
+        {/* Lock/Unlock Button */}
+        <button
+          onClick={() => {
+            if (subsectionIndex !== null && subsectionIndex !== undefined) {
+              toggleLockComponent(
+                chapterIndex,
+                sectionIndex,
+                subsectionIndex,
+                componentIndex
+              );
+            } else {
+              toggleSectionComponentLock(
+                chapterIndex,
+                sectionIndex,
+                componentIndex
+              );
+            }
+          }}
+          className={`absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded ${
+            component.locked
+              ? "bg-green-500 text-white hover:bg-green-600"
+              : "bg-gray-400 text-white hover:bg-gray-500"
+          }`}
+        >
+          {component.locked ? "Unlock" : "Lock"}
+        </button>
 
-  const renderComponent = (component, chapterIndex, componentIndex) => {
-    if (component.locked) {
-      return (
-        <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
-          <p>This content is locked. Please subscribe to view it.</p>
-        </div>
-      );
-    }
-
-    switch (component.type) {
-      case "Text":
-        return (
-          <p
-            className="custom-content"
-            dangerouslySetInnerHTML={{ __html: component.content }}
-          />
-        );
-      case "Heading":
-        return (
-          <h2
-            className="text-2xl font-bold"
-            dangerouslySetInnerHTML={{ __html: component.content }}
-          />
-        );
-      case "Graph":
-        return (
-          <CreateGraph
-            labels={component.content.labels}
-            dataPoints={component.content.dataPoints}
-            isEditable={false} // Graph is not editable in preview
-          />
-        );
-      case "Equation":
-        return (
-          <div className="p-4 border rounded-lg bg-gray-100">
-            <BlockMath math={component.content} errorColor={"#cc0000"} />
+        {/* Render Component Content */}
+        {component.locked ? (
+          <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
+            <p>This content is locked. Please subscribe to view it.</p>
           </div>
-        );
-      case "Quiz":
-        return renderMCQ(component.content);
-      case "FillInTheBlanks":
-        return renderFIB(component.content); // Rendering FIB component
-      case "Image":
-        return (
-          <img
-            src={component.content}
-            alt={component.content.alt}
-            className="max-w-full"
-          />
-        );
-      case "Video":
-        return (
-          <video controls className="max-w-full">
-            <source src={component.content.url} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        );
-      default:
-        return null;
-    }
+        ) : (
+          (() => {
+            switch (component.type) {
+              case "Text":
+                return (
+                  <p
+                    className="custom-content"
+                    dangerouslySetInnerHTML={{ __html: component.content }}
+                  />
+                );
+              case "Heading":
+                return (
+                  <h2
+                    className="text-2xl font-bold"
+                    dangerouslySetInnerHTML={{ __html: component.content }}
+                  />
+                );
+              case "Graph":
+                return (
+                  <CreateGraph
+                    labels={component.content.labels}
+                    dataPoints={component.content.dataPoints}
+                    isEditable={false}
+                  />
+                );
+              case "Equation":
+                return (
+                  <div className="p-4 border rounded-lg bg-gray-100">
+                    <BlockMath
+                      math={component.content}
+                      errorColor={"#cc0000"}
+                    />
+                  </div>
+                );
+              case "Quiz":
+                return renderMCQ(component.content);
+              case "FillInTheBlanks":
+                return renderFIB(component.content);
+              case "Image":
+                return (
+                  <img
+                    src={component.content}
+                    alt={component.content.alt}
+                    className="max-w-full"
+                  />
+                );
+              case "Video":
+                return (
+                  <video controls className="max-w-full">
+                    <source src={component.content.url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                );
+              default:
+                return null;
+            }
+          })()
+        )}
+      </div>
+    );
   };
+
+  // const renderComponent = (component, chapterIndex, componentIndex) => {
+  //   if (component.locked) {
+  //     return (
+  //       <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
+  //         <p>This content is locked. Please subscribe to view it.</p>
+  //       </div>
+  //     );
+  //   }
+
+  //   switch (component.type) {
+  //     case "Text":
+  //       return (
+  //         <p
+  //           className="custom-content"
+  //           dangerouslySetInnerHTML={{ __html: component.content }}
+  //         />
+  //       );
+  //     case "Heading":
+  //       return (
+  //         <h2
+  //           className="text-2xl font-bold"
+  //           dangerouslySetInnerHTML={{ __html: component.content }}
+  //         />
+  //       );
+  //     case "Graph":
+  //       return (
+  //         <CreateGraph
+  //           labels={component.content.labels}
+  //           dataPoints={component.content.dataPoints}
+  //           isEditable={false} // Graph is not editable in preview
+  //         />
+  //       );
+  //     case "Equation":
+  //       return (
+  //         <div className="p-4 border rounded-lg bg-gray-100">
+  //           <BlockMath math={component.content} errorColor={"#cc0000"} />
+  //         </div>
+  //       );
+  //     case "Quiz":
+  //       return renderMCQ(component.content);
+  //     case "FillInTheBlanks":
+  //       return renderFIB(component.content); // Rendering FIB component
+  //     case "Image":
+  //       return (
+  //         <img
+  //           src={component.content}
+  //           alt={component.content.alt}
+  //           className="max-w-full"
+  //         />
+  //       );
+  //     case "Video":
+  //       return (
+  //         <video controls className="max-w-full">
+  //           <source src={component.content.url} type="video/mp4" />
+  //           Your browser does not support the video tag.
+  //         </video>
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   const renderMCQ = (mcq) => {
     return (
@@ -566,9 +669,15 @@ const AdminBook = ({ book, setIsBook }) => {
                       }}
                     />
                     <div className="space-y-4">
-                      {section.components.map((comp) => (
+                      {section.components.map((comp, compIndex) => (
                         <div key={comp.id} className="text-left">
-                          {renderComponent(comp)}
+                          {renderComponent(
+                            comp,
+                            currentChapterIndex,
+                            sectionIndex,
+                            null,
+                            compIndex
+                          )}
                         </div>
                       ))}
                       {section.subsections?.map((subsec, subsectionIndex) => (
@@ -602,7 +711,13 @@ const AdminBook = ({ book, setIsBook }) => {
                                   ] = el)
                                 }
                               >
-                                {renderComponent(comp)}
+                                {renderComponent(
+                                  comp,
+                                  currentChapterIndex,
+                                  sectionIndex,
+                                  subsectionIndex,
+                                  compIndex
+                                )}
                               </div>
                             ))}
                           </div>
