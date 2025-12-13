@@ -7,14 +7,15 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const CoAuthorInvitationPage = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const { AddCoAuthorToken } = useParams();
+  const { Addcoauthortoken } = useParams();
+  // console.log("Addcoauthortoken:", Addcoauthortoken);
   const navigate = useNavigate();
 
   const [Booktitle,setBooktitle] = useState("")
   useEffect(() => {
     const fetchBookInfo = async () => {
       try {
-        const bookInfo = await getbookinfo(AddCoAuthorToken);
+        const bookInfo = await getbookinfo(Addcoauthortoken);
         setBooktitle(bookInfo); 
         console.log(bookInfo);
       } catch (error) {
@@ -33,7 +34,7 @@ const CoAuthorInvitationPage = () => {
       return;
     }
     console.log("Accepting Co-Author invite");
-    const result = await accept(AddCoAuthorToken, accessToken,"acceptcoauthor");
+    const result = await accept(Addcoauthortoken, accessToken,"acceptcoauthor");
     console.log(result);
     navigate('/createBook');
     if (result) {
@@ -51,7 +52,7 @@ const CoAuthorInvitationPage = () => {
       return;
     }
     console.log("Declining Co-Author invite");
-    const result = await decline({ InviteLink: AddCoAuthorToken }, accessToken,"declinecoauthor");
+    const result = await decline({ InviteLink: Addcoauthortoken }, accessToken,"declinecoauthor");
     if (result) {
       notify("Co-Author invitation declined successfully.");
       navigate('/');

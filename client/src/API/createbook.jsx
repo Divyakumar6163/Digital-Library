@@ -127,13 +127,27 @@ export const updateIntro = async (
         //     }
         // }
       );
-      const payload = {
-        emails: updatedIntro.collaborators,
-        bookid: bookID,
-      };
-      const sendcollabinviteResponse = await axios.post(
+      await axios.post(
         `${ToLink}/invitecollaborators`,
-        payload,
+        {emails: collaborators,bookid: bookID,},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      await axios.post(
+        `${ToLink}/invitecoauthor`,
+        {emails: coAuthors,bookid: bookID,},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      await axios.post(
+        `${ToLink}/invitereviewer`,
+        {emails: reviewers,bookid: bookID,},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -164,14 +178,27 @@ export const updateIntro = async (
         //     }
         // }
       );
-      const payload = {
-        emails: collaborators,
-        bookid: bookID,
-      };
-      console.log(collaborators);
-      const sendinviteResponse = await axios.post(
+      await axios.post(
         `${ToLink}/invitecollaborators`,
-        payload,
+        {emails: collaborators,bookid: bookID,},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      await axios.post(
+        `${ToLink}/invitecoauthor`,
+        {emails: coAuthors,bookid: bookID,},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      await axios.post(
+        `${ToLink}/invitereviewer`,
+        {emails: reviewers,bookid: bookID,},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -306,7 +333,7 @@ export const accept = async (invitelink, accessToken, route) => {
     console.log(`${ToLink}/${route}`);
     console.log(invitelink);
     const response = await axios.post(
-      `${ToLink}/acceptcollab`,
+      `${ToLink}/${route}`,
       { InviteLink: invitelink },
       {
         headers: {
@@ -314,6 +341,7 @@ export const accept = async (invitelink, accessToken, route) => {
         },
       }
     );
+    console.log(response);
     if (response.status === 200 || response.status === 201) {
       console.log("Collaboration accepted successfully:", response.data);
       return response.data;

@@ -22,7 +22,9 @@ import Premiumpage from "./pages/Premiumpage.jsx";
 import UpdateIntro from "./components/UpdateIntro.jsx";
 import SearchedBooks from "./components/SearchedBooks.jsx";
 import YourBooks from "./components/YourBooks.jsx";
-import InvitationPage from "./components/Addcollaborator.jsx";
+import InvitationPageCollab from "./components/Addcollaborator.jsx";
+import InvitationPageCoAuthor from "./components/Addcoauthor.jsx";
+import InvitationPageReviewer from "./components/Addreviewer.jsx";
 import VerifyEamil from "./components/emailverify.jsx";
 // export const ToLink  = process.env.TO_LINK
 export const ToLink = "https://digital-library-cryf.onrender.com";
@@ -63,7 +65,14 @@ function App() {
           <Route path="/verifyemail/:token" element={<VerifyEamil />} />
           <Route
             path="/addcollaborator/:Addcollabtoken"
-            element={<InvitationPage />}
+            element={<InvitationPageCollab />}
+          />
+          <Route
+            path="/addcoauthor/:Addcoauthortoken"
+            element={<InvitationPageCoAuthor />}
+          /><Route
+            path="/addreviewer/:Addreviewretoken"
+            element={<InvitationPageReviewer />}
           />
         </Routes>
       </BrowserRouter>

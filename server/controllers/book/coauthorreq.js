@@ -37,6 +37,7 @@ exports.sendCoAuthorRequest = async (req, res) => {
             }
           );
           const link = `${process.env.FRONT_END_LINK}/addcoauthor/${InviteLink}`;
+          
           await addCoAuthorEmail({
             email: filteredEmails[i],
             subject: "Invitation to Co-Author",

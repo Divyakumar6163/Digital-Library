@@ -35,22 +35,22 @@ app.use(
 // Enable pre-flight requests for all routes (Optional)
 app.options("*", cors());
 
-const backendUrl = "https://digital-library-cryf.onrender.com";
-cron.schedule("*/180 * * * * *", function () {
-  console.log("Restarting server");
+// const backendUrl = "https://digital-library-cryf.onrender.com";
+// cron.schedule("*/180 * * * * *", function () {
+//   console.log("Restarting server");
 
-  https
-    .get(backendUrl, (res) => {
-      if (res.statusCode === 200) {
-        console.log("Restarted");
-      } else {
-        console.error(`failed to restart with status code: ${res.statusCode}`);
-      }
-    })
-    .on("error", (err) => {
-      console.error("Error ", err.message);
-    });
-});
+//   https
+//     .get(backendUrl, (res) => {
+//       if (res.statusCode === 200) {
+//         console.log("Restarted");
+//       } else {
+//         console.error(`failed to restart with status code: ${res.statusCode}`);
+//       }
+//     })
+//     .on("error", (err) => {
+//       console.error("Error ", err.message);
+//     });
+// });
 
 app.post("/upload", upload.single("image"), (req, res) => {
   console.log("Uploaded File:", req.file);

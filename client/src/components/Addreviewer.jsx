@@ -7,7 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const ReviewerInvitationPage = () => {
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const { AddReviewerToken } = useParams();
+  const { Addreviewretoken } = useParams();
   const navigate = useNavigate();
   const [Booktitle,setBooktitle] = useState("");
 
@@ -15,7 +15,7 @@ const ReviewerInvitationPage = () => {
   useEffect(() => {
     const fetchBookInfo = async () => {
       try {
-        const bookInfo = await getbookinfo(AddReviewerToken);
+        const bookInfo = await getbookinfo(Addreviewretoken);
         setBooktitle(bookInfo); 
         console.log(bookInfo);
         console.log("Reviewer invite page loaded.");
@@ -33,7 +33,7 @@ const ReviewerInvitationPage = () => {
       navigate('/login');
       return;
     }
-    const result = await accept(AddReviewerToken, accessToken,"acceptreviewer");
+    const result = await accept(Addreviewretoken, accessToken,"acceptreviewer");
     console.log(result);
     navigate('/');
     if (result) {
@@ -51,7 +51,7 @@ const ReviewerInvitationPage = () => {
       return;
     }
     console.log("Declining Reviewer invite");
-    const result = await decline({ InviteLink: AddReviewerToken }, accessToken,"declinereviewer");
+    const result = await decline({ InviteLink: Addreviewretoken }, accessToken,"declinereviewer");
     if (result) {
       notify("Reviewer invitation declined successfully.");
       navigate('/');

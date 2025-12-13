@@ -196,7 +196,7 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
   };
   const handleremoveCoauthor = async (coauthor) => {
     const confirmDelete = window.confirm(
-      "Do you want to remove as a collaborator?"
+      "Do you want to remove as a coAuthor?"
     );
     const payload = {
       bookid: bookIntroDetails._id,
@@ -205,16 +205,16 @@ const UpdateBookIntro = ({ bookIntroDetails, setShowIntro }) => {
     if (confirmDelete) {
       const result = await remove(payload, accessToken, "removecoauthor");
       if (result) {
-        console.log("Collaborator removed successfully!");
+        console.log("CoAuthor removed successfully!");
         removeItem(coauthor, setCoAuthors);
       } else {
-        console.log("Failed to remove collaborator.");
+        console.log("Failed to remove coAuthor.");
       }
     }
   };
   const handleremovereviewer = async (reviewer) => {
     const confirmDelete = window.confirm(
-      "Do you want to remove as a collaborator?"
+      "Do you want to remove as a reviewer?"
     );
     const payload = {
       bookid: bookIntroDetails._id,
