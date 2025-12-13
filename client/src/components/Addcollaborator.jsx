@@ -25,7 +25,12 @@ const CollabinvitationPage = () => {
   }, []);
 
   const handleAccept = async () => {
-    console.log("Accepting invite");
+    if(!accessToken || accessToken === "" || accessToken === undefined){
+      notify("Please login to accept the invitation.");
+      navigate('/login');
+      return;
+    }
+    console.log(accessToken);
     const result = await accept(Addcollabtoken, accessToken, "acceptcollab");
     console.log(result);
     navigate("/createBook");
@@ -38,6 +43,11 @@ const CollabinvitationPage = () => {
   };
 
   const handleDecline = async () => {
+    if(!accessToken || accessToken === "" || accessToken === undefined){
+      notify("Please login to accept the invitation.");
+      navigate('/login');
+      return;
+    }
     console.log("Declining invite");
     const result = await decline(
       { InviteLink: Addcollabtoken },

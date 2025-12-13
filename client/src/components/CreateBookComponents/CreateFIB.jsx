@@ -35,7 +35,7 @@ const FIBPage = ({
       questions: updatedQuestions || questions,
       answers: updatedAnswers || answers,
     };
-    onChange(updatedData); // Trigger the parent callback with the updated questions and answers
+    onChange(updatedData);
   };
 
   // Handle changes in the SunEditor for the question

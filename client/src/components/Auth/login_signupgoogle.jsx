@@ -34,7 +34,7 @@ const GoogleLoginPage = () => {
           // console.log(resp.data);
 
           notify("Login successful");
-          navigate('/');
+          navigate(-1);
         } catch (error) {
           console.error("Error authenticating user", error);
           notify("Error in login ");

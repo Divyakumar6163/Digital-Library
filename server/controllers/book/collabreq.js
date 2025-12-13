@@ -9,6 +9,7 @@ const addcollaboratoremail = require("../../utils/mails/addcollaboratoremail");
 // const client = require('./../../redis');
 
 exports.sendcollaboratorrequest = async (req, res) => {
+  console.log("Invite collaborator request received")
   try {
     console.log("Starting to send collaborator invitations...");
 
@@ -145,7 +146,7 @@ exports.acceptcollabInvitation = async (req, res) => {
       req.body.InviteLink,
       process.env.ACCESS_JWT_SECRET
     );
-    console.log(decoded);
+    console.log("Decoded", decoded);
     const book = await Bookschema.findById(decoded.bookid);
     if (!book) {
       return res.status(404).json({ message: "Book not found" });

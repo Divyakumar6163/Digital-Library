@@ -238,6 +238,7 @@ exports.refreshAccessToken = async (req, res, next) => {
 exports.checkvaliduser = async (req, res, next) => {
   try {
     let token;
+    // console.log(req.headers);
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
@@ -262,7 +263,7 @@ exports.checkvaliduser = async (req, res, next) => {
     req.user = currentUser;
     next();
   } catch (error) {
-    // console.log('Error verifying token:', error);
+    console.log('Error verifying token:', error);
     return res.status(403).json({ message: "Your session expaired " });
   }
 };

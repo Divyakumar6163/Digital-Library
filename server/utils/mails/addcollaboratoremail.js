@@ -37,7 +37,7 @@ const sendCollaboratorInvite = async (options) => {
       pass: process.env.EMAIL_AUTH,
     },
   });
-
+  console.log(transporter);
   const mailoptions = {
     from: process.env.EMAIL_ID,
     to: options.email,

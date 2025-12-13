@@ -1,5 +1,3 @@
-//Deploy commit
-
 import HeroPage from "./pages/Heropage.jsx";
 import BookStore from "./pages/BookStorePage.jsx";
 import BooksLibrary from "./pages/BooksLibrary.jsx";
@@ -47,7 +45,7 @@ function App() {
           <Route path="/" element={<HeroPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/premium" element={<Premiumpage />} />
-          {/* <Route path="/payment" element={<PaymentPage />} /> */}
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/bookStore" element={<BookStore />} />
           <Route path="/book/:category" element={<BooksLibrary />} />
           <Route path="/createBook" element={<CreateBook />} />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 // import { store } from "./../store/store";
@@ -48,7 +48,7 @@ function Login() {
         store.dispatch(authactions.setRefreshToken(response.data.RefreshToken));
         store.dispatch(useractions.setlogin(true));
         notify("Login successful");
-        navigate("/");
+        navigate(-1);
       }
 
       setLoading(false);

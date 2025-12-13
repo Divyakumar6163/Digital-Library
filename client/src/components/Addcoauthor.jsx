@@ -27,6 +27,11 @@ const CoAuthorInvitationPage = () => {
 
 
   const handleAccept = async () => {
+    if(!accessToken || accessToken === "" || accessToken === undefined){
+      notify("Please login to accept the invitation.");
+      navigate('/login');
+      return;
+    }
     console.log("Accepting Co-Author invite");
     const result = await accept(AddCoAuthorToken, accessToken,"acceptcoauthor");
     console.log(result);
@@ -40,6 +45,11 @@ const CoAuthorInvitationPage = () => {
   };
 
   const handleDecline = async () => {
+    if(!accessToken || accessToken === "" || accessToken === undefined){
+      notify("Please login to accept the invitation.");
+      navigate('/login');
+      return;
+    }
     console.log("Declining Co-Author invite");
     const result = await decline({ InviteLink: AddCoAuthorToken }, accessToken,"declinecoauthor");
     if (result) {

@@ -24,7 +24,7 @@ function SignUpPage() {
         password: password,
       };
       setLoading(true);
-      if(data.name=="" || data.emailid=="" || data.password==""){
+      if(data.name==="" || data.emailid==="" || data.password===""){
         notify("Please fill all the fields")
         setLoading(false);
         return;

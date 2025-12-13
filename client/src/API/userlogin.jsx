@@ -19,7 +19,7 @@ export const getuserlogin = async () => {
     store.dispatch(useractions.setlogin(true));
     console.log(response.data);
   } catch (e) {
-    console.log("sadfghjk");
+    // console.log("sadfghjk");
     console.log(e);
   }
 };

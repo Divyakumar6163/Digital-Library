@@ -25,7 +25,7 @@ const CreateGraph = ({
   labels: initialLabels = [],
   dataPoints: initialDataPoints = [],
   onChange,
-  isEditable = true, // New prop to control if the graph is editable or not
+  isEditable = true,
 }) => {
   const [labels, setLabels] = useState(initialLabels);
   const [dataPoints, setDataPoints] = useState(initialDataPoints);

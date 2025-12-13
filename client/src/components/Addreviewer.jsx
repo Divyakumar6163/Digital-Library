@@ -28,6 +28,11 @@ const ReviewerInvitationPage = () => {
   }, []);
 
   const handleAccept = async () => {
+    if(!accessToken || accessToken === "" || accessToken === undefined){
+      notify("Please login to accept the invitation.");
+      navigate('/login');
+      return;
+    }
     const result = await accept(AddReviewerToken, accessToken,"acceptreviewer");
     console.log(result);
     navigate('/');
@@ -40,6 +45,11 @@ const ReviewerInvitationPage = () => {
   };
 
   const handleDecline = async () => {
+    if(!accessToken || accessToken === "" || accessToken === undefined){
+      notify("Please login to accept the invitation.");
+      navigate('/login');
+      return;
+    }
     console.log("Declining Reviewer invite");
     const result = await decline({ InviteLink: AddReviewerToken }, accessToken,"declinereviewer");
     if (result) {
