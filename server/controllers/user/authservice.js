@@ -238,7 +238,7 @@ exports.refreshAccessToken = async (req, res, next) => {
 exports.checkvaliduser = async (req, res, next) => {
   try {
     let token;
-    console.log("Header",req.headers);
+    // console.log("Header",req.headers);
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")

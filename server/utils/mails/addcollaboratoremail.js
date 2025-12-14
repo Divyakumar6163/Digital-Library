@@ -31,13 +31,15 @@ const sendCollaboratorInvite = async (options) => {
 `;
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    port:465,
+    service: "smtp.gmail.com",
     auth: {
       user: process.env.EMAIL_ID,
       pass: process.env.EMAIL_AUTH,
     },
+    secure: true,
   });
-  console.log(transporter);
+  // console.log(transporter);
   const mailoptions = {
     from: process.env.EMAIL_ID,
     to: options.email,
@@ -45,8 +47,20 @@ const sendCollaboratorInvite = async (options) => {
       options.subject || `Invitation to Collaborate on "${options.bookTitle}"`,
     html: htmlTemplate,
   };
-
-  await transporter.sendMail(mailoptions);
-};
+  const res=await new Promise((resolve, reject) => {
+    transporter.sendMail(mailoptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email:", error);
+        reject(error);
+      } else {
+        console.log("Email sent successfully:", info.response);
+        resolve(info);
+      }
+    });
+  });
+  console.log("Mail sent successfully",res);
+}
+  // const res=await transporter.sendMail(mailoptions);
+  // console.log("Mail sent successfully", res);
 
 module.exports = sendCollaboratorInvite;
