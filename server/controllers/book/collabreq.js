@@ -29,9 +29,11 @@ exports.sendcollaboratorrequest = async (req, res) => {
 
     for (let i = 0; i < totalemails; i++) {
       const curuser = await userSchema.find({ emailid: filteredEmails[i] });
+      let firstName = "Sir/Madam";
       if (curuser.length > 0) {
-        const firstName = curuser[0].name.split(" ")[0];
-        const InviteLink = JWT.sign(
+        firstName = curuser[0].name.split(" ")[0];
+      } 
+      const InviteLink = JWT.sign(
           {
             bookid: req.body.bookid,
             userId: filteredEmails[i],
@@ -52,9 +54,6 @@ exports.sendcollaboratorrequest = async (req, res) => {
         console.log(
           `Invitation sent to ${filteredEmails[i]} (First Name: ${firstName})`
         );
-      } else {
-        console.log(`No user found with email: ${filteredEmails[i]}`);
-      }
     }
     res.status(200).json({
       status: "success",

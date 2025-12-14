@@ -87,13 +87,6 @@ const CreateBookPage = ({ setIsIntro }) => {
     setPreviewUrl(null);
     setCroppedImage(null);
   };
-  const handleInputChange = (e) => {
-    setTagInputValue(e.target.value);
-  };
-
-  const handleSkillInputChange = (e) => {
-    setSkillInputValue(e.target.value);
-  };
 
   const handleKeyDown = (e, addItem, inputValue, setInputValue) => {
     console.log(e.key);

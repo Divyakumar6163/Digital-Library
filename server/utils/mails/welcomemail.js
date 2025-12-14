@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const sgMail = require("@sendgrid/mail");
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './../config.env' });
@@ -36,22 +36,39 @@ const sendmail = async (options) => {
 </html>
 `;
 
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.EMAIL_AUTH
-        }
-    });
-
-    const mailoptions = {
-        from: process.env.EMAIL_ID,
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
         to: options.email,
-        subject: options.subject,
-        html: htmlTemplate
-    };
+        from: process.env.EMAIL_ID,
+        subject: options.subject || `Welcome to Digi Library, ${options.name}!`,
+        html: htmlTemplate,
+      };
+      
+      try {
+        console.log("Email Msg: ", msg);
+        const res=await sgMail.send(msg);
+        console.log("SendGrid response:", res);
+        console.log(`Invitation sent to ${options.email}`);
+      } catch (error) {
+        console.error("SendGrid error:", error.response?.body || error);
+        throw error;
+      }
+    // const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     auth: {
+    //         user: process.env.EMAIL_ID,
+    //         pass: process.env.EMAIL_AUTH
+    //     }
+    // });
 
-    await transporter.sendMail(mailoptions);
+    // const mailoptions = {
+    //     from: process.env.EMAIL_ID,
+    //     to: options.email,
+    //     subject: options.subject,
+    //     html: htmlTemplate
+    // };
+
+    // await transporter.sendMail(mailoptions);
 }
 
 module.exports = sendmail;

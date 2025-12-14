@@ -254,13 +254,35 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
           },
         }
       );
-      const payload = {
-        emails: bookdata.collaborators,
-        bookid: createResponse.data.data.books._id,
-      };
-      const sendinviteResponse = await axios.post(
+      await axios.post(
         `${ToLink}/invitecollaborators`,
-        payload,
+        {
+          emails: bookdata.collaborators,
+          bookid: createResponse.data.data.books._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      await axios.post(
+        `${ToLink}/invitecoauthor`,
+        {
+          emails: bookdata.coAuthors,
+          bookid: createResponse.data.data.books._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );await axios.post(
+        `${ToLink}/invitereviewer`,
+        {
+          emails: bookdata.reviewers,
+          bookid: createResponse.data.data.books._id,
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -303,13 +325,35 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
           },
         }
       );
-      const payload = {
+      await axios.post(
+        `${ToLink}/invitecollaborators`,
+        {
         emails: bookdata.collaborators,
         bookid: createResponse.data.data.books._id,
-      };
-      const sendinviteResponse = await axios.post(
-        `${ToLink}/invitecollaborators`,
-        payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      await axios.post(
+        `${ToLink}/invitecoauthor`,
+        {
+        emails: bookdata.coAuthors,
+        bookid: createResponse.data.data.books._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );await axios.post(
+        `${ToLink}/invitereviewer`,
+        {
+        emails: bookdata.reviewers,
+        bookid: createResponse.data.data.books._id,
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -362,7 +406,7 @@ export const remove = async (payload, accessToken, route) => {
       return false;
     }
 
-    const response = await axios.post(`${ToLink}/removecollab`, payload, {
+    const response = await axios.post(`${ToLink}/${route}`, payload, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -399,7 +443,6 @@ export const getbookinfo = async (InviteLink) => {
   }
 };
 export const decline = async (payload, accessToken, route) => {
-  console.log("dsf");
   try {
     if (!payload || !payload.InviteLink) {
       console.error("Invalid payload: Missing required fields");

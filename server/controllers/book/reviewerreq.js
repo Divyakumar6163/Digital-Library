@@ -24,29 +24,28 @@ exports.sendReviewerRequest = async (req, res) => {
 
     for (let i = 0; i < totalemails; i++) {
       const curuser = await userSchema.find({ emailid: filteredEmails[i] });
+      let firstName = "Sir/Madam";
       if (curuser.length > 0) {
-        const firstName = curuser[0].name.split(" ")[0];
-        const InviteLink = JWT.sign(
-          {
-            bookid: req.body.bookid,
-            userId: filteredEmails[i],
-          },
-          process.env.ACCESS_JWT_SECRET,
-          {
-            expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
-          }
-        );
-        const link = `${process.env.FRONT_END_LINK}/addreviewer/${InviteLink}`;
-        await addReviewerEmail({
-          email: filteredEmails[i],
-          subject: "Invitation for Reviewing",
-          name: firstName,
-          inviteLink: link,
-        });
-        console.log(`Invitation sent to ${filteredEmails[i]} (First Name: ${firstName})`);
-      } else {
-        console.log(`No user found with email: ${filteredEmails[i]}`);
+        firstName = curuser[0].name.split(" ")[0];
       }
+      const InviteLink = JWT.sign(
+        {
+          bookid: req.body.bookid,
+          userId: filteredEmails[i],
+        },
+        process.env.ACCESS_JWT_SECRET,
+        {
+          expiresIn: process.env.ACCESS_JWT_EXPIRES_IN,
+        }
+      );
+      const link = `${process.env.FRONT_END_LINK}/addreviewer/${InviteLink}`;
+      await addReviewerEmail({
+        email: filteredEmails[i],
+        subject: "Invitation for Reviewing",
+        name: firstName,
+        inviteLink: link,
+      });
+      console.log(`Invitation sent to ${filteredEmails[i]} (First Name: ${firstName})`);
     }
     res.status(200).json({
       status: "success",
