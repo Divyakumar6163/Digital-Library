@@ -76,7 +76,6 @@ exports.sendReviewerRequest = async (req, res) => {
     console.log("Starting to send reviewer invitations...");
 
     const emailarr = req.body.emails;
-    const user = req.user;
     const book = await Bookschema.findById(req.body.bookid);
 
     if (!book) {
