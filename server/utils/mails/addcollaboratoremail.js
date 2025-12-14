@@ -30,32 +30,32 @@ const sendCollaboratorInvite = async (options) => {
 </html>
 `;
 
-  const transporter = nodemailer.createTransport({
-    port:465,
-    host: "smtp.gmail.com",
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_ID,
-      pass: process.env.EMAIL_AUTH,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
   // const transporter = nodemailer.createTransport({
-  //     service: 'gmail',
-  //     host: 'smtp.gmail.com',
-  //     tls: {
-  //         ciphers: "SSLv3",
-  //     },
-  //     port: 587,
-  //     secure: false,
-  //     auth: {
-  //         user: process.env.MAIL_SENDER,
-  //         pass: process.env.MAIL_PASS
-  //     }
+  //   port:465,
+  //   host: "smtp.gmail.com",
+  //   secure: true,
+  //   auth: {
+  //     user: process.env.EMAIL_ID,
+  //     pass: process.env.EMAIL_AUTH,
+  //   },
+  //   tls: {
+  //     rejectUnauthorized: false,
+  //   },
   // });
+
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      tls: {
+          ciphers: "SSLv3",
+      },
+      port: 587,
+      secure: false,
+      auth: {
+          user: process.env.EMAIL_ID,
+          pass: process.env.EMAIL_AUTH,
+      }
+  });
 
 
   // console.log(transporter);
