@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   FaTrashAlt,
   FaEdit,
@@ -20,6 +20,10 @@ import { notify } from "../store/utils/notify";
 import UpdateBookIntro from "./UpdateIntro";
 import styles from "./CreateBookStore.module.css";
 import Section from "./CreateBookComponents/Section";
+import { io } from "socket.io-client";
+const socket = io("https://digital-library-cryf.onrender.com", {
+  transports: ["websocket"],
+});
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
   // const curbook = useSelector((state) => state.createbook);
@@ -47,6 +51,9 @@ const CreateBookStore = ({ bookinfo }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
+
+    const [status, setStatus] = useState("Connecting...");
+  
   const toggleExpansion = (index, type) => {
     if (type === "chapter") {
       setExpandedChapters((prev) =>
@@ -159,6 +166,7 @@ const CreateBookStore = ({ bookinfo }) => {
   const deleteChapter = (index) => {
     const updatedChapters = chapters.filter((_, i) => i !== index);
     setChapters(updatedChapters);
+    socket.emit("remove-chapter", { bookId: book_ID, chapterIndex: index });
     curbookdispatch(useractions.deleteChapter(index));
   };
   const editChapter = (index) => {
@@ -214,7 +222,11 @@ const CreateBookStore = ({ bookinfo }) => {
       title: `Chapter ${chapters.length + 1}`,
       sections: [],
     };
-    setChapters([...chapters, newChapter]);
+    setChapters((prev) => [...prev, newChapter]);
+    socket.emit("add-chapter", {
+      bookId: book_ID,
+      chapter: newChapter,
+    });
     setSummary("");
     setTitle("");
     setSections([]);
@@ -245,6 +257,47 @@ const CreateBookStore = ({ bookinfo }) => {
   const handleDeleteSection = (id) => {
     setSections((prev) => prev.filter((sec) => sec.id !== id));
   };
+  // Socket Connection
+  useEffect(() => {
+      socket.on("connect", () => {
+        setStatus("Socket connected to server");
+        console.log("Connected:", socket.id);
+      });
+      socket.on("disconnect", () => {
+        setStatus("Socket Disconnected");
+      });
+      return () => {
+        socket.off("connect");
+        socket.off("disconnect");
+      };
+    }, []);
+  
+  useEffect(() => {
+    socket.emit("join-book", book_ID);
+
+    return () => {
+      socket.emit("leave-book", book_ID);
+    };
+  }, [book_ID]);
+  // Chapter Added Socket
+  useEffect(() => {
+    // socket.emit("join-book", book_ID);
+    socket.on("chapter-added", (newChapter) => {
+      setChapters((prev) => [...prev, newChapter]);
+    });
+
+    return () => {
+      socket.off("chapter-added");
+    };
+  }, []);
+
+  //Remove a Chapter
+  useEffect(()=>{
+    socket.on("chapter-removed",(chapters)=>{
+      setChapters(chapters);
+    })
+  },[]);
+
 
   console.log(sections);
   console.log(chapters);
