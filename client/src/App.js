@@ -70,7 +70,8 @@ function App() {
           <Route
             path="/addcoauthor/:Addcoauthortoken"
             element={<InvitationPageCoAuthor />}
-          /><Route
+          />
+          <Route
             path="/addreviewer/:Addreviewretoken"
             element={<InvitationPageReviewer />}
           />

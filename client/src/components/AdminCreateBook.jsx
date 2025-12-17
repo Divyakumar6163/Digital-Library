@@ -424,7 +424,7 @@ const AdminBook = ({ book, setIsBook }) => {
     console.log(chapters);
     try {
       const response = await updateChapters(book._id, chapters); // Use the updated chapters state
-      if (response) {
+      if (response.status === 200) {
         notify("Book saved successfully");
         // Optionally, you can update Redux or any other state with the saved data
         dispatch(bookactions.updateBookChapters(book._id, chapters));

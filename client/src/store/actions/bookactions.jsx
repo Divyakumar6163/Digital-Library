@@ -25,9 +25,9 @@ export const addChapter = (chapter) => ({
   chapter,
 });
 
-export const updateChapter = (index, updatedChapter) => ({
+export const updateChapter = (id, updatedChapter) => ({
   type: UPDATE_CHAPTER,
-  index,
+  id,
   updatedChapter,
 });
 

@@ -14,7 +14,6 @@ export const createbook = async (bookinfo) => {
   console.log(chaptersObject);
 };
 
-
 export const deleteBook = async (bookId) => {
   console.log(bookId);
   try {
@@ -86,7 +85,7 @@ export const updateChapters = async (bookID, updatedChapters) => {
 
     if (response.status === 200) {
       console.log("Chapters updated successfully", response.data);
-      return true;
+      return response;
     } else {
       console.error("Failed to update chapters:", response.data);
       return false;
@@ -129,7 +128,7 @@ export const updateIntro = async (
       );
       await axios.post(
         `${ToLink}/invitecollaborators`,
-        {emails: collaborators,bookid: bookID,},
+        { emails: collaborators, bookid: bookID },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -138,7 +137,7 @@ export const updateIntro = async (
       );
       await axios.post(
         `${ToLink}/invitecoauthor`,
-        {emails: coAuthors,bookid: bookID,},
+        { emails: coAuthors, bookid: bookID },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -147,7 +146,7 @@ export const updateIntro = async (
       );
       await axios.post(
         `${ToLink}/invitereviewer`,
-        {emails: reviewers,bookid: bookID,},
+        { emails: reviewers, bookid: bookID },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -180,7 +179,7 @@ export const updateIntro = async (
       );
       await axios.post(
         `${ToLink}/invitecollaborators`,
-        {emails: collaborators,bookid: bookID,},
+        { emails: collaborators, bookid: bookID },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -189,7 +188,7 @@ export const updateIntro = async (
       );
       await axios.post(
         `${ToLink}/invitecoauthor`,
-        {emails: coAuthors,bookid: bookID,},
+        { emails: coAuthors, bookid: bookID },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -198,7 +197,7 @@ export const updateIntro = async (
       );
       await axios.post(
         `${ToLink}/invitereviewer`,
-        {emails: reviewers,bookid: bookID,},
+        { emails: reviewers, bookid: bookID },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -277,7 +276,8 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
             Authorization: `Bearer ${accessToken}`,
           },
         }
-      );await axios.post(
+      );
+      await axios.post(
         `${ToLink}/invitereviewer`,
         {
           emails: bookdata.reviewers,
@@ -328,8 +328,8 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
       await axios.post(
         `${ToLink}/invitecollaborators`,
         {
-        emails: bookdata.collaborators,
-        bookid: createResponse.data.data.books._id,
+          emails: bookdata.collaborators,
+          bookid: createResponse.data.data.books._id,
         },
         {
           headers: {
@@ -340,19 +340,20 @@ export const createBook = async (imageFile, bookdata, accessToken) => {
       await axios.post(
         `${ToLink}/invitecoauthor`,
         {
-        emails: bookdata.coAuthors,
-        bookid: createResponse.data.data.books._id,
+          emails: bookdata.coAuthors,
+          bookid: createResponse.data.data.books._id,
         },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
-      );await axios.post(
+      );
+      await axios.post(
         `${ToLink}/invitereviewer`,
         {
-        emails: bookdata.reviewers,
-        bookid: createResponse.data.data.books._id,
+          emails: bookdata.reviewers,
+          bookid: createResponse.data.data.books._id,
         },
         {
           headers: {

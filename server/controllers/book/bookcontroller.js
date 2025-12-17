@@ -5,7 +5,7 @@ const JWT = require("jsonwebtoken");
 dotenv.config({ path: "./../config.env" });
 const { promisify } = require("util");
 const addcollaboratoremail = require("../../utils/mails/addcollaboratoremail");
-const client = require('./../../redis');
+const client = require("./../../redis");
 exports.getallbook = async (req, res) => {
   try {
     const books = await Bookschema.find();
@@ -94,7 +94,7 @@ exports.getbookbyID = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     res.status(200).json({
       data: {
@@ -111,7 +111,7 @@ exports.getbookbyID = async (req, res) => {
   }
 };
 
-exports.getalldistincttags = async (req, res) => {  
+exports.getalldistincttags = async (req, res) => {
   try {
     const listmap = new Map();
     const books = await Bookschema.find();
@@ -159,7 +159,7 @@ exports.publishbookuser = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
 
@@ -207,7 +207,7 @@ exports.updatebookintro = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
     res.status(200).json({
@@ -293,7 +293,7 @@ exports.acceptcollabInvitation = async (req, res) => {
     //   `book:${decoded.bookid}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
     res.status(200).json({
@@ -331,7 +331,7 @@ exports.removecollab = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
 
@@ -363,14 +363,14 @@ exports.updatebookcontent = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
-
+    const newbook = await Bookschema.findById(bookId);
     res.status(200).json({
       message: "Book content updated successfully",
       data: {
-        book,
+        newbook,
       },
     });
   } catch (error) {
@@ -397,7 +397,7 @@ exports.updatebooktype = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
 
@@ -431,7 +431,7 @@ exports.updatebookimg = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
 
@@ -465,7 +465,7 @@ exports.updatebooktags = async (req, res) => {
     //   `book:${bookId}`,
     //   JSON.stringify(book),
     //   "EX",
-    //   3600 
+    //   3600
     // );
     await book.save();
 
@@ -613,4 +613,4 @@ exports.getbookinfo = async (req, res) => {
       error: err.message,
     });
   }
-}
+};
