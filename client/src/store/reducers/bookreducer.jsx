@@ -57,11 +57,53 @@ const bookreducer = (state = initialState, action) => {
           chapter._id === action.id ? action.updatedChapter : chapter
         ),
       };
-
     case bookactions.DELETE_CHAPTER:
       return {
         ...state,
         chapters: state.chapters.filter((_, index) => index !== action.index),
+      };
+    case bookactions.ADD_SECTION:
+      return {
+        ...state,
+        chapters: state.chapters.map((chapter) => {
+          if (chapter._id !== action.chapterId) return chapter;
+
+          return {
+            ...chapter,
+            sections: [...chapter.sections, action.section],
+          };
+        }),
+      };
+
+    case bookactions.UPDATE_SECTION:
+      return {
+        ...state,
+        chapters: state.chapters.map((chapter) => {
+          if (chapter._id !== action.chapterId) return chapter;
+
+          return {
+            ...chapter,
+            sections: chapter.sections.map((section) =>
+              section.id === action.sectionId
+                ? { ...section, ...action.updatedSection }
+                : section
+            ),
+          };
+        }),
+      };
+    case bookactions.DELETE_SECTION:
+      return {
+        ...state,
+        chapters: state.chapters.map((chapter) => {
+          if (chapter._id !== action.chapterId) return chapter;
+
+          return {
+            ...chapter,
+            sections: chapter.sections.filter(
+              (section) => section.id !== action.sectionId
+            ),
+          };
+        }),
       };
 
     case bookactions.SET_TAGS:

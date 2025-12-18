@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { Createbookloader } from "../store/utils/createbookloader";
 import { notify } from "../store/utils/notify";
+import { socket } from "../API/socket";
 export default function Updatebook() {
   const { bookID } = useParams();
   const navigate = useNavigate();
@@ -28,7 +29,11 @@ export default function Updatebook() {
   return (
     <>
       <NavBar />
-      {book ? <CreateBookStore bookinfo={book} /> : <Createbookloader Heading="Fetching your book..."/>}
+      {book ? (
+        <CreateBookStore bookinfo={book} />
+      ) : (
+        <Createbookloader Heading="Fetching your book..." />
+      )}
       <Footer />
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaTrashAlt,
   FaEdit,
@@ -20,23 +20,14 @@ import { notify } from "../store/utils/notify";
 import UpdateBookIntro from "./UpdateIntro";
 import styles from "./CreateBookStore.module.css";
 import Section from "./CreateBookComponents/Section";
-import { io } from "socket.io-client";
-// const socket = io("http://localhost:5000", {
-//   transports: ["websocket"],
-// });
-const socket = io("https://digital-library-cryf.onrender.com", {
-  transports: ["websocket"],
-});
+import { socket } from "../API/socket";
 const CreateBookStore = ({ bookinfo }) => {
   const curbookdispatch = useDispatch();
-  // const curbook = useSelector((state) => state.createbook);
   store.dispatch(useractions.setBookDetails(bookinfo));
   const book_ID = bookinfo._id;
-  // console.log(bookinfo);
   const navigate = useNavigate();
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [selectedChapterId, setSelectedChapterId] = useState(null);
-  const [showFormOptions, setShowFormOptions] = useState(false);
   const [selectedComponents, setSelectedComponents] = useState([]);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
@@ -54,7 +45,6 @@ const CreateBookStore = ({ bookinfo }) => {
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedSubsections, setExpandedSubsections] = useState([]);
-  const titleTimeoutRef = useRef(null);
   const [status, setStatus] = useState("Connecting...");
 
   const toggleExpansion = (index, type) => {
@@ -172,19 +162,14 @@ const CreateBookStore = ({ bookinfo }) => {
     curbookdispatch(useractions.deleteChapter(index));
   };
   const editChapter = (id, index) => {
+    if (id === selectedChapterId) return;
     const chapter = chapters[index];
     setSelectedChapterId(id);
     setTitle(chapter?.title || `Chapter ${index + 1}`);
     setSummary(chapter?.summary || `Summary of Chapter ${index + 1}`);
     // setSelectedComponents(chapter.sections);
+    console.log("Chapter Section:", chapter?.sections);
     setSections(chapter?.sections);
-  };
-
-  const handleFormOptionClick = (option) => {
-    setSelectedComponents([
-      ...selectedComponents,
-      { type: option, id: Date.now(), content: "", locked: false },
-    ]);
   };
 
   const deleteComponent = (id) => {
@@ -243,18 +228,33 @@ const CreateBookStore = ({ bookinfo }) => {
     editChapter(chpters._id, chapters.length);
   };
 
-  const handleAddSection = () => {
+  const handleAddSection = async () => {
     const newSection = {
       id: Date.now(),
-      title: `Section ${sections?.length + 1}`,
+      title: `Section ${sections.length + 1}`,
       subsections: [],
       components: [],
     };
-    if (sections?.length) {
-      setSections((prev) => [...prev, newSection]);
-    } else {
-      setSections([newSection]);
-    }
+
+    let updatedChapters;
+
+    setChapters((prev) => {
+      updatedChapters = prev.map((ch) =>
+        ch._id === selectedChapterId
+          ? { ...ch, sections: [...(ch.sections || []), newSection] }
+          : ch
+      );
+      return updatedChapters;
+    });
+
+    socket.emit("add-chapter-sections", {
+      bookId: book_ID,
+      chpId: selectedChapterId,
+      newSection,
+    });
+
+    // ✅ SAVE THE CORRECT STATE
+    await updateChapters(book_ID, updatedChapters);
   };
 
   const handleUpdateSection = (id, updatedSection) => {
@@ -264,9 +264,29 @@ const CreateBookStore = ({ bookinfo }) => {
     setSections(updatedSections);
   };
 
-  const handleDeleteSection = (id) => {
-    setSections((prev) => prev.filter((sec) => sec.id !== id));
+  const handleDeleteSection = (sectionId) => {
+    if (!selectedChapterId) return;
+    setChapters((prev) =>
+      prev.map((ch) =>
+        ch._id === selectedChapterId
+          ? {
+              ...ch,
+              sections: (ch.sections || []).filter(
+                (sec) => sec.id !== sectionId
+              ),
+            }
+          : ch
+      )
+    );
+    curbookdispatch(useractions.deleteSection(selectedChapterId, sectionId));
+    // Socket broadcast
+    socket.emit("remove-section", {
+      bookId: book_ID,
+      chpId: selectedChapterId,
+      sectionId,
+    });
   };
+
   // Socket Connection
   useEffect(() => {
     socket.on("connect", () => {
@@ -289,6 +309,7 @@ const CreateBookStore = ({ bookinfo }) => {
       socket.emit("leave-book", book_ID);
     };
   }, [book_ID]);
+
   // Chapter Added Socket
   useEffect(() => {
     // socket.emit("join-book", book_ID);
@@ -308,9 +329,9 @@ const CreateBookStore = ({ bookinfo }) => {
       setChapters((prevChapters) =>
         prevChapters.filter((chp) => chp?._id?.toString() !== chapterId)
       );
-      // console.log("Chapter removed:", chapterId);
     });
   }, []);
+
   // Update Chapter Title
   useEffect(() => {
     const handler = ({ chpId, title }) => {
@@ -318,7 +339,6 @@ const CreateBookStore = ({ bookinfo }) => {
         prev.map((ch) => (ch._id === chpId ? { ...ch, title } : ch))
       );
 
-      // 🔥 THIS IS THE MISSING PART
       if (chpId === selectedChapterId) {
         setTitle(title);
       }
@@ -330,6 +350,109 @@ const CreateBookStore = ({ bookinfo }) => {
       socket.off("chapter-title-updated", handler);
     };
   }, [selectedChapterId]);
+  //Update Chapter Summary
+  useEffect(() => {
+    const handler = ({ chpId, summary }) => {
+      setChapters((prev) =>
+        prev.map((ch) => (ch._id === chpId ? { ...ch, summary } : ch))
+      );
+      if (chpId === selectedChapterId) {
+        setSummary(summary);
+      }
+    };
+    socket.on("chapter-summary-updated", handler);
+
+    return () => {
+      socket.off("chapter-summary-updated", handler);
+    };
+  }, [selectedChapterId]);
+
+  //Add Section to Chapter
+  useEffect(() => {
+    const handler = ({ chpId, newSection }) => {
+      setChapters((prev) =>
+        prev.map((ch) =>
+          ch._id === chpId
+            ? { ...ch, sections: [...(ch.sections || []), newSection] }
+            : ch
+        )
+      );
+      if (chpId === selectedChapterId) {
+        setSections((prev) => [...prev, newSection]);
+      }
+    };
+
+    socket.on("chapter-sections-added", handler);
+    return () => {
+      socket.off("chapter-sections-added", handler);
+    };
+  }, [selectedChapterId]);
+  //Remove Section from Chapter
+  useEffect(() => {
+    const handler = ({ chpId, sectionId }) => {
+      setChapters((prev) =>
+        prev.map((ch) =>
+          ch._id === chpId
+            ? {
+                ...ch,
+                sections: (ch.sections || []).filter(
+                  (sec) => sec.id !== sectionId
+                ),
+              }
+            : ch
+        )
+      );
+      if (chpId === selectedChapterId) {
+        setSections((prev) => prev.filter((sec) => sec.id !== sectionId));
+      }
+    };
+    socket.on("section-removed", handler);
+    return () => {
+      socket.off("section-removed", handler);
+    };
+  }, [selectedChapterId]);
+
+  //Section Title Update
+  
+  useEffect(() => {
+    if (!selectedChapterId) return;
+    
+    const chapter = chapters.find((ch) => ch._id === selectedChapterId);
+    
+    if (chapter) {
+      setSections(chapter.sections || []);
+    }
+  }, [chapters, selectedChapterId]);
+  
+  useEffect(() => {
+    const handler = ({ chapters }) => {
+      setChapters((prev) => (prev = chapters));
+    };
+
+    socket.on("section-title-updated", handler);
+    return () => {
+      socket.off("section-title-updated", handler);
+    };
+  }, []);
+  useEffect(() => {
+    const handler = ({ chapterId, sectionId, title }) => {
+      setChapters((prev) =>
+        prev.map((ch) =>
+          ch._id === chapterId
+            ? {
+                ...ch,
+                sections: ch.sections.map((sec) =>
+                  sec.id === sectionId ? { ...sec, title } : sec
+                ),
+              }
+            : ch
+        )
+      );
+    };
+
+    socket.on("section-title-updated", handler);
+    return () => socket.off("section-title-updated", handler);
+  }, []);
 
   console.log(sections);
   console.log("Chapters:", chapters);
@@ -548,32 +671,31 @@ const CreateBookStore = ({ bookinfo }) => {
                   const newTitle = e.target.value;
                   setTitle(newTitle);
 
-                  // if (!selectedChapterId) return;
-
-                  // debounce
-                  if (titleTimeoutRef.current) {
-                    clearTimeout(titleTimeoutRef.current);
-                  }
-
-                  titleTimeoutRef.current = setTimeout(() => {
-                    socket.emit("update-chapter-title", {
-                      bookId: book_ID,
-                      chpId: selectedChapterId,
-                      title: newTitle,
-                    });
-                  }, 300); // 300ms after user stops typing
+                  socket.emit("update-chapter-title", {
+                    bookId: book_ID,
+                    chpId: selectedChapterId,
+                    title: newTitle,
+                  });
                 }}
               />
               <textarea
                 className="mt-2 p-2 w-full border rounded-lg focus:outline-none focus:border-blue-500"
                 placeholder="Add Chapter Summary"
                 value={summary}
-                onChange={(e) => setSummary(e.target.value)}
+                onChange={(e) => {
+                  const newSummary = e.target.value;
+                  setSummary(newSummary);
+                  socket.emit("update-chapter-summary", {
+                    bookId: book_ID,
+                    chpId: selectedChapterId,
+                    summary: newSummary,
+                  });
+                }}
               />
             </div>
 
             {selectedComponents?.map((component) => (
-              <div key={component.id} className="relative">
+              <div key={component?.id} className="relative">
                 {renderComponent(component, handleComponentChange)}
                 <div className="absolute right-2 top-2 flex space-x-2">
                   <button
@@ -587,50 +709,25 @@ const CreateBookStore = ({ bookinfo }) => {
             ))}
 
             {sections?.map((section) => (
-              <div key={section.id}>
-                <Section
-                  value={section}
-                  onChange={(updatedSection) =>
-                    handleUpdateSection(section.id, updatedSection)
-                  }
-                  onDelete={() => handleDeleteSection(section.id)}
-                  saveChapter={saveChapter}
-                />
-              </div>
+              <Section
+                key={section.id}
+                bookId={book_ID}
+                chapters={chapters}
+                chapterId={selectedChapterId}
+                value={section}
+                onChange={(updatedSection) =>
+                  handleUpdateSection(section.id, updatedSection)
+                }
+                onDelete={() => handleDeleteSection(section.id)}
+              />
             ))}
+
             <button
               onClick={handleAddSection}
               className="w-full mb-4 bg-gray-200 p-2 rounded-lg"
             >
               + Add Section
             </button>
-
-            {showFormOptions && (
-              <div className="p-4 bg-gray-100 rounded-lg mb-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    "Section",
-                    "Subsection",
-                    "Heading",
-                    "Text",
-                    "Image",
-                    "Graph",
-                    "Equation",
-                    "Quiz",
-                    "Video",
-                    "FillInTheBlanks",
-                  ]?.map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleFormOptionClick(option)}
-                      className="bg-white p-2 border rounded-lg shadow-sm hover:bg-gray-200 transition duration-200"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </>
       )}

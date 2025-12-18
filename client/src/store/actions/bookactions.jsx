@@ -1,8 +1,11 @@
 export const SET_BOOK_DETAILS = "SET_BOOK_DETAILS";
 export const SET_CHAPTERS = "SET_CHAPTERS";
 export const ADD_CHAPTER = "ADD_CHAPTER";
+export const ADD_SECTION = "ADD_SECTION";
 export const UPDATE_CHAPTER = "UPDATE_CHAPTER";
+export const UPDATE_SECTION = "UPDATE_SECTION";
 export const DELETE_CHAPTER = "DELETE_CHAPTER";
+export const DELETE_SECTION = "DELETE_SECTION";
 export const SET_TAGS = "SET_TAGS";
 export const SET_PUBLISH = "SET_PUBLISH";
 export const UPDATE_BOOK_CHAPTERS = "UPDATE_BOOK_CHAPTERS";
@@ -24,16 +27,32 @@ export const addChapter = (chapter) => ({
   type: ADD_CHAPTER,
   chapter,
 });
+export const addSection = (chapterId, section) => ({
+  type: ADD_SECTION,
+  chapterId,
+  section,
+});
 
 export const updateChapter = (id, updatedChapter) => ({
   type: UPDATE_CHAPTER,
   id,
   updatedChapter,
 });
+export const updateSection = (chapterId, sectionId, updatedSection) => ({
+  type: UPDATE_SECTION,
+  chapterId,
+  sectionId,
+  updatedSection,
+});
 
 export const deleteChapter = (index) => ({
   type: DELETE_CHAPTER,
   index,
+});
+export const deleteSection = (chapterId, sectionId) => ({
+  type: DELETE_CHAPTER,
+  chapterId,
+  sectionId,
 });
 
 export const setTags = (tags) => ({

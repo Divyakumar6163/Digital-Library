@@ -1,18 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Subsection from "./Subsection";
 import { notify } from "../../store/utils/notify";
 import renderComponent from "../functions/renderComponent";
 import axios from "axios";
 import { ToLink } from "../../App";
-import { useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
-const Section = ({ value, onChange, onDelete, saveChapter }) => {
+import { socket } from "../../API/socket";
+import * as useractions from "../../store/actions/bookactions";
+const Section = ({
+  bookId,
+  chapters,
+  chapterId,
+  value,
+  onChange,
+  onDelete,
+}) => {
+  const curbookdispatch = useDispatch();
   const [subsections, setSubsections] = useState(value.subsections || []);
   const [isSaving, setIsSaving] = useState(false); // State to handle save button status
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [components, setComponents] = useState(value.components || []);
   const [selectedType, setSelectedType] = useState("Text");
-
+  const [localTitle, setLocalTitle] = useState(value.title || "");
   const handleAddSubsection = () => {
     const newSubsection = {
       id: Date.now(),
@@ -39,10 +49,15 @@ const Section = ({ value, onChange, onDelete, saveChapter }) => {
   };
 
   const handleTitleChange = (title) => {
+    setLocalTitle(title);
+    socket.emit("update-section-title", {
+      chapterId,
+      bookId,
+      sectionId: value.id,
+      title,
+      chapters,
+    });
     onChange({ ...value, title });
-  };
-  const handleSummaryChange = (summary) => {
-    onChange({ ...value, sectionsummary: summary });
   };
   const handleAddComponent = () => {
     const newComponent = { id: Date.now(), type: selectedType, content: "" };
@@ -88,13 +103,16 @@ const Section = ({ value, onChange, onDelete, saveChapter }) => {
     }, 1000);
     notify("Section saved successfully");
   };
+  useEffect(() => {
+    setLocalTitle(value.title || "");
+  }, [value.id, value.title]);
 
   return (
     <div className="mb-8 p-4 border rounded-lg bg-gray-50">
       {/* Editable Section Heading */}
       <input
         type="text"
-        value={value.title || ""}
+        value={localTitle}
         onChange={(e) => handleTitleChange(e.target.value)}
         placeholder="Enter Section Title"
         className="text-xl font-bold mb-4 p-2 w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
